@@ -124,3 +124,13 @@ test("distractors never share a meaning item with the target (synonym safety)", 
   }
   assert.ok(checked > 3000);
 });
+
+test("Store migrates progress saved under the legacy key", () => {
+  const m = new Map([["buatin.vocab.v1", JSON.stringify({ version: 1, cards: { 1: { state: "review" } }, settings: { levels: [2] }, daily: { date: "", introduced: 0 }, log: {} })]]);
+  const storage = { getItem: (k) => (m.has(k) ? m.get(k) : null), setItem: (k, v) => void m.set(k, String(v)), removeItem: (k) => void m.delete(k) };
+  const s = new Store(storage);
+  assert.deepEqual(s.settings.levels, [2]);
+  assert.equal(s.card(1).state, "review");
+  assert.ok(m.has("learning-chinese.vocab.v1"));
+  assert.ok(!m.has("buatin.vocab.v1"));
+});

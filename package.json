@@ -1,9 +1,9 @@
 {
-  "name": "buatin",
+  "name": "learning-chinese",
   "private": true,
   "type": "module",
   "license": "MIT",
-  "repository": "github:Hawreirei/Buatin",
+  "repository": "github:Hawreirei/LearnChinese",
   "scripts": {
     "serve": "python3 -m http.server 8080",
     "test": "npm run test:py && npm run test:js",
