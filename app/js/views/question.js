@@ -88,10 +88,9 @@ function textCard(q, showPinyin) {
 
 function writeBlock(q, m) {
   const [before, after] = q.stem.split(BLANK);
-  const choice = m.writeMode !== "tiles" && q.tiles?.length;
+  const choice = m.writeMode !== "tiles" && q.choices?.length;
   if (choice) {   // multiple choice: 4 hanzi, tap one (practice answers at once; exam saves the pick)
-    const opts = q.tiles.filter((t) => t === q.answer).concat(q.tiles.filter((t) => t !== q.answer).slice(0, 3));
-    const shown = q.tiles.filter((t) => opts.includes(t));
+    const shown = q.choices;
     const st = { picked: m.response ?? null, answer: m.reveal ? q.answer : null, disabled: !!m.reveal };
     const blank = h("span", { class: "blankbox" }, h("span", { class: "hint-py" }, q.hint_pinyin), h("span", { class: "blankfill", lang: "zh-Hans" }, m.response || "＿"));
     return [h("div", { class: "card" }, h("div", { class: "stem", lang: "zh-Hans" }, before, blank, after)),

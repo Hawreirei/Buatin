@@ -1,5 +1,6 @@
 // Boot, data loading, tab router. Each tab is a view in ./views/ that receives the shared `app` object.
 import { h } from "./ui.js";
+import { setLookalikes } from "./practice.js";
 import { Store } from "./store.js";
 import { viewHome } from "./views/home.js";
 import { viewStudy, resetStudy, studyKey } from "./views/study.js";
@@ -61,10 +62,11 @@ const getJson = async (name, fallback) => {
 
 async function boot() {
   try {
-    const [vocab, handwriting, idData, questions, blueprints] = await Promise.all([
+    const [vocab, handwriting, idData, questions, blueprints, lookalikes] = await Promise.all([
       getJson("vocab.json"), getJson("handwriting.json"),
-      getJson("vocab_id.json", {}), getJson("questions.json", []), getJson("blueprints.json", {}),
+      getJson("vocab_id.json", {}), getJson("questions.json", []), getJson("blueprints.json", {}), getJson("lookalikes.json", {}),
     ]);
+    setLookalikes(lookalikes);
     Object.assign(app, { vocab, handwriting: new Set(handwriting.map((x) => x.char)), idData, questions, blueprints });
     go("home");
   } catch (err) {
