@@ -5,6 +5,9 @@ Terima kasih! Kontribusi yang paling dibutuhkan saat ini adalah **koreksi konten
 ## Cara tercepat membantu: koreksi konten
 Buka issue **“Koreksi konten”**. Sertakan nomor soal yang tampil di layar (mis. `#c190`) atau nomor kata (mis. id `391`) dan koreksi yang diusulkan. Tidak perlu bisa coding.
 
+## Untuk guru / penutur asli: lembar review
+`python3 scripts/build_review_sheet.py` membuat `review/Buatin-review-laoshi.xlsx`: seluruh konten (kosakata, soal mendengar/membaca, adegan gambar, soal isi kata) dengan kolom status dan usulan koreksi, petunjuk dalam bahasa Mandarin dan Indonesia. Kirim hasil koreksi lewat issue "Koreksi konten" atau PR.
+
 ## Menjalankan proyek
 ```bash
 git clone https://github.com/Hawreirei/Buatin.git && cd Buatin
