@@ -4,7 +4,7 @@ import { shuffle } from "./deck.js";
 export const SKILLS = { reading: "Membaca", writing: "Menulis", listening: "Mendengar" };
 export const TYPE_HELP = {
   cloze_wordbank: "Pilih kata yang tepat untuk mengisi bagian kosong.",
-  write_hanzi_from_pinyin: "Tulis hanzi yang hilang (pinyin ditunjukkan di atas kotak).",
+  write_hanzi_from_pinyin: "Pilih hanzi yang hilang (pinyin di atas kotak), lalu tekan Periksa. Bisa juga diketik.",
   audio_question_pick_answer: "Dengarkan pertanyaan, lalu pilih jawaban yang tepat.",
   audio_dialog_question_mcq: "Dengarkan dialog dan pertanyaan, lalu pilih jawaban yang tepat.",
   audio_passage_question_mcq: "Dengarkan teks dan pertanyaan, lalu pilih jawaban yang tepat.",
@@ -48,7 +48,19 @@ export function buildSet(questions, { skills, levels, count }, rand = Math.rando
       if (out.length >= count) break;
     }
   }
-  return out.map((q) => (q.options ? { ...q, options: shuffle(q.options, rand) } : q));
+  return out.map((q) => withTiles(q.options ? { ...q, options: shuffle(q.options, rand) } : q, questions, rand));
+}
+
+/** For write-hanzi items: the tile bank shown under the sentence (the answer plus 5 distractors, same level
+ *  first), so nobody needs a Chinese keyboard. Other question types are returned unchanged. */
+export function withTiles(q, questions, rand = Math.random, size = 6) {
+  if (q.type !== "write_hanzi_from_pinyin") return q;
+  const writes = questions.filter((x) => x.type === q.type && x.answer !== q.answer);
+  const near = shuffle(writes.filter((x) => x.level === q.level), rand);
+  const rest = shuffle(writes.filter((x) => x.level !== q.level), rand);
+  const tiles = new Set([q.answer]);
+  for (const x of [...near, ...rest]) { if (tiles.size >= size) break; tiles.add(x.answer); }
+  return { ...q, tiles: shuffle([...tiles], rand) };
 }
 
 export function check(q, response) {

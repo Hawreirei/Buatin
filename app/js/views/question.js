@@ -95,11 +95,23 @@ function writeBlock(q, m) {
   } else {
     input.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.isComposing) { e.preventDefault(); m.onAnswer(input.value); } });
   }
-  if (!m.reveal) setTimeout(() => input.focus(), 0);
+  // Tile bank: tap a hanzi to fill the blank (no Chinese keyboard needed); typing still works.
+  const tileBtns = [];
+  const tiles = q.tiles?.length ? h("div", { class: "opts tiles", role: "group", "aria-label": "Pilihan hanzi" },
+    ...q.tiles.map((t) => {
+      const b = btn(h("span", { class: "zh", lang: "zh-Hans" }, t), () => {
+        input.value = t;
+        tileBtns.forEach((x) => x.classList.toggle("picked", x === b));
+        if (m.kind === "exam") m.onWrite(t);
+      }, `btn tile${(m.response ?? "").trim() === t ? " picked" : ""}`, { disabled: !!m.reveal });
+      tileBtns.push(b);
+      return b;
+    })) : null;
+  if (!m.reveal && !tiles) setTimeout(() => input.focus(), 0);
   const buttons = m.kind === "practice" && !m.reveal
     ? h("div", { class: "row" }, btn("Periksa", () => m.onAnswer(input.value), "btn primary", { id: "check" }), btn("Tidak tahu", () => m.onAnswer(""), "btn", { id: "skip" }))
     : null;
-  return [card, buttons];
+  return [card, tiles, buttons];
 }
 
 /* ---------- the question body ---------- */

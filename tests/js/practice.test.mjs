@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { buildSet, check, summarize, availableLevels, questionKey } from "../../app/js/practice.js";
+import { buildSet, check, summarize, availableLevels, questionKey, withTiles } from "../../app/js/practice.js";
 import { Store } from "../../app/js/store.js";
 
 const Q = JSON.parse(readFileSync(new URL("../../data/hsk3/questions.json", import.meta.url), "utf-8"));
@@ -77,4 +77,14 @@ test("store keeps an event log (capped), exam records, and survives export/impor
   assert.equal(other.exams.length, 1);
   for (let i = 0; i < MAX_EVENTS + 50; i++) st.recordAnswer("reading", true, { id: "c1", w: 1 });
   assert.equal(st.events.length, MAX_EVENTS);
+});
+
+test("withTiles gives write items a tile bank containing the answer", () => {
+  const w = Q.find((q) => q.type === "write_hanzi_from_pinyin");
+  const t = withTiles(w, Q);
+  assert.equal(t.tiles.length, 6);
+  assert.equal(new Set(t.tiles).size, 6);
+  assert.ok(t.tiles.includes(w.answer));
+  const c = Q.find((q) => q.type === "cloze_wordbank");
+  assert.equal(withTiles(c, Q), c);
 });

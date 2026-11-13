@@ -3,7 +3,7 @@
 // available in our bank (see SUBSTITUTE), which the UI states openly. Parts whose official type exists in
 // the bank (pictures, short texts, passages, dialogs, cloze, write-hanzi) use it.
 import { shuffle } from "./deck.js";
-import { questionKey } from "./practice.js";
+import { questionKey, withTiles } from "./practice.js";
 
 export const SKILL_ORDER = ["listening", "reading", "writing"];
 export const SKILL_LABEL = { listening: "Mendengar", reading: "Membaca", writing: "Menulis" };
@@ -56,7 +56,7 @@ export function buildExam(questions, blueprint, rand = Math.random) {
     const put = (q, part, official) => {
       if (used.has(q.id) || keys.has(questionKey(q))) return false;
       used.add(q.id); keys.add(questionKey(q));
-      picked.push({ ...(q.options ? { ...q, options: shuffle(q.options, rand) } : q), part: { id: part.id, type: part.type, official } });
+      picked.push({ ...withTiles(q.options ? { ...q, options: shuffle(q.options, rand) } : q, questions, rand), part: { id: part.id, type: part.type, official } });
       return true;
     };
     for (const part of s.parts) {
