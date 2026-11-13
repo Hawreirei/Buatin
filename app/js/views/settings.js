@@ -24,16 +24,18 @@ export function viewSettings(app) {
   } });
   const exportFile = () => {
     const url = URL.createObjectURL(new Blob([store.export()], { type: "application/json" }));
-    h("a", { href: url, download: "buatin-progres.json" }).click();
+    h("a", { href: url, download: "learning-chinese-progres.json" }).click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
-  app.render(h("h2", {}, "Level yang dipelajari"), h("div", {}, ...levelBoxes),
-    h("h2", {}, "Kata baru per hari"), newPer,
-    h("h2", {}, "Suara"), h("label", {}, speakBox, " Ucapkan kata saat jawaban ditampilkan"),
-    h("p", { class: "hint" }, "Memakai suara bawaan perangkat (zh-CN). Jika tidak ada suara Mandarin terpasang, tombol suara tidak akan berbunyi."),
-    h("h2", {}, "Data"),
-    h("div", { class: "row", style: "justify-content:flex-start" },
-      btn("Ekspor progres", exportFile), fileIn,
-      btn("Reset progres", () => { if (confirm("Hapus semua progres (hafalan, latihan, dan ujian)?")) { store.reset(); viewSettings(app); } })),
+  const panel = (title, ...kids) => h("div", { class: "panel" }, h("h2", {}, title), ...kids);
+  app.render(h("div", { class: "pagehead" }, h("div", {}, h("h2", {}, "Pengaturan"), h("p", { class: "hint" }, "Disimpan di perangkat ini."))),
+    h("div", { class: "grid-2" },
+      panel("Level yang dipelajari", h("div", {}, ...levelBoxes)),
+      panel("Kata baru per hari", newPer),
+      panel("Suara", h("label", {}, speakBox, " Ucapkan kata saat jawaban ditampilkan"),
+        h("p", { class: "hint" }, "Memakai suara bawaan perangkat (zh-CN). Jika tidak ada suara Mandarin terpasang, tombol suara tidak akan berbunyi.")),
+      panel("Data", h("div", { class: "row", style: "justify-content:flex-start" },
+        btn("Ekspor progres", exportFile), fileIn,
+        btn("Reset progres", () => { if (confirm("Hapus semua progres (hafalan, latihan, dan ujian)?")) { store.reset(); viewSettings(app); } })))),
     h("p", { class: "notice" }, "Terjemahan Indonesia dan kalimat contoh untuk HSK 1–3 ditulis dengan bantuan AI dan belum direview penutur asli; pinyin kalimat dibuat otomatis. Level lain memakai arti Inggris dari CC-CEDICT (CC BY-SA 4.0), ±8% kata belum punya arti."));
 }

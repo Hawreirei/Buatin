@@ -20,7 +20,7 @@ const app = {
   idData: {},               // vocab_id.json: id -> {arti, contoh:{zh,pinyin,id}}
   questions: [],            // questions.json
   blueprints: {},           // blueprints.json (official exam structure per level)
-  render: (...nodes) => view.replaceChildren(...nodes),
+  render: (...nodes) => view.replaceChildren(...nodes.flat().filter((n) => n != null && n !== false)),   // replaceChildren(null) would print "null"
   go,
 };
 
@@ -33,6 +33,7 @@ function go(t) {
     abortExam();
   }
   tab = t;
+  view.dataset.view = t;
   for (const b of document.querySelectorAll("#tabs button")) b.setAttribute("aria-selected", String(b.dataset.tab === t));
   if (t === "study") resetStudy();
   views[t](app);

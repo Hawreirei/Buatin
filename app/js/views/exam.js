@@ -26,22 +26,25 @@ function intro(app) {
   const bp = blueprints[String(S.level)];
   const avail = availability(questions, bp);
   const ok = examAvailable(questions, bp);
-  const picker = h("div", { class: "row", style: "justify-content:flex-start" }, ...[1, 2, 3, 4, 5, 6].map((l) => {
+  const picker = h("div", { class: "seg", role: "radiogroup", "aria-label": "Level ujian" }, ...[1, 2, 3, 4, 5, 6].map((l) => {
     const can = blueprints[String(l)] && examAvailable(questions, blueprints[String(l)]);
-    return h("label", { style: can ? "" : "opacity:.45" }, h("input", { type: "radio", name: "lvl", value: l, checked: S.level === l, disabled: !can, onchange: () => { S.level = l; viewExam(app); } }), ` ${LEVEL_LABEL[l]}`);
+    return h("label", { style: can ? "" : "opacity:.45" }, h("input", { type: "radio", name: "lvl", value: l, checked: S.level === l, disabled: !can, onchange: () => { S.level = l; viewExam(app); } }), h("span", {}, LEVEL_LABEL[l]));
   }));
   const prev = store.exams.filter((x) => x.level === S.level).slice(-1)[0];
   render(
-    h("h2", {}, "Simulasi Ujian"),
-    h("p", { class: "hint" }, "Jumlah soal, pembagian bagian, dan waktu mengikuti tabel resmi CTI. Bagian yang jenis soalnya sudah kami punya (bergambar, teks, dialog, isi kata, tulis hanzi) memakai jenis resmi; sisanya memakai pengganti terdekat. Gambar dibuat dari emoji. Hasilnya perkiraan latihan, bukan skor resmi."),
-    h("p", { class: "notice" }, `Waktu tidak bisa dijeda. Setiap bagian berakhir otomatis saat waktu habis dan tidak bisa dibuka lagi. Gunakan headphone bila ada soal mendengar. Audio bisa diputar maksimal ${MAX_AUDIO_PLAYS} kali per soal (aturan resmi tidak disebutkan di dokumen CTI).`),
-    picker,
-    h("table", {}, h("thead", {}, h("tr", {}, ...["Bagian", "Soal", "Waktu", "Tersedia", "Jenis soal resmi"].map((t) => h("th", {}, t)))),
-      h("tbody", {}, ...bp.sections.map((s, i) => h("tr", {}, h("td", {}, SKILL_LABEL[s.skill]), h("td", {}, s.count), h("td", {}, `${s.time_min} mnt`), h("td", {}, `${avail[i].have}${avail[i].ok ? " ✔" : " ✘"}`), h("td", {}, `${avail[i].officialParts}/${avail[i].totalParts} bagian`))))),
-    h("p", { class: "hint" }, `Total ${bp.total_questions} soal. Waktu resmi total ±${bp.total_time_min} mnt (termasuk pengisian data diri dan lembar jawaban; di sini hanya waktu pengerjaan).`),
-    prev ? h("p", { class: "hint" }, `Percobaan terakhir HSK ${S.level}: ${prev.pct}% (${new Date(prev.t).toLocaleDateString("id-ID")}).`) : null,
-    ok ? null : h("p", { class: "notice" }, `Soal untuk ${LEVEL_LABEL[S.level]} belum cukup banyak.`),
-    h("div", { class: "row", style: "justify-content:flex-start" }, btn("Mulai ujian", () => start(app), "btn primary", { id: "exam-start", disabled: !ok })));
+    h("div", { class: "pagehead" }, h("div", {}, h("h2", {}, "Simulasi Ujian"), h("p", { class: "hint" }, "Jumlah soal, pembagian bagian, dan waktu mengikuti tabel resmi CTI. Hasilnya perkiraan latihan, bukan skor resmi."))),
+    h("div", { class: "split even" },
+      h("div", { style: "display:grid;gap:18px" },
+        h("div", { class: "panel" }, h("h2", {}, "Pilih level"), picker,
+          h("p", { class: "hint", style: "margin-top:14px" }, `Total ${bp.total_questions} soal. Waktu resmi total ±${bp.total_time_min} mnt (termasuk pengisian data diri dan lembar jawaban; di sini hanya waktu pengerjaan).`),
+          prev ? h("p", { class: "hint" }, `Percobaan terakhir HSK ${S.level}: ${prev.pct}% (${new Date(prev.t).toLocaleDateString("id-ID")}).`) : null,
+          ok ? null : h("p", { class: "notice" }, `Soal untuk ${LEVEL_LABEL[S.level]} belum cukup banyak.`),
+          h("div", { class: "row", style: "justify-content:flex-start" }, btn("Mulai ujian", () => start(app), "btn primary", { id: "exam-start", disabled: !ok }))),
+        h("p", { class: "notice" }, `Waktu tidak bisa dijeda. Setiap bagian berakhir otomatis saat waktu habis dan tidak bisa dibuka lagi. Gunakan headphone bila ada soal mendengar. Audio bisa diputar maksimal ${MAX_AUDIO_PLAYS} kali per soal (aturan resmi tidak disebutkan di dokumen CTI).`)),
+      h("div", { class: "panel" }, h("h2", {}, `Struktur ${LEVEL_LABEL[S.level]}`),
+        h("div", { class: "tablewrap" }, h("table", {}, h("thead", {}, h("tr", {}, ...["Bagian", "Soal", "Waktu", "Tersedia", "Jenis soal resmi"].map((t) => h("th", {}, t)))),
+          h("tbody", {}, ...bp.sections.map((s, i) => h("tr", {}, h("td", {}, SKILL_LABEL[s.skill]), h("td", {}, s.count), h("td", {}, `${s.time_min} mnt`), h("td", {}, `${avail[i].have}${avail[i].ok ? " ✔" : " ✘"}`), h("td", {}, `${avail[i].officialParts}/${avail[i].totalParts} bagian`)))))),
+        h("p", { class: "hint" }, "Bagian yang jenis soalnya sudah kami punya (bergambar, teks, dialog, isi kata, tulis hanzi) memakai jenis resmi; sisanya memakai pengganti terdekat. Gambar dibuat dari emoji."))));
 }
 
 function start(app) {
