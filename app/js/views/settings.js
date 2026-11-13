@@ -24,7 +24,7 @@ export function viewSettings(app) {
   } });
   const exportFile = () => {
     const url = URL.createObjectURL(new Blob([store.export()], { type: "application/json" }));
-    h("a", { href: url, download: "buatin-progres.json" }).click();
+    h("a", { href: url, download: "learning-chinese-progres.json" }).click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
   const panel = (title, ...kids) => h("div", { class: "panel" }, h("h2", {}, title), ...kids);

@@ -18,9 +18,9 @@ APP_DATA = ["vocab.json", "handwriting.json", "vocab_id.json", "questions.json",
 DOCS = ["LICENSE", "LICENSE-CONTENT.md", "NOTICE.md"]
 INDEX = """<!doctype html>
 <html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Buatin — Latihan HSK 3.0</title>
+<title>Learning Chinese — Latihan HSK 3.0</title>
 <meta http-equiv="refresh" content="0; url=app/"><link rel="canonical" href="app/">
-</head><body><p><a href="app/">Buka aplikasi Buatin</a></p></body></html>
+</head><body><p><a href="app/">Buka aplikasi Learning Chinese</a></p></body></html>
 """
 
 
