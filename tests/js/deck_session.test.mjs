@@ -134,3 +134,22 @@ test("Store migrates progress saved under the legacy key", () => {
   assert.ok(m.has("learning-chinese.vocab.v1"));
   assert.ok(!m.has("buatin.vocab.v1"));
 });
+
+import { featuredSlot, msToNextSlot, featuredWord } from "../../app/js/deck.js";
+test("featured word changes each slot and visits every word before repeating", () => {
+  const words = Array.from({ length: 300 }, (_, i) => ({ id: i }));
+  const seen = new Set();
+  for (let slot = 1000; slot < 1300; slot++) seen.add(featuredWord(words, slot).id);
+  assert.equal(seen.size, 300);
+  assert.notEqual(featuredWord(words, 5).id, featuredWord(words, 6).id);
+  assert.equal(featuredWord([], 3), null);
+  assert.equal(featuredWord(words, 5), featuredWord(words, 5));
+});
+test("featured slots follow local 3-hour boundaries", () => {
+  const tz = -420;                                                  // UTC+7
+  const at = (h, m, s) => Date.UTC(2026, 10, 13, h - 7, m, s);      // local clock time
+  assert.equal(featuredSlot(at(12, 0, 0), 3, tz), featuredSlot(at(14, 59, 59), 3, tz));
+  assert.equal(featuredSlot(at(15, 0, 0), 3, tz), featuredSlot(at(14, 59, 59), 3, tz) + 1);
+  assert.equal(msToNextSlot(at(12, 59, 59), 3, tz), 2 * 3_600_000 + 1000);
+  assert.equal(msToNextSlot(at(15, 0, 0), 3, tz), 3 * 3_600_000);
+});
