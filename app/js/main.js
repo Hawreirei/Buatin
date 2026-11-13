@@ -1,6 +1,7 @@
 // Boot, data loading, tab router. Each tab is a view in ./views/ that receives the shared `app` object.
 import { h } from "./ui.js";
 import { Store } from "./store.js";
+import { viewHome } from "./views/home.js";
 import { viewStudy, resetStudy, studyKey } from "./views/study.js";
 import { viewPractice } from "./views/practice.js";
 import { viewExam, examRunning, abortExam } from "./views/exam.js";
@@ -23,8 +24,8 @@ const app = {
   go,
 };
 
-const views = { study: viewStudy, practice: viewPractice, exam: viewExam, quiz: viewQuiz, browse: viewBrowse, progress: viewProgress, settings: viewSettings };
-let tab = "study";
+const views = { home: viewHome, study: viewStudy, practice: viewPractice, exam: viewExam, quiz: viewQuiz, browse: viewBrowse, progress: viewProgress, settings: viewSettings };
+let tab = "home";
 
 function go(t) {
   if (examRunning() && t !== "exam") {
@@ -37,6 +38,7 @@ function go(t) {
   views[t](app);
 }
 
+document.querySelector(".brand").addEventListener("click", () => go("home"));
 document.getElementById("tabs").addEventListener("click", (e) => {
   const t = e.target.closest("button")?.dataset.tab;
   if (t) go(t);
@@ -63,7 +65,7 @@ async function boot() {
       getJson("vocab_id.json", {}), getJson("questions.json", []), getJson("blueprints.json", {}),
     ]);
     Object.assign(app, { vocab, handwriting: new Set(handwriting.map((x) => x.char)), idData, questions, blueprints });
-    go("study");
+    go("home");
   } catch (err) {
     app.render(h("p", { class: "notice" }, `Gagal memuat data: ${err.message}. Jalankan server dari akar repo: python3 -m http.server 8080, lalu buka /app/.`));
   }
