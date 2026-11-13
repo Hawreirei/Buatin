@@ -27,7 +27,7 @@ export function answer(store, item, rating, now = Date.now()) {
   const wasNew = item.c.state === "new";
   const updated = review(item.c, rating, now);
   store.putCard(updated);
-  store.logReview(now);
+  store.recordReview(now);
   if (wasNew) store.markIntroduced(now);
   return updated;
 }

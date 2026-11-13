@@ -1,7 +1,10 @@
-import { h, btn } from "./ui.js";
-import { LEVEL_LABEL, meaning } from "./deck.js";
-import { accuracy, groupAccuracy, dailySeries, streak, activeDayKeys, weakest, weakWords, posAccuracy, examTrend, leeches, buildWeakSet, recommendations } from "./analytics.js";
-import { SKILL_LABEL } from "./exam.js";
+import { h, btn } from "../ui.js";
+import { LEVEL_LABEL, meaning } from "../deck.js";
+import { todayKey } from "../store.js";
+import { stats } from "../session.js";
+import { accuracy, groupAccuracy, dailySeries, streak, activeDayKeys, weakWords, posAccuracy, examTrend, leeches, buildWeakSet, recommendations } from "../analytics.js";
+import { SKILL_LABEL } from "../exam.js";
+import { startPracticeWith, presetPractice } from "./practice.js";
 
 const NS = "http://www.w3.org/2000/svg";
 const TYPE_LABEL = {
@@ -57,8 +60,10 @@ function table(head, rows) {
   return h("table", {}, h("thead", {}, h("tr", {}, ...head.map((t) => h("th", {}, t)))), h("tbody", {}, ...rows));
 }
 
-export function progressNodes(ctx) {
-  const { store, vocab, idData, questions, startWeak, startSkill } = ctx;
+function progressNodes(app) {
+  const { store, vocab, idData, questions } = app;
+  const startWeak = (set) => { if (set.length) { app.go("practice"); startPracticeWith(app, set); } };
+  const startSkill = (skill) => { app.go("practice"); presetPractice(app, skill); };
   const now = Date.now();
   const all = store.events;
   const cutoff = range === "all" ? 0 : now - Number(range) * 86_400_000;
@@ -69,7 +74,7 @@ export function progressNodes(ctx) {
   const exams = store.exams;
 
   const rangeBar = h("div", { class: "row", style: "justify-content:flex-start" }, h("span", { class: "hint" }, "Rentang analisis:"), ...RANGES.map(([v, label]) =>
-    h("label", {}, h("input", { type: "radio", name: "range", value: v, checked: range === v, onchange: () => { range = v; ctx.rerender(); } }), ` ${label}`)));
+    h("label", {}, h("input", { type: "radio", name: "range", value: v, checked: range === v, onchange: () => { range = v; viewProgress(app); } }), ` ${label}`)));
 
   const cards = h("div", { class: "cards" },
     ...[["Soal dijawab", total.n], ["Akurasi", total.pct == null ? "—" : `${total.pct}%`], ["Hari beruntun", streak(active, now)], ["Simulasi ujian", exams.length]].map(([k, v]) =>
@@ -118,4 +123,28 @@ export function progressNodes(ctx) {
     leech.length ? h("div", {}, h("h2", {}, "Kata sulit di hafalan"), table(["Kata", "Pinyin", "Arti", "Lupa", "Ease"], leech.map((c) => h("tr", {}, h("td", { class: "zh" }, c.word.word), h("td", {}, c.word.pinyin), h("td", {}, meaning(c.word, idData, 2) ?? "—"), h("td", {}, c.lapses), h("td", {}, c.ease))))) : null);
 
   return [h("h2", {}, "Kemajuan"), rangeBar, cards, trend, examBlock, weak];
+}
+
+/** Vocabulary progress per level and the answer counters of the practice questions. */
+function statsNodes(app) {
+  const { store, vocab } = app;
+  const st = stats(vocab, store);
+  const rows = Object.keys(LEVEL_LABEL).map(Number).map((l) => {
+    const s = st[l] || { total: 0, seen: 0, learning: 0, review: 0, mature: 0, due: 0 };
+    const pct = s.total ? Math.round((s.review / s.total) * 100) : 0;
+    return h("tr", {}, h("td", {}, LEVEL_LABEL[l]), h("td", {}, `${s.seen}/${s.total}`), h("td", {}, s.learning), h("td", {}, s.review), h("td", {}, s.mature), h("td", {}, s.due), h("td", { style: "min-width:90px" }, bar(pct)));
+  });
+  const today = store.data.log[todayKey()] || 0;
+  return [h("h2", {}, "Hafalan per level"),
+    table(["Level", "Dilihat", "Belajar", "Ulasan", "Matang (≥21 hr)", "Jatuh tempo", ""], rows),
+    h("p", { class: "hint" }, `Ulasan hari ini: ${today}. Kolom bar = persentase kata yang sudah lulus tahap belajar.`),
+    h("h2", {}, "Latihan soal"),
+    table(["Keterampilan", "Dijawab", "Benar", "%"], Object.entries(SKILL_LABEL).map(([k, label]) => {
+      const p = store.data.practice?.[k] || { n: 0, ok: 0 };
+      return h("tr", {}, h("td", {}, label), h("td", {}, p.n), h("td", {}, p.ok), h("td", {}, p.n ? Math.round((100 * p.ok) / p.n) : "—"));
+    }))];
+}
+
+export function viewProgress(app) {
+  app.render(...progressNodes(app), ...statsNodes(app));
 }

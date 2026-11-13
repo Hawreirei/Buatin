@@ -51,30 +51,30 @@ test("check: cloze, listening and writing (IME-style input)", () => {
   assert.equal(check(w, undefined).correct, false);
 });
 
-test("summarize and store.logPractice", () => {
+test("summarize and store.recordAnswer", () => {
   const r = [{ q: { skill: "reading" }, correct: true }, { q: { skill: "reading" }, correct: false }, { q: { skill: "writing" }, correct: true }];
   const s = summarize(r);
   assert.deepEqual([s.total, s.correct, s.pct], [3, 2, 67]);
   assert.deepEqual(s.by.reading, { total: 2, correct: 1 });
   const st = new Store(mem());
-  st.logPractice("reading", true); st.logPractice("reading", false);
+  st.recordAnswer("reading", true); st.recordAnswer("reading", false);
   assert.deepEqual(new Store(st.storage).data.practice.reading, { n: 2, ok: 1 });
 });
 
 test("store keeps an event log (capped), exam records, and survives export/import", async () => {
   const { Store, MAX_EVENTS } = await import("../../app/js/store.js");
   const st = new Store(mem());
-  st.logPractice("reading", true, { l: 1, ty: "cloze_wordbank", id: "c5", w: 5, ms: 1200 });
-  st.logPractice("reading", false, { l: 1, ty: "cloze_wordbank", id: "c6", w: 6, k: "exam", un: true });
-  st.logPractice("writing", true);                       // no meta: counter only
+  st.recordAnswer("reading", true, { l: 1, ty: "cloze_wordbank", id: "c5", w: 5, ms: 1200 });
+  st.recordAnswer("reading", false, { l: 1, ty: "cloze_wordbank", id: "c6", w: 6, k: "exam", un: true });
+  st.recordAnswer("writing", true);                       // no meta: counter only
   assert.equal(st.events.length, 2);
   assert.deepEqual([st.events[0].ok, st.events[0].w, st.events[0].ms], [1, 5, 1200]);
   assert.deepEqual([st.events[1].k, st.events[1].un], ["exam", 1]);
-  st.logExam({ t: 1, level: 1, pct: 50, sections: [] });
+  st.recordExam({ t: 1, level: 1, pct: 50, sections: [] });
   const other = new Store(mem());
   other.import(st.export());
   assert.equal(other.events.length, 2);
   assert.equal(other.exams.length, 1);
-  for (let i = 0; i < MAX_EVENTS + 50; i++) st.logPractice("reading", true, { id: "c1", w: 1 });
+  for (let i = 0; i < MAX_EVENTS + 50; i++) st.recordAnswer("reading", true, { id: "c1", w: 1 });
   assert.equal(st.events.length, MAX_EVENTS);
 });

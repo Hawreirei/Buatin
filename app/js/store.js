@@ -62,7 +62,7 @@ export class Store {
   }
 
   /** Aggregate counter per skill; when `meta` is given the answer is also kept in the event log. */
-  logPractice(skill, correct, meta = null) {
+  recordAnswer(skill, correct, meta = null) {
     const p = (this.data.practice ||= {});
     const s = (p[skill] ||= { n: 0, ok: 0 });
     s.n += 1;
@@ -80,13 +80,13 @@ export class Store {
   get events() { return this.data.events || []; }
   get exams() { return this.data.exams || []; }
 
-  logExam(rec) {
+  recordExam(rec) {
     (this.data.exams ||= []).push(rec);
     if (this.data.exams.length > 200) this.data.exams.shift();
     this.save();
   }
 
-  logReview(now = Date.now()) {
+  recordReview(now = Date.now()) {
     const k = todayKey(now);
     this.data.log[k] = (this.data.log[k] || 0) + 1;
     this.save();

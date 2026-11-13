@@ -1,11 +1,16 @@
 {
   "name": "buatin",
   "private": true,
+  "type": "module",
   "license": "MIT",
   "repository": "github:Hawreirei/Buatin",
-  "type": "module",
   "scripts": {
+    "serve": "python3 -m http.server 8080",
+    "test": "npm run test:py && npm run test:js",
     "test:js": "node --test tests/js/*.test.mjs",
-    "serve": "python3 -m http.server 8080"
+    "test:py": "python3 -W error -m unittest discover -s tests",
+    "build": "python3 -I scripts/build_id.py && python3 -I scripts/build_questions.py && python3 -I scripts/build_blueprints_json.py",
+    "site": "python3 scripts/build_site.py",
+    "review-sheet": "python3 scripts/build_review_sheet.py"
   }
 }

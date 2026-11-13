@@ -28,6 +28,8 @@ node --test tests/js/*.test.mjs        # tes JavaScript (Node 22, tanpa dependen
 
 **Berkas di `data/hsk3/` (`vocab_id.json`, `questions.json`, `blueprints.json`) adalah hasil build — edit sumbernya, bukan berkas ini**, lalu commit hasil build bersama sumbernya (tes memeriksa keduanya sinkron).
 
+Gambaran modul dan alur data: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) (termasuk cara menambah level atau jenis soal). `npm run build` membangun ulang semua data; `npm test` menjalankan semua tes.
+
 ## Aturan konten
 1. **Hanzi dalam kalimat/soal tidak boleh melebihi level.** Pemeriksa otomatis menolaknya; kata di atas level jangan dipakai.
 2. **Jangan menyalin soal, teks, atau contoh dari ujian/buku resmi.** Tulis sendiri; sebutkan jika terinspirasi format.
