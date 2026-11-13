@@ -1,0 +1,11 @@
+{
+  "name": "buatin",
+  "private": true,
+  "license": "MIT",
+  "repository": "github:Hawreirei/Buatin",
+  "type": "module",
+  "scripts": {
+    "test:js": "node --test tests/js/*.test.mjs",
+    "serve": "python3 -m http.server 8080"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "upstream": "https://github.com/ofou/hsk",
+  "upstream_commit": "14d4612ed99766f1385bd49730aabf8a96dc145f",
+  "official_source": "https://www.chinesetest.cn/syllabus",
+  "syllabus": "HSK 考试大纲 (CLEC/CTI), released 2025-11, in force 2026-07",
+  "glosses": "drkameleon/complete-hsk-vocabulary (CC-CEDICT, CC BY-SA 4.0)"
+}

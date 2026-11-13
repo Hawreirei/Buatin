@@ -1,0 +1,80 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { buildSet, check, summarize, availableLevels, questionKey } from "../../app/js/practice.js";
+import { Store } from "../../app/js/store.js";
+
+const Q = JSON.parse(readFileSync(new URL("../../data/hsk3/questions.json", import.meta.url), "utf-8"));
+const mem = () => { const m = new Map(); return { getItem: (k) => m.get(k) ?? null, setItem: (k, v) => m.set(k, v), removeItem: (k) => m.delete(k) }; };
+
+test("question bank covers 3 skills and levels 1-3", () => {
+  assert.deepEqual(availableLevels(Q), [1, 2, 3]);
+  assert.deepEqual([...new Set(Q.map((q) => q.skill))].sort(), ["listening", "reading", "writing"]);
+});
+
+test("buildSet: mixed set has every skill, no repeated stems, respects level and count", () => {
+  const set = buildSet(Q, { skills: ["reading", "writing", "listening"], levels: [1], count: 12 });
+  assert.equal(set.length, 12);
+  assert.ok(set.every((q) => q.level === 1));
+  assert.equal(new Set(set.map(questionKey)).size, 12);
+  assert.deepEqual([...new Set(set.map((q) => q.skill))].sort(), ["listening", "reading", "writing"]);
+});
+
+test("buildSet: single skill and level 2, options keep the answer", () => {
+  const set = buildSet(Q, { skills: ["reading"], levels: [2], count: 10 });
+  assert.equal(set.length, 10);
+  for (const q of set) {
+    assert.equal(q.skill, "reading");
+    assert.ok(q.options.some((o) => (o.word ?? o.zh ?? o.key) === q.answer), q.id);
+  }
+});
+
+test("buildSet: returns fewer when the pool is small, and nothing for empty levels", () => {
+  const pool = Q.filter((q) => q.skill === "listening" && q.level === 2);
+  const all = buildSet(Q, { skills: ["listening"], levels: [2], count: 5000 });
+  assert.equal(all.length, new Set(pool.map(questionKey)).size);   // everything available, no repeats
+  assert.equal(buildSet(Q, { skills: ["reading"], levels: [], count: 5 }).length, 0);
+});
+
+test("check: cloze, listening and writing (IME-style input)", () => {
+  const c = Q.find((q) => q.type === "cloze_wordbank");
+  assert.equal(check(c, c.options.find((o) => o.word === c.answer)).correct, true);
+  assert.equal(check(c, c.options.find((o) => o.word !== c.answer)).correct, false);
+  const l = Q.find((q) => q.type === "audio_question_pick_answer");
+  assert.equal(check(l, l.options.find((o) => o.zh === l.answer)).correct, true);
+  assert.equal(check(l, l.options.find((o) => o.zh !== l.answer)).correct, false);
+  const w = Q.find((q) => q.type === "write_hanzi_from_pinyin");
+  assert.equal(check(w, w.answer).correct, true);
+  assert.equal(check(w, ` ${w.answer} `).correct, true);
+  assert.equal(check(w, "").correct, false);
+  assert.equal(check(w, "abc").correct, false);
+  assert.equal(check(w, undefined).correct, false);
+});
+
+test("summarize and store.logPractice", () => {
+  const r = [{ q: { skill: "reading" }, correct: true }, { q: { skill: "reading" }, correct: false }, { q: { skill: "writing" }, correct: true }];
+  const s = summarize(r);
+  assert.deepEqual([s.total, s.correct, s.pct], [3, 2, 67]);
+  assert.deepEqual(s.by.reading, { total: 2, correct: 1 });
+  const st = new Store(mem());
+  st.logPractice("reading", true); st.logPractice("reading", false);
+  assert.deepEqual(new Store(st.storage).data.practice.reading, { n: 2, ok: 1 });
+});
+
+test("store keeps an event log (capped), exam records, and survives export/import", async () => {
+  const { Store, MAX_EVENTS } = await import("../../app/js/store.js");
+  const st = new Store(mem());
+  st.logPractice("reading", true, { l: 1, ty: "cloze_wordbank", id: "c5", w: 5, ms: 1200 });
+  st.logPractice("reading", false, { l: 1, ty: "cloze_wordbank", id: "c6", w: 6, k: "exam", un: true });
+  st.logPractice("writing", true);                       // no meta: counter only
+  assert.equal(st.events.length, 2);
+  assert.deepEqual([st.events[0].ok, st.events[0].w, st.events[0].ms], [1, 5, 1200]);
+  assert.deepEqual([st.events[1].k, st.events[1].un], ["exam", 1]);
+  st.logExam({ t: 1, level: 1, pct: 50, sections: [] });
+  const other = new Store(mem());
+  other.import(st.export());
+  assert.equal(other.events.length, 2);
+  assert.equal(other.exams.length, 1);
+  for (let i = 0; i < MAX_EVENTS + 50; i++) st.logPractice("reading", true, { id: "c1", w: 1 });
+  assert.equal(st.events.length, MAX_EVENTS);
+});

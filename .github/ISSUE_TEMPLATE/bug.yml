@@ -1,0 +1,22 @@
+name: Laporan bug aplikasi
+description: Ada yang tidak berjalan di aplikasi web
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: Apa yang terjadi, dan apa yang diharapkan
+    validations: { required: true }
+  - type: textarea
+    id: steps
+    attributes:
+      label: Langkah untuk mengulang
+  - type: input
+    id: env
+    attributes:
+      label: Browser dan perangkat
+      description: mis. Chrome 130 di Android 14
+  - type: markdown
+    attributes:
+      value: Jangan menempelkan data pribadi. Progres belajar tersimpan lokal di browser Anda.

@@ -1,0 +1,32 @@
+name: Koreksi konten
+description: Arti, kalimat, terjemahan, pinyin, atau soal yang keliru/ambigu
+title: "[Konten] "
+labels: ["content"]
+body:
+  - type: input
+    id: ref
+    attributes:
+      label: Nomor soal atau kata
+      description: Nomor soal yang tampil di layar (mis. #c190, #p63, #t41) atau id kata (mis. 391)
+    validations: { required: true }
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Jenis masalah
+      options: [Arti kata keliru, Kalimat tidak wajar, Terjemahan keliru, Pinyin keliru, Soal ambigu (lebih dari satu jawaban benar), Hanzi di atas level, Gambar tidak sesuai, Lainnya]
+    validations: { required: true }
+  - type: textarea
+    id: what
+    attributes:
+      label: Apa yang salah dan usulan perbaikan
+    validations: { required: true }
+  - type: dropdown
+    id: native
+    attributes:
+      label: Latar belakang Anda
+      options: [Penutur asli bahasa Mandarin, Guru bahasa Mandarin, Pelajar tingkat lanjut, Pelajar, Lainnya]
+  - type: input
+    id: source
+    attributes:
+      label: Rujukan (opsional)
+      description: Kamus atau sumber lain

@@ -1,0 +1,990 @@
+[
+ {
+  "id": "eat",
+  "emoji": "🍚",
+  "group": "food",
+  "alt": "orang makan nasi",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "我们在吃饭。",
+    "id": "Kami sedang makan."
+   }
+  ]
+ },
+ {
+  "id": "noodles",
+  "emoji": "🍜",
+  "group": "food",
+  "alt": "semangkuk mi",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "我想吃面条儿。",
+    "id": "Aku ingin makan mi."
+   }
+  ]
+ },
+ {
+  "id": "apple",
+  "emoji": "🍎",
+  "group": "food",
+  "alt": "apel",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "我喜欢吃苹果。",
+    "id": "Aku suka makan apel."
+   }
+  ]
+ },
+ {
+  "id": "bread",
+  "emoji": "🍞",
+  "group": "food",
+  "alt": "roti",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "我早上吃面包。",
+    "id": "Pagi hari aku makan roti."
+   }
+  ]
+ },
+ {
+  "id": "dumpling",
+  "emoji": "🥟",
+  "group": "food",
+  "alt": "pangsit",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "我们中午吃饺子。",
+    "id": "Kami makan jiaozi saat siang."
+   }
+  ]
+ },
+ {
+  "id": "egg",
+  "emoji": "🥚",
+  "group": "food",
+  "alt": "telur",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "我吃了一个鸡蛋。",
+    "id": "Aku makan sebutir telur."
+   }
+  ]
+ },
+ {
+  "id": "cake",
+  "emoji": "🍰",
+  "group": "food",
+  "alt": "kue",
+  "sentences": [
+   {
+    "lvl": 3,
+    "zh": "我想吃蛋糕。",
+    "id": "Aku ingin makan kue."
+   }
+  ]
+ },
+ {
+  "id": "banana",
+  "emoji": "🍌",
+  "group": "food",
+  "alt": "pisang",
+  "sentences": [
+   {
+    "lvl": 3,
+    "zh": "我想吃香蕉。",
+    "id": "Aku ingin makan pisang."
+   }
+  ]
+ },
+ {
+  "id": "watermelon",
+  "emoji": "🍉",
+  "group": "food",
+  "alt": "semangka",
+  "sentences": [
+   {
+    "lvl": 3,
+    "zh": "夏天我喜欢吃西瓜。",
+    "id": "Di musim panas aku suka makan semangka."
+   }
+  ]
+ },
+ {
+  "id": "icecream",
+  "emoji": "🍦",
+  "group": "food",
+  "alt": "es krim",
+  "sentences": [
+   {
+    "lvl": 3,
+    "zh": "我想吃冰激凌。",
+    "id": "Aku ingin makan es krim."
+   }
+  ]
+ },
+ {
+  "id": "tea",
+  "emoji": "🍵",
+  "group": "drink",
+  "alt": "cangkir teh",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "他在喝茶。",
+    "id": "Dia sedang minum teh."
+   }
+  ]
+ },
+ {
+  "id": "water",
+  "emoji": "💧",
+  "group": "drink",
+  "alt": "air",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "我想喝水。",
+    "id": "Aku ingin minum air."
+   }
+  ]
+ },
+ {
+  "id": "milk",
+  "emoji": "🥛",
+  "group": "drink",
+  "alt": "segelas susu",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "我喝牛奶。",
+    "id": "Aku minum susu."
+   }
+  ]
+ },
+ {
+  "id": "coffee",
+  "emoji": "☕",
+  "group": "drink",
+  "alt": "secangkir kopi",
+  "sentences": [
+   {
+    "lvl": 2,
+    "zh": "我早上喝咖啡。",
+    "id": "Pagi hari aku minum kopi."
+   }
+  ]
+ },
+ {
+  "id": "read",
+  "emoji": "📖",
+  "group": "study",
+  "alt": "buku terbuka",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "他在看书。",
+    "id": "Dia sedang membaca buku."
+   }
+  ]
+ },
+ {
+  "id": "write",
+  "emoji": "✍️",
+  "group": "study",
+  "alt": "tangan menulis",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "我在写字。",
+    "id": "Aku sedang menulis."
+   }
+  ]
+ },
+ {
+  "id": "school",
+  "emoji": "🏫",
+  "group": "study",
+  "alt": "gedung sekolah",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "我们在学校学习。",
+    "id": "Kami belajar di sekolah."
+   }
+  ]
+ },
+ {
+  "id": "exam",
+  "emoji": "📝",
+  "group": "study",
+  "alt": "kertas ujian",
+  "sentences": [
+   {
+    "lvl": 2,
+    "zh": "明天有考试。",
+    "id": "Besok ada ujian."
+   }
+  ]
+ },
+ {
+  "id": "teacher",
+  "emoji": "🧑‍🏫",
+  "group": "study",
+  "alt": "guru di papan tulis",
+  "sentences": [
+   {
+    "lvl": 3,
+    "zh": "老师在黑板上写字。",
+    "id": "Guru menulis di papan tulis."
+   }
+  ]
+ },
+ {
+  "id": "tv",
+  "emoji": "📺",
+  "group": "media",
+  "alt": "televisi",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "爸爸在看电视。",
+    "id": "Ayah sedang menonton televisi."
+   }
+  ]
+ },
+ {
+  "id": "movie",
+  "emoji": "🎬",
+  "group": "media",
+  "alt": "papan klaper film",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "我们去看电影吧。",
+    "id": "Ayo kita pergi menonton film."
+   }
+  ]
+ },
+ {
+  "id": "computer",
+  "emoji": "💻",
+  "group": "media",
+  "alt": "laptop",
+  "sentences": [
+   {
+    "lvl": 2,
+    "zh": "我每天晚上上网。",
+    "id": "Setiap malam aku berselancar di internet."
+   }
+  ]
+ },
+ {
+  "id": "music",
+  "emoji": "🎧",
+  "group": "media",
+  "alt": "headphone",
+  "sentences": [
+   {
+    "lvl": 3,
+    "zh": "我喜欢听音乐。",
+    "id": "Aku suka mendengarkan musik."
+   }
+  ]
+ },
+ {
+  "id": "game",
+  "emoji": "🎮",
+  "group": "media",
+  "alt": "konsol gim",
+  "sentences": [
+   {
+    "lvl": 3,
+    "zh": "孩子们喜欢玩游戏。",
+    "id": "Anak-anak suka bermain gim."
+   }
+  ]
+ },
+ {
+  "id": "phone",
+  "emoji": "📞",
+  "group": "comm",
+  "alt": "gagang telepon",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "我给妈妈打电话。",
+    "id": "Aku menelepon ibu."
+   }
+  ]
+ },
+ {
+  "id": "letter",
+  "emoji": "✉️",
+  "group": "comm",
+  "alt": "amplop surat",
+  "sentences": [
+   {
+    "lvl": 3,
+    "zh": "我给朋友写信。",
+    "id": "Aku menulis surat untuk teman."
+   }
+  ]
+ },
+ {
+  "id": "sing",
+  "emoji": "🎤",
+  "group": "perform",
+  "alt": "mikrofon",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "她在唱歌。",
+    "id": "Dia sedang menyanyi."
+   }
+  ]
+ },
+ {
+  "id": "dance",
+  "emoji": "💃",
+  "group": "perform",
+  "alt": "penari",
+  "sentences": [
+   {
+    "lvl": 2,
+    "zh": "她喜欢跳舞。",
+    "id": "Dia suka menari."
+   }
+  ]
+ },
+ {
+  "id": "basketball",
+  "emoji": "🏀",
+  "group": "sport",
+  "alt": "bola basket",
+  "sentences": [
+   {
+    "lvl": 2,
+    "zh": "他们在打篮球。",
+    "id": "Mereka sedang bermain bola basket."
+   }
+  ]
+ },
+ {
+  "id": "football",
+  "emoji": "⚽",
+  "group": "sport",
+  "alt": "bola sepak",
+  "sentences": [
+   {
+    "lvl": 2,
+    "zh": "他们在踢足球。",
+    "id": "Mereka sedang bermain sepak bola."
+   }
+  ]
+ },
+ {
+  "id": "swim",
+  "emoji": "🏊",
+  "group": "sport",
+  "alt": "orang berenang",
+  "sentences": [
+   {
+    "lvl": 2,
+    "zh": "他在游泳。",
+    "id": "Dia sedang berenang."
+   }
+  ]
+ },
+ {
+  "id": "run",
+  "emoji": "🏃",
+  "group": "sport",
+  "alt": "orang berlari",
+  "sentences": [
+   {
+    "lvl": 2,
+    "zh": "我每天早上跑步。",
+    "id": "Setiap pagi aku berlari."
+   }
+  ]
+ },
+ {
+  "id": "tennis",
+  "emoji": "🎾",
+  "group": "sport",
+  "alt": "bola tenis",
+  "sentences": [
+   {
+    "lvl": 3,
+    "zh": "我们在打网球。",
+    "id": "Kami sedang bermain tenis."
+   }
+  ]
+ },
+ {
+  "id": "badminton",
+  "emoji": "🏸",
+  "group": "sport",
+  "alt": "raket bulu tangkis",
+  "sentences": [
+   {
+    "lvl": 3,
+    "zh": "他们在打羽毛球。",
+    "id": "Mereka sedang bermain bulu tangkis."
+   }
+  ]
+ },
+ {
+  "id": "bus",
+  "emoji": "🚌",
+  "group": "transport",
+  "alt": "bus",
+  "sentences": [
+   {
+    "lvl": 2,
+    "zh": "我每天坐公交车上班。",
+    "id": "Setiap hari aku naik bus kota ke kantor."
+   }
+  ]
+ },
+ {
+  "id": "subway",
+  "emoji": "🚇",
+  "group": "transport",
+  "alt": "kereta bawah tanah",
+  "sentences": [
+   {
+    "lvl": 2,
+    "zh": "我坐地铁去公司。",
+    "id": "Aku naik kereta bawah tanah ke kantor."
+   }
+  ]
+ },
+ {
+  "id": "train",
+  "emoji": "🚆",
+  "group": "transport",
+  "alt": "kereta api",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "我们坐火车去。",
+    "id": "Kami naik kereta api ke sana."
+   }
+  ]
+ },
+ {
+  "id": "plane",
+  "emoji": "✈️",
+  "group": "transport",
+  "alt": "pesawat",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "我坐飞机去中国。",
+    "id": "Aku naik pesawat ke Tiongkok."
+   }
+  ]
+ },
+ {
+  "id": "taxi",
+  "emoji": "🚕",
+  "group": "transport",
+  "alt": "taksi",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "我们坐出租车去。",
+    "id": "Kami naik taksi ke sana."
+   }
+  ]
+ },
+ {
+  "id": "car",
+  "emoji": "🚗",
+  "group": "transport",
+  "alt": "mobil",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "爸爸开车去公司。",
+    "id": "Ayah mengendarai mobil ke kantor."
+   }
+  ]
+ },
+ {
+  "id": "bike",
+  "emoji": "🚲",
+  "group": "transport",
+  "alt": "sepeda",
+  "sentences": [
+   {
+    "lvl": 3,
+    "zh": "我骑自行车去学校。",
+    "id": "Aku naik sepeda ke sekolah."
+   }
+  ]
+ },
+ {
+  "id": "ship",
+  "emoji": "🚢",
+  "group": "transport",
+  "alt": "kapal",
+  "sentences": [
+   {
+    "lvl": 3,
+    "zh": "我们坐船去。",
+    "id": "Kami naik kapal ke sana."
+   }
+  ]
+ },
+ {
+  "id": "rain",
+  "emoji": "🌧️",
+  "group": "weather",
+  "alt": "awan hujan",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "今天下雨了。",
+    "id": "Hari ini turun hujan."
+   }
+  ]
+ },
+ {
+  "id": "snow",
+  "emoji": "❄️",
+  "group": "weather",
+  "alt": "kepingan salju",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "今天下雪了。",
+    "id": "Hari ini turun salju."
+   }
+  ]
+ },
+ {
+  "id": "wind",
+  "emoji": "🌬️",
+  "group": "weather",
+  "alt": "wajah meniup angin",
+  "sentences": [
+   {
+    "lvl": 3,
+    "zh": "外边在刮大风。",
+    "id": "Di luar angin kencang bertiup."
+   }
+  ]
+ },
+ {
+  "id": "sunny",
+  "emoji": "☀️",
+  "group": "weather",
+  "alt": "matahari cerah",
+  "sentences": [
+   {
+    "lvl": 2,
+    "zh": "今天是晴天。",
+    "id": "Hari ini cerah."
+   }
+  ]
+ },
+ {
+  "id": "hot",
+  "emoji": "🥵",
+  "group": "weather",
+  "alt": "wajah kepanasan",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "今天很热。",
+    "id": "Hari ini panas."
+   }
+  ]
+ },
+ {
+  "id": "cold",
+  "emoji": "🥶",
+  "group": "weather",
+  "alt": "wajah kedinginan",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "今天很冷。",
+    "id": "Hari ini dingin."
+   }
+  ]
+ },
+ {
+  "id": "sick",
+  "emoji": "🤒",
+  "group": "health",
+  "alt": "wajah sakit dengan termometer",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "她生病了。",
+    "id": "Dia jatuh sakit."
+   }
+  ]
+ },
+ {
+  "id": "hospital",
+  "emoji": "🏥",
+  "group": "health",
+  "alt": "gedung rumah sakit",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "妈妈去医院看病。",
+    "id": "Ibu pergi ke rumah sakit berobat."
+   }
+  ]
+ },
+ {
+  "id": "shop",
+  "emoji": "🛒",
+  "group": "shop",
+  "alt": "troli belanja",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "我们去超市买水果。",
+    "id": "Kita pergi ke supermarket membeli buah."
+   }
+  ]
+ },
+ {
+  "id": "sleep",
+  "emoji": "😴",
+  "group": "sleep",
+  "alt": "wajah tidur",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "我想睡一下。",
+    "id": "Aku ingin tidur sebentar."
+   }
+  ]
+ },
+ {
+  "id": "birthday",
+  "emoji": "🎂",
+  "group": "party",
+  "alt": "kue ulang tahun",
+  "sentences": [
+   {
+    "lvl": 2,
+    "zh": "今天是我的生日。",
+    "id": "Hari ini adalah ulang tahunku."
+   }
+  ]
+ },
+ {
+  "id": "camera",
+  "emoji": "📷",
+  "group": "photo",
+  "alt": "kamera",
+  "sentences": [
+   {
+    "lvl": 3,
+    "zh": "请帮我拍照。",
+    "id": "Tolong bantu aku memotret."
+   }
+  ]
+ },
+ {
+  "id": "travel",
+  "emoji": "🧳",
+  "group": "travel",
+  "alt": "koper",
+  "sentences": [
+   {
+    "lvl": 2,
+    "zh": "我想去中国旅游。",
+    "id": "Aku ingin berwisata ke Tiongkok."
+   }
+  ]
+ },
+ {
+  "id": "mountain",
+  "emoji": "⛰️",
+  "group": "travel",
+  "alt": "gunung",
+  "sentences": [
+   {
+    "lvl": 3,
+    "zh": "我们明天去爬山。",
+    "id": "Besok kita pergi mendaki gunung."
+   }
+  ]
+ },
+ {
+  "id": "cook",
+  "emoji": "🍳",
+  "group": "housework",
+  "alt": "wajan dengan telur goreng",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "妈妈在做饭。",
+    "id": "Ibu sedang memasak."
+   }
+  ]
+ },
+ {
+  "id": "laundry",
+  "emoji": "🧺",
+  "group": "housework",
+  "alt": "keranjang cucian",
+  "sentences": [
+   {
+    "lvl": 2,
+    "zh": "我在洗衣服。",
+    "id": "Aku sedang mencuci baju."
+   }
+  ]
+ },
+ {
+  "id": "clean",
+  "emoji": "🧹",
+  "group": "housework",
+  "alt": "sapu",
+  "sentences": [
+   {
+    "lvl": 3,
+    "zh": "我们一起打扫房间吧。",
+    "id": "Ayo kita bersihkan kamar bersama."
+   }
+  ]
+ },
+ {
+  "id": "bath",
+  "emoji": "🛁",
+  "group": "housework",
+  "alt": "bak mandi",
+  "sentences": [
+   {
+    "lvl": 3,
+    "zh": "我每天晚上洗澡。",
+    "id": "Setiap malam aku mandi."
+   }
+  ]
+ },
+ {
+  "id": "cat",
+  "emoji": "🐱",
+  "group": "animal",
+  "alt": "kucing",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "我有一只猫。",
+    "id": "Aku punya seekor kucing."
+   }
+  ]
+ },
+ {
+  "id": "dog",
+  "emoji": "🐶",
+  "group": "animal",
+  "alt": "anjing",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "我家有一只狗。",
+    "id": "Di rumahku ada seekor anjing."
+   }
+  ]
+ },
+ {
+  "id": "bird",
+  "emoji": "🐦",
+  "group": "animal",
+  "alt": "burung",
+  "sentences": [
+   {
+    "lvl": 2,
+    "zh": "天上有一只鸟。",
+    "id": "Di langit ada seekor burung."
+   }
+  ]
+ },
+ {
+  "id": "panda",
+  "emoji": "🐼",
+  "group": "animal",
+  "alt": "panda",
+  "sentences": [
+   {
+    "lvl": 3,
+    "zh": "大熊猫很可爱。",
+    "id": "Panda raksasa itu lucu."
+   }
+  ]
+ },
+ {
+  "id": "horse",
+  "emoji": "🐴",
+  "group": "animal",
+  "alt": "kuda",
+  "sentences": [
+   {
+    "lvl": 3,
+    "zh": "我想骑马。",
+    "id": "Aku ingin menunggang kuda."
+   }
+  ]
+ },
+ {
+  "id": "flower",
+  "emoji": "🌸",
+  "group": "nature",
+  "alt": "bunga",
+  "sentences": [
+   {
+    "lvl": 2,
+    "zh": "这个花很漂亮。",
+    "id": "Bunga ini cantik sekali."
+   }
+  ]
+ },
+ {
+  "id": "tree",
+  "emoji": "🌳",
+  "group": "nature",
+  "alt": "pohon",
+  "sentences": [
+   {
+    "lvl": 3,
+    "zh": "河边有很多树。",
+    "id": "Di tepi sungai ada banyak pohon."
+   }
+  ]
+ },
+ {
+  "id": "moon",
+  "emoji": "🌙",
+  "group": "nature",
+  "alt": "bulan sabit",
+  "sentences": [
+   {
+    "lvl": 3,
+    "zh": "今天的月亮很大。",
+    "id": "Bulan malam ini besar."
+   }
+  ]
+ },
+ {
+  "id": "clock7",
+  "emoji": "🕖",
+  "group": "time",
+  "alt": "jam menunjuk pukul tujuh",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "现在七点了。",
+    "id": "Sekarang pukul tujuh."
+   }
+  ]
+ },
+ {
+  "id": "clock9",
+  "emoji": "🕘",
+  "group": "time",
+  "alt": "jam menunjuk pukul sembilan",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "现在九点了。",
+    "id": "Sekarang pukul sembilan."
+   }
+  ]
+ },
+ {
+  "id": "clock330",
+  "emoji": "🕞",
+  "group": "time",
+  "alt": "jam menunjuk setengah empat",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "现在三点半。",
+    "id": "Sekarang pukul setengah empat."
+   }
+  ]
+ },
+ {
+  "id": "house",
+  "emoji": "🏠",
+  "group": "home",
+  "alt": "rumah",
+  "sentences": [
+   {
+    "lvl": 1,
+    "zh": "我在家。",
+    "id": "Aku ada di rumah."
+   }
+  ]
+ },
+ {
+  "id": "door",
+  "emoji": "🚪",
+  "group": "home",
+  "alt": "pintu",
+  "sentences": [
+   {
+    "lvl": 2,
+    "zh": "门开着。",
+    "id": "Pintunya terbuka."
+   }
+  ]
+ },
+ {
+  "id": "lamp",
+  "emoji": "💡",
+  "group": "home",
+  "alt": "lampu menyala",
+  "sentences": [
+   {
+    "lvl": 3,
+    "zh": "请开一下灯。",
+    "id": "Tolong nyalakan lampu."
+   }
+  ]
+ },
+ {
+  "id": "cry",
+  "emoji": "😭",
+  "group": "emotion",
+  "alt": "wajah menangis",
+  "sentences": [
+   {
+    "lvl": 3,
+    "zh": "孩子在哭。",
+    "id": "Anak itu menangis."
+   }
+  ]
+ },
+ {
+  "id": "laugh",
+  "emoji": "😄",
+  "group": "emotion",
+  "alt": "wajah tertawa",
+  "sentences": [
+   {
+    "lvl": 2,
+    "zh": "她笑得很高兴。",
+    "id": "Dia tertawa dengan gembira."
+   }
+  ]
+ }
+]

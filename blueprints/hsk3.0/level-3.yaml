@@ -1,0 +1,32 @@
+# Source: 新版HSK（1-6级）考试结构与样题示例, CTI (汉考国际), released 2025-12, in force 2026-07.
+# Section question counts, part counts and times are from the official "考试结构" tables.
+# Part "type" names are our own labels, derived from the official sample questions.
+# Scoring is NOT specified in that document -> omitted until the official scoring rules are obtained.
+exam: hsk
+syllabus: "3.0"
+level: 3
+verified: true
+vocab_cumulative: 1000
+total_questions: 70
+total_time_min: 83
+sections:
+  - id: listening
+    skill: listening
+    time_min: 23            # "约 23"
+    parts:
+      - {id: L1, type: audio_dialog_match_picture, count: 10}
+      - {id: L2, type: audio_dialog_question_mcq, count: 10}
+      - {id: L3, type: audio_passage_question_mcq, count: 10}
+  - id: reading
+    skill: reading
+    time_min: 30
+    parts:
+      - {id: R1, type: match_question_to_answer, count: 10}
+      - {id: R2, type: cloze_wordbank, count: 10}
+      - {id: R3, type: passage_mcq, count: 10}
+  - id: writing
+    skill: writing
+    time_min: 20
+    parts:
+      - {id: W1, type: write_hanzi_from_pinyin, count: 5}
+      - {id: W2, type: write_sentence_from_picture_and_word, count: 5}

@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HSK exam blueprint",
+  "type": "object",
+  "required": [
+    "exam",
+    "syllabus",
+    "level",
+    "verified",
+    "vocab_cumulative",
+    "total_questions",
+    "total_time_min",
+    "sections"
+  ],
+  "properties": {
+    "exam": {
+      "enum": [
+        "hsk",
+        "hskk"
+      ]
+    },
+    "syllabus": {
+      "type": "string"
+    },
+    "level": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9
+    },
+    "verified": {
+      "type": "boolean"
+    },
+    "vocab_cumulative": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "scoring": {
+      "type": "object",
+      "required": [
+        "total",
+        "pass"
+      ],
+      "properties": {
+        "total": {
+          "type": "integer"
+        },
+        "pass": {
+          "type": "integer"
+        }
+      }
+    },
+    "sections": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "skill",
+          "time_min",
+          "parts"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "skill": {
+            "enum": [
+              "listening",
+              "reading",
+              "writing",
+              "speaking"
+            ]
+          },
+          "time_min": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "points": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "audio_plays": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2
+          },
+          "parts": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "type",
+                "count"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "count": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "total_questions": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "total_time_min": {
+      "type": "integer",
+      "minimum": 1
+    }
+  }
+}
