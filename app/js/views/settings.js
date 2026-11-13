@@ -19,6 +19,7 @@ export function viewSettings(app) {
     store.setSettings({ newPerDay: v });
   } });
   const speakBox = h("input", { type: "checkbox", checked: s.speak, onchange: (e) => store.setSettings({ speak: e.target.checked }) });
+  const modeRadio = (val, label) => h("label", {}, h("input", { type: "radio", name: "writemode", value: val, checked: s.writeMode === val, onchange: () => store.setSettings({ writeMode: val }) }), " ", label);
   const fileIn = h("input", { type: "file", accept: "application/json", "aria-label": "Impor progres", onchange: async (e) => {
     try { store.import(await e.target.files[0].text()); alert("Progres berhasil diimpor."); viewSettings(app); } catch (err) { alert(err.message); }
   } });
@@ -32,6 +33,8 @@ export function viewSettings(app) {
     h("div", { class: "grid-2" },
       panel("Level yang dipelajari", h("div", {}, ...levelBoxes)),
       panel("Kata baru per hari", newPer),
+      panel("Soal menulis hanzi", h("div", {}, modeRadio("choice", "Pilihan ganda (4 hanzi, ketuk langsung)"), h("br"), modeRadio("tiles", "Bank hanzi (6 kepingan + kotak ketik, lalu Periksa)")),
+        h("p", { class: "hint" }, "Tidak perlu keyboard Mandarin. Mode bank hanzi tetap bisa diketik jika kamu punya keyboard Mandarin.")),
       panel("Suara", h("label", {}, speakBox, " Ucapkan kata saat jawaban ditampilkan"),
         h("p", { class: "hint" }, "Memakai suara bawaan perangkat (zh-CN). Jika tidak ada suara Mandarin terpasang, tombol suara tidak akan berbunyi.")),
       panel("Data", h("div", { class: "row", style: "justify-content:flex-start" },

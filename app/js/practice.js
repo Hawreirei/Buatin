@@ -4,7 +4,7 @@ import { shuffle } from "./deck.js";
 export const SKILLS = { reading: "Membaca", writing: "Menulis", listening: "Mendengar" };
 export const TYPE_HELP = {
   cloze_wordbank: "Pilih kata yang tepat untuk mengisi bagian kosong.",
-  write_hanzi_from_pinyin: "Tulis hanzi yang hilang (pinyin ditunjukkan di atas kotak).",
+  write_hanzi_from_pinyin: "Pilih hanzi yang hilang (pinyin ditunjukkan di atas kotak).",
   audio_question_pick_answer: "Dengarkan pertanyaan, lalu pilih jawaban yang tepat.",
   audio_dialog_question_mcq: "Dengarkan dialog dan pertanyaan, lalu pilih jawaban yang tepat.",
   audio_passage_question_mcq: "Dengarkan teks dan pertanyaan, lalu pilih jawaban yang tepat.",
@@ -48,7 +48,24 @@ export function buildSet(questions, { skills, levels, count }, rand = Math.rando
       if (out.length >= count) break;
     }
   }
-  return out.map((q) => (q.options ? { ...q, options: shuffle(q.options, rand) } : q));
+  return out.map((q) => withTiles(q.options ? { ...q, options: shuffle(q.options, rand) } : q, questions, rand));
+}
+
+let LOOKALIKES = {};
+/** char -> characters that look most like it (data/hsk3/lookalikes.json), nearest first. */
+export const setLookalikes = (map) => { LOOKALIKES = map || {}; };
+
+/** For write-hanzi items: `tiles` (6 hanzi, for the tile bank) and `choices` (4 of them, for multiple choice).
+ *  Distractors are look-alike characters first, then other write answers of the same level, so nobody needs
+ *  a Chinese keyboard. Other question types are returned unchanged. */
+export function withTiles(q, questions, rand = Math.random, size = 6) {
+  if (q.type !== "write_hanzi_from_pinyin") return q;
+  const similar = shuffle((LOOKALIKES[q.answer] || []).slice(0, 6), rand);
+  const writes = questions.filter((x) => x.type === q.type && x.answer !== q.answer);
+  const near = shuffle(writes.filter((x) => x.level === q.level), rand).map((x) => x.answer);
+  const rest = shuffle(writes.filter((x) => x.level !== q.level), rand).map((x) => x.answer);
+  const wrong = [...new Set([...similar, ...near, ...rest])].filter((c) => c !== q.answer);
+  return { ...q, tiles: shuffle([q.answer, ...wrong.slice(0, size - 1)], rand), choices: shuffle([q.answer, ...wrong.slice(0, 3)], rand) };
 }
 
 export function check(q, response) {

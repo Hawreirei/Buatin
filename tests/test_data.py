@@ -62,7 +62,7 @@ class SyllabusTests(unittest.TestCase):
 
     def test_only_needed_syllabus_files_are_shipped(self):
         names = {p.name for p in D.glob("*.json")}
-        self.assertEqual(names, {"vocab.json", "handwriting.json", "vocab_id.json", "questions.json", "blueprints.json", "SOURCE.json"})
+        self.assertEqual(names, {"vocab.json", "handwriting.json", "vocab_id.json", "questions.json", "blueprints.json", "lookalikes.json", "SOURCE.json"})
 
 
 class BlueprintTests(unittest.TestCase):

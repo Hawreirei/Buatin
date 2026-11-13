@@ -30,7 +30,7 @@ function choiceState(q, m) {
   return { picked: optionKey(m.response), answer: m.reveal ? q.answer : null, disabled: !!m.reveal };
 }
 function choiceClass(o, st, base = "btn") {
-  const key = optionKey(o);
+  const key = typeof o === "string" ? o : optionKey(o);
   if (st.answer != null) return key === st.answer ? `${base} right` : key === st.picked ? `${base} wrong` : base;
   return st.picked === key ? `${base} picked` : base;
 }
@@ -88,6 +88,15 @@ function textCard(q, showPinyin) {
 
 function writeBlock(q, m) {
   const [before, after] = q.stem.split(BLANK);
+  const choice = m.writeMode !== "tiles" && q.choices?.length;
+  if (choice) {   // multiple choice: 4 hanzi, tap one (practice answers at once; exam saves the pick)
+    const shown = q.choices;
+    const st = { picked: m.response ?? null, answer: m.reveal ? q.answer : null, disabled: !!m.reveal };
+    const blank = h("span", { class: "blankbox" }, h("span", { class: "hint-py" }, q.hint_pinyin), h("span", { class: "blankfill", lang: "zh-Hans" }, m.response || "＿"));
+    return [h("div", { class: "card" }, h("div", { class: "stem", lang: "zh-Hans" }, before, blank, after)),
+      h("div", { class: "opts tiles", role: "group", "aria-label": "Pilihan hanzi" },
+        ...shown.map((t, k) => btn([h("span", { class: "zh", lang: "zh-Hans" }, t)], () => m.onAnswer(t), choiceClass(t, st, "btn tile"), { disabled: st.disabled, "aria-label": `${LETTERS[k]}. ${t}` }))), null];
+  }
   const input = h("input", { type: "text", lang: "zh-Hans", id: "hanzi", autocomplete: "off", "aria-label": "Hanzi yang hilang", style: "width:3.2em;font-size:28px;text-align:center", disabled: !!m.reveal, value: m.response ?? "" });
   const card = h("div", { class: "card" }, h("div", { class: "stem", lang: "zh-Hans" }, before, h("span", { class: "blankbox" }, h("span", { class: "hint-py" }, q.hint_pinyin), input), after));
   if (m.kind === "exam") {
@@ -95,11 +104,23 @@ function writeBlock(q, m) {
   } else {
     input.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.isComposing) { e.preventDefault(); m.onAnswer(input.value); } });
   }
-  if (!m.reveal) setTimeout(() => input.focus(), 0);
+  // Tile bank: tap a hanzi to fill the blank (no Chinese keyboard needed); typing still works.
+  const tileBtns = [];
+  const tiles = q.tiles?.length ? h("div", { class: "opts tiles", role: "group", "aria-label": "Pilihan hanzi" },
+    ...q.tiles.map((t) => {
+      const b = btn(h("span", { class: "zh", lang: "zh-Hans" }, t), () => {
+        input.value = t;
+        tileBtns.forEach((x) => x.classList.toggle("picked", x === b));
+        if (m.kind === "exam") m.onWrite(t);
+      }, `btn tile${(m.response ?? "").trim() === t ? " picked" : ""}`, { disabled: !!m.reveal });
+      tileBtns.push(b);
+      return b;
+    })) : null;
+  if (!m.reveal && !tiles) setTimeout(() => input.focus(), 0);
   const buttons = m.kind === "practice" && !m.reveal
     ? h("div", { class: "row" }, btn("Periksa", () => m.onAnswer(input.value), "btn primary", { id: "check" }), btn("Tidak tahu", () => m.onAnswer(""), "btn", { id: "skip" }))
     : null;
-  return [card, buttons];
+  return [card, tiles, buttons];
 }
 
 /* ---------- the question body ---------- */
