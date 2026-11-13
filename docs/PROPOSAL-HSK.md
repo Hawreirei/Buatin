@@ -1,4 +1,4 @@
-# Proposal Pengembangan: Buatin — Aplikasi Latihan HSK 1–6
+# Proposal Pengembangan: Learning Chinese — Aplikasi Latihan HSK 1–6
 
 > **Dokumen riset awal (historis).** Isi di bawah adalah proposal yang ditulis sebelum pengembangan dan sebagian sudah tidak berlaku (angka HSK 2.0, rencana Next.js/Supabase, fase). Yang berlaku sekarang: [ARSITEKTUR](ARCHITECTURE.md) untuk sistem, [sources.md](sources.md) untuk sumber dan angka resmi, dan `blueprints/hsk3.0/` untuk struktur ujian. Status pengerjaan dan sisa pekerjaan ada di README.
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Assemble the static site for GitHub Pages (or any static host).
 
-Layout (relative paths keep working under a sub-path such as /Buatin/):
+Layout (relative paths keep working under a sub-path such as /LearnChinese/):
   _site/index.html            redirect to app/
   _site/app/...               the web app
   _site/data/hsk3/*.json      only the data files the app fetches

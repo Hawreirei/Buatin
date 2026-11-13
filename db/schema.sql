@@ -1,4 +1,4 @@
--- Buatin core schema (PostgreSQL / Supabase). Target: HSK 3.0 (2025 syllabus).
+-- Learning Chinese core schema (PostgreSQL / Supabase). Target: HSK 3.0 (2025 syllabus).
 
 -- Level 7 stands for the combined advanced band 7-9.
 create table vocab (
