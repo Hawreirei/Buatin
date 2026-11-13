@@ -30,7 +30,7 @@ function setup(app) {
   const { render, store, questions } = app;
   const have = availableLevels(questions);
   const levels = store.settings.levels.filter((l) => have.includes(l));
-  const skillOpt = (v, label) => h("label", {}, h("input", { type: "radio", name: "skill", value: v, checked: state.cfg.skill === v, onchange: () => (state.cfg.skill = v) }), " ", label);
+  const skillOpt = (v, label) => h("label", {}, h("input", { type: "radio", name: "skill", value: v, checked: state.cfg.skill === v, onchange: () => (state.cfg.skill = v) }), h("span", {}, label));
   const count = h("select", { "aria-label": "Jumlah soal", onchange: (e) => (state.cfg.count = Number(e.target.value)) },
     ...[5, 10, 20].map((n) => h("option", { value: n, selected: state.cfg.count === n }, `${n} soal`)));
   const msg = levels.length
@@ -42,12 +42,18 @@ function setup(app) {
     if (set.length) begin(app, set);
   }, "btn primary", { disabled: !levels.length, id: "start" });
   render(
-    h("h2", {}, "Latihan Soal"),
-    h("p", { class: "hint" }, "Format soal mengikuti struktur ujian HSK 3.0 resmi (dokumen CTI). Soal dibuat dari kalimat contoh dan bank soal buatan sendiri."),
-    h("p", { class: "notice" }, "Belum direview guru. Jika menemukan soal yang janggal atau jawaban yang ambigu, catat nomornya (mis. c12) untuk dikoreksi."),
-    h("div", { class: "row", style: "justify-content:flex-start" }, skillOpt("mixed", "Campuran"), skillOpt("reading", "Membaca"), skillOpt("writing", "Menulis"), skillOpt("listening", "Mendengar")),
-    h("div", { class: "row", style: "justify-content:flex-start" }, count),
-    msg, h("div", { class: "row", style: "justify-content:flex-start" }, start));
+    h("div", { class: "pagehead" }, h("div", {}, h("h2", {}, "Latihan Soal"), h("p", { class: "hint" }, "Format soal mengikuti struktur ujian HSK 3.0 resmi (dokumen CTI). Soal dibuat dari kalimat contoh dan bank soal buatan sendiri."))),
+    h("div", { class: "split even" },
+      h("div", { class: "panel" }, h("h2", {}, "Atur sesi"),
+        h("p", { class: "hint" }, "Keterampilan"),
+        h("div", { class: "seg", role: "radiogroup" }, skillOpt("mixed", "Campuran"), skillOpt("reading", "Membaca"), skillOpt("writing", "Menulis"), skillOpt("listening", "Mendengar")),
+        h("p", { class: "hint", style: "margin-top:18px" }, "Jumlah soal"), count,
+        h("div", { style: "margin-top:18px" }, msg),
+        h("div", { class: "row", style: "justify-content:flex-start" }, start)),
+      h("div", { style: "display:grid;gap:18px" },
+        h("p", { class: "notice" }, "Belum direview guru. Jika menemukan soal yang janggal atau jawaban yang ambigu, catat nomornya (mis. c12) untuk dikoreksi."),
+        h("div", { class: "panel" }, h("h2", {}, "Yang tersedia"),
+          h("ul", { class: "kv" }, ...Object.entries(SKILLS).map(([k, label]) => h("li", {}, h("span", {}, label), h("span", { class: "muted" }, `${questions.filter((q) => q.skill === k).length} soal`))))))));
 }
 
 function finish(app, q, response) {

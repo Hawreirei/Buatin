@@ -1,6 +1,7 @@
 import { previewIntervals } from "../srs.js";
 import { LEVEL_LABEL, glossText, posLabel } from "../deck.js";
-import { buildQueue, nextItem, answer } from "../session.js";
+import { buildQueue, nextItem, answer, stats } from "../session.js";
+import { todayKey } from "../store.js";
 import { h, btn, speak } from "../ui.js";
 
 const state = { revealed: false };
@@ -28,15 +29,36 @@ function answerBlock(app, w) {
       h("div", { class: "tr" }, d.contoh.id)) : null);
 }
 
+function aside(app, queue, c) {
+  const { store, vocab } = app;
+  const st = stats(vocab, store);
+  const levels = store.settings.levels;
+  const seen = levels.reduce((n, l) => n + (st[l]?.seen || 0), 0), total = levels.reduce((n, l) => n + (st[l]?.total || 0), 0);
+  const pct = total ? Math.round((100 * seen) / total) : 0;
+  return h("aside", { class: "sticky-aside", style: "display:grid;gap:18px" },
+    h("div", { class: "panel" }, h("h2", {}, "Sesi hari ini"),
+      h("div", { class: "mini" }, h("div", {}, h("b", {}, queue.due.length), "Jatuh tempo"), h("div", {}, h("b", {}, queue.fresh.length), "Kata baru"),
+        h("div", {}, h("b", {}, store.data.log[todayKey()] || 0), "Sudah diulas")),
+      h("ul", { class: "kv" }, h("li", {}, h("span", { class: "muted" }, "Level"), h("span", {}, levels.map((l) => LEVEL_LABEL[l]).join(", "))),
+        h("li", {}, h("span", { class: "muted" }, "Kartu ini"), h("span", {}, c ? (c.state === "new" ? "Baru" : c.state === "learning" ? "Belajar" : "Ulasan") : "—")))),
+    h("div", { class: "panel" }, h("h2", {}, "Hafalan level terpilih"),
+      h("div", { class: "barrow", style: "grid-template-columns:1fr auto" }, h("div", { class: "bar", role: "progressbar", "aria-valuenow": pct, "aria-valuemin": 0, "aria-valuemax": 100 }, h("i", { style: `width:${pct}%` })), h("span", { class: "val" }, `${seen}/${total}`)),
+      h("p", { class: "hint" }, "Persentase kata yang sudah pernah dilihat.")),
+    h("div", { class: "panel" }, h("h2", {}, "Pintasan keyboard"),
+      h("ul", { class: "kv" }, h("li", {}, h("span", {}, "Tampilkan jawaban"), h("kbd", {}, "Spasi")), h("li", {}, h("span", {}, "Lagi · Sulit · Bagus · Mudah"), h("span", {}, h("kbd", {}, "1"), " ", h("kbd", {}, "2"), " ", h("kbd", {}, "3"), " ", h("kbd", {}, "4"))))));
+}
+
 export function viewStudy(app) {
   const { store, vocab, render } = app;
   const queue = buildQueue(vocab, store);
   const item = nextItem(queue);
-  const head = h("p", { class: "hint" }, `Level: ${store.settings.levels.map((l) => LEVEL_LABEL[l]).join(", ")} · Jatuh tempo: ${queue.due.length} · Kata baru hari ini: ${queue.fresh.length}`);
   if (!item) {
-    return render(head, h("div", { class: "card" }, h("p", { class: "hanzi" }, "完"),
-      h("p", {}, "Tidak ada kartu yang perlu dipelajari sekarang."),
-      h("p", { class: "hint" }, "Naikkan batas kata baru per hari atau tambah level di Pengaturan.")));
+    return render(h("div", { class: "split" },
+      h("div", { class: "card" }, h("p", { class: "hanzi" }, "完"),
+        h("p", {}, "Tidak ada kartu yang perlu dipelajari sekarang."),
+        h("p", { class: "hint" }, "Naikkan batas kata baru per hari atau tambah level di Pengaturan."),
+        h("div", { class: "row" }, btn("Buka Pengaturan", () => app.go("settings"), "btn primary"))),
+      aside(app, queue, null)));
   }
   const { w, c } = item;
   const card = h("div", { class: "card", "data-testid": "card" },
@@ -47,8 +69,7 @@ export function viewStudy(app) {
     ? h("div", { class: "row rate" }, ...["Lagi", "Sulit", "Bagus", "Mudah"].map((label, r) =>
         btn([label, h("small", {}, previewIntervals(c)[r])], () => rate(app, item, r), "btn", { "data-rating": r })))
     : h("div", { class: "row" }, btn("Tampilkan jawaban (Spasi)", () => reveal(app), "btn primary", { id: "reveal" }));
-  const kind = c.state === "new" ? "Baru" : c.state === "learning" ? "Belajar" : "Ulasan";
-  render(head, h("p", { class: "hint" }, `Kartu: ${kind}`), card, controls);
+  render(h("div", { class: "split" }, h("div", {}, card, controls), aside(app, queue, c)));
 }
 
 function reveal(app) {

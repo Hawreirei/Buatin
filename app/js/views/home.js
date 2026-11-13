@@ -1,6 +1,7 @@
 // Beranda: landing view. Only describes features that exist; numbers come from the loaded data.
 import { LEVEL_LABEL, meaning, posLabel } from "../deck.js";
 import { buildQueue } from "../session.js";
+import { accuracy, streak, activeDayKeys } from "../analytics.js";
 import { examAvailable } from "../exam.js";
 import { h, btn, speak } from "../ui.js";
 
@@ -34,6 +35,19 @@ function hero(app) {
         btn("Coba kuis", () => app.go("quiz"))),
       h("p", { class: "hint" }, todo ? `Hari ini ada ${todo} kartu menunggu (jatuh tempo ${due.due.length}, baru ${due.fresh.length}).` : "Tidak ada kartu yang perlu dipelajari sekarang.")),
     card);
+}
+
+/** Numbers from the loaded data and the learner's own history. */
+function strip(app) {
+  const q = buildQueue(app.vocab, app.store);
+  const ev = app.store.events;
+  const acc = accuracy(ev);
+  const exams = Object.keys(app.blueprints).filter((l) => examAvailable(app.questions, app.blueprints[l])).length;
+  const tiles = [
+    ["Kosakata", nf.format(app.vocab.length)], ["Soal latihan", nf.format(app.questions.length)], ["Level simulasi ujian", exams],
+    ["Kartu hari ini", q.due.length + q.fresh.length], ["Hari beruntun", streak(activeDayKeys(ev, app.store.data.log), Date.now())], ["Akurasi latihan", acc.pct == null ? "—" : `${acc.pct}%`],
+  ];
+  return h("section", { class: "stats-strip", "aria-label": "Ringkasan" }, ...tiles.map(([k, v]) => h("div", { class: "stat" }, h("div", { class: "num" }, String(v)), h("div", {}, k))));
 }
 
 const FEATURES = [
@@ -96,5 +110,5 @@ function cta(app) {
 }
 
 export function viewHome(app) {
-  app.render(h("div", { class: "home" }, hero(app), how(app), path(app), sample(app), cta(app)));
+  app.render(h("div", { class: "home" }, hero(app), strip(app), how(app), path(app), sample(app), cta(app)));
 }

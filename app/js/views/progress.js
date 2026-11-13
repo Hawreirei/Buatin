@@ -23,7 +23,7 @@ function svg(tag, attrs = {}, ...kids) {
 
 /** Bars = answers per day, line = accuracy %. */
 export function trendChart(series) {
-  const W = 320, H = 130, padL = 26, padB = 20, padT = 8, plotW = W - padL - 6, plotH = H - padB - padT;
+  const W = 560, H = 190, padL = 28, padB = 20, padT = 8, plotW = W - padL - 6, plotH = H - padB - padT;
   const maxN = Math.max(1, ...series.map((d) => d.n));
   const bw = plotW / series.length;
   const x = (i) => padL + i * bw + bw / 2;
@@ -53,14 +53,23 @@ export function sparkline(values) {
     svg("polyline", { points: pts.map((p) => p.join(",")).join(" "), class: "line" }), ...pts.map(([cx, cy]) => svg("circle", { cx, cy, r: 2.5, class: "dot" })));
 }
 
+const panel = (title, ...kids) => h("div", { class: "panel" }, title ? h("h2", {}, title) : null, ...kids);
+const tone = (pct) => (pct == null ? "" : pct < 50 ? "low" : pct < 75 ? "mid" : "");
+/** Label + bar + value rows; weakest first. */
+const bars = (g, labels = {}) => {
+  const rows = Object.entries(g).sort((a, b) => (a[1].pct ?? 101) - (b[1].pct ?? 101));
+  return rows.length ? h("div", { class: "bargroup" }, ...rows.map(([k, a]) => h("div", { class: "barrow" },
+    h("span", {}, labels[k] ?? k),
+    h("div", { class: "bar", role: "progressbar", "aria-valuenow": a.pct ?? 0, "aria-valuemin": 0, "aria-valuemax": 100 }, h("i", { class: tone(a.pct), style: `width:${a.pct ?? 0}%` })),
+    h("span", { class: "val" }, a.pct == null ? "—" : `${a.pct}% · ${a.ok}/${a.n}`)))) : h("p", { class: "empty" }, "Belum ada data.");
+};
 const bar = (pct) => h("div", { class: "bar", role: "progressbar", "aria-valuenow": pct ?? 0, "aria-valuemin": 0, "aria-valuemax": 100, style: "min-width:80px" }, h("i", { style: `width:${pct ?? 0}%` }));
-const pctCell = (a) => (a && a.pct != null ? `${a.pct}% (${a.ok}/${a.n})` : "—");
 
 function table(head, rows) {
-  return h("table", {}, h("thead", {}, h("tr", {}, ...head.map((t) => h("th", {}, t)))), h("tbody", {}, ...rows));
+  return h("div", { class: "tablewrap" }, h("table", {}, h("thead", {}, h("tr", {}, ...head.map((t) => h("th", {}, t)))), h("tbody", {}, ...rows)));
 }
 
-function progressNodes(app) {
+function progressNodes(app, latihan) {
   const { store, vocab, idData, questions } = app;
   const startWeak = (set) => { if (set.length) { app.go("practice"); startPracticeWith(app, set); } };
   const startSkill = (skill) => { app.go("practice"); presetPractice(app, skill); };
@@ -73,8 +82,8 @@ function progressNodes(app) {
   const active = activeDayKeys(all, store.data.log);
   const exams = store.exams;
 
-  const rangeBar = h("div", { class: "row", style: "justify-content:flex-start" }, h("span", { class: "hint" }, "Rentang analisis:"), ...RANGES.map(([v, label]) =>
-    h("label", {}, h("input", { type: "radio", name: "range", value: v, checked: range === v, onchange: () => { range = v; viewProgress(app); } }), ` ${label}`)));
+  const rangeBar = h("div", { class: "seg", role: "radiogroup", "aria-label": "Rentang analisis" }, ...RANGES.map(([v, label]) =>
+    h("label", {}, h("input", { type: "radio", name: "range", value: v, checked: range === v, onchange: () => { range = v; viewProgress(app); } }), h("span", {}, label))));
 
   const cards = h("div", { class: "cards" },
     ...[["Soal dijawab", total.n], ["Akurasi", total.pct == null ? "—" : `${total.pct}%`], ["Hari beruntun", streak(active, now)], ["Simulasi ujian", exams.length]].map(([k, v]) =>
@@ -82,11 +91,13 @@ function progressNodes(app) {
 
   const days = range === "14" ? 14 : 30;
   const series = dailySeries(all, days, now);
-  const trend = h("div", {}, h("h2", {}, `Tren akurasi ${days} hari`), series.some((d) => d.n) ? trendChart(series) : h("p", { class: "hint" }, "Belum ada data. Kerjakan latihan soal untuk mulai melihat tren."), h("p", { class: "hint" }, "Garis = akurasi harian; batang = jumlah soal."));
+  const trend = panel(`Tren akurasi ${days} hari`,
+    series.some((d) => d.n) ? trendChart(series) : h("p", { class: "empty" }, "Belum ada data. Kerjakan latihan soal untuk mulai melihat tren."),
+    h("p", { class: "hint" }, "Garis = akurasi harian; batang = jumlah soal."));
 
   const trendExam = examTrend(exams);
-  const examBlock = Object.keys(trendExam).length
-    ? h("div", {}, h("h2", {}, "Riwayat simulasi ujian"), ...Object.entries(trendExam).map(([lvl, list]) => {
+  const examBlock = panel("Riwayat simulasi ujian", Object.keys(trendExam).length
+    ? h("div", {}, ...Object.entries(trendExam).map(([lvl, list]) => {
         const last = list[list.length - 1];
         return h("div", { class: "examhist" }, h("strong", {}, LEVEL_LABEL[lvl]), " ", sparkline(list.map((x) => x.pct)),
           h("span", { class: "hint" }, ` ${list.length}× · terakhir ${last.pct}%${last.delta == null ? "" : ` (${last.delta >= 0 ? "+" : ""}${last.delta})`}`),
@@ -94,7 +105,7 @@ function progressNodes(app) {
             h("td", {}, new Date(x.t).toLocaleDateString("id-ID")), h("td", {}, `${x.pct}%${x.assisted ? " *" : ""}`), h("td", {}, x.delta == null ? "—" : `${x.delta >= 0 ? "+" : ""}${x.delta}`),
             ...["listening", "reading", "writing"].map((k) => h("td", {}, x.sections.find((s) => s.skill === k) ? `${x.sections.find((s) => s.skill === k).pct}%` : "—"))))));
       }), h("p", { class: "hint" }, "* dibantu teks audio. Skor perkiraan latihan, bukan skor resmi."))
-    : h("div", {}, h("h2", {}, "Riwayat simulasi ujian"), h("p", { class: "hint" }, "Belum ada. Coba tab Ujian untuk simulasi bertimer."));
+    : h("p", { class: "empty" }, "Belum ada. Coba tab Ujian untuk simulasi bertimer."));
 
   // weaknesses
   const recs = recommendations({ events: ev, exams, cards: store.data.cards, vocabById });
@@ -106,45 +117,55 @@ function progressNodes(app) {
   const byType = groupAccuracy(ev, (e) => e.ty);
   const byLevel = groupAccuracy(ev, (e) => e.l);
   const byPos = posAccuracy(ev, vocabById);
-  const ranked = (g) => Object.entries(g).sort((a, b) => (a[1].pct ?? 101) - (b[1].pct ?? 101));
   const weakW = weakWords(ev).slice(0, 15);
   const leech = leeches(store.data.cards, vocabById);
 
-  const weak = h("div", {}, h("h2", {}, "Kelemahan"), recList,
-    ev.length ? h("div", {},
-      h("h2", {}, "Per keterampilan"), table(["Keterampilan", "Akurasi", ""], ranked(bySkill).map(([k, a]) => h("tr", {}, h("td", {}, SKILL_LABEL[k] ?? k), h("td", {}, pctCell(a)), h("td", {}, bar(a.pct))))),
-      h("h2", {}, "Per jenis soal"), table(["Jenis", "Akurasi", ""], ranked(byType).map(([k, a]) => h("tr", {}, h("td", {}, TYPE_LABEL[k] ?? k), h("td", {}, pctCell(a)), h("td", {}, bar(a.pct))))),
-      h("h2", {}, "Per level"), table(["Level", "Akurasi", ""], ranked(byLevel).map(([k, a]) => h("tr", {}, h("td", {}, LEVEL_LABEL[k] ?? k), h("td", {}, pctCell(a)), h("td", {}, bar(a.pct))))),
-      Object.keys(byPos).length ? h("div", {}, h("h2", {}, "Per jenis kata"), table(["Jenis kata", "Akurasi", ""], ranked(byPos).map(([k, a]) => h("tr", {}, h("td", {}, k), h("td", {}, pctCell(a)), h("td", {}, bar(a.pct)))))) : null,
-      weakW.length ? h("div", {}, h("h2", {}, "Kata yang sering salah"), table(["Kata", "Pinyin", "Arti", "Salah", "Status"], weakW.filter((w) => vocabById[w.id]).map((w) => {
-        const v = vocabById[w.id];
-        return h("tr", {}, h("td", { class: "zh" }, v.word), h("td", {}, v.pinyin), h("td", {}, meaning(v, idData, 2) ?? "—"), h("td", {}, `${w.wrong}/${w.n}`), h("td", { class: w.recovered ? "ok" : "bad" }, w.recovered ? "sudah pulih" : "belum"));
-      }))) : null) : null,
-    leech.length ? h("div", {}, h("h2", {}, "Kata sulit di hafalan"), table(["Kata", "Pinyin", "Arti", "Lupa", "Ease"], leech.map((c) => h("tr", {}, h("td", { class: "zh" }, c.word.word), h("td", {}, c.word.pinyin), h("td", {}, meaning(c.word, idData, 2) ?? "—"), h("td", {}, c.lapses), h("td", {}, c.ease))))) : null);
+  const weakTables = ev.length ? [
+    panel("Per keterampilan", bars(bySkill, SKILL_LABEL)),
+    panel("Per jenis soal", bars(byType, TYPE_LABEL)),
+    panel("Per level", bars(byLevel, LEVEL_LABEL)),
+    panel("Per jenis kata", bars(byPos)),
+  ] : [];
+  const wordPanels = [
+    weakW.length ? panel("Kata yang sering salah", table(["Kata", "Pinyin", "Arti", "Salah", "Status"], weakW.filter((w) => vocabById[w.id]).map((w) => {
+      const v = vocabById[w.id];
+      return h("tr", {}, h("td", { class: "zh" }, v.word), h("td", {}, v.pinyin), h("td", {}, meaning(v, idData, 2) ?? "—"), h("td", {}, `${w.wrong}/${w.n}`), h("td", { class: w.recovered ? "ok" : "bad" }, w.recovered ? "sudah pulih" : "belum"));
+    }))) : null,
+    leech.length ? panel("Kata sulit di hafalan", table(["Kata", "Pinyin", "Arti", "Lupa", "Ease"], leech.map((c) => h("tr", {}, h("td", { class: "zh" }, c.word.word), h("td", {}, c.word.pinyin), h("td", {}, meaning(c.word, idData, 2) ?? "—"), h("td", {}, c.lapses), h("td", {}, c.ease))))) : null,
+  ].filter(Boolean);
 
-  return [h("h2", {}, "Kemajuan"), rangeBar, cards, trend, examBlock, weak];
+  return [
+    h("div", { class: "pagehead" }, h("div", {}, h("h2", {}, "Kemajuan"), h("p", { class: "hint" }, "Ringkasan belajar dan kelemahan Anda.")), rangeBar),
+    cards,
+    h("div", { class: "split even" }, trend, examBlock),
+    h("div", { class: "grid-2" }, panel("Kelemahan & saran", recList), latihan),
+    weakTables.length ? h("div", { class: "grid-2" }, ...weakTables) : null,
+    wordPanels.length ? h("div", { class: "grid-2" }, ...wordPanels) : null,
+  ];
 }
 
 /** Vocabulary progress per level and the answer counters of the practice questions. */
-function statsNodes(app) {
+function statsPanels(app) {
   const { store, vocab } = app;
   const st = stats(vocab, store);
   const rows = Object.keys(LEVEL_LABEL).map(Number).map((l) => {
     const s = st[l] || { total: 0, seen: 0, learning: 0, review: 0, mature: 0, due: 0 };
     const pct = s.total ? Math.round((s.review / s.total) * 100) : 0;
-    return h("tr", {}, h("td", {}, LEVEL_LABEL[l]), h("td", {}, `${s.seen}/${s.total}`), h("td", {}, s.learning), h("td", {}, s.review), h("td", {}, s.mature), h("td", {}, s.due), h("td", { style: "min-width:90px" }, bar(pct)));
+    return h("tr", {}, h("td", {}, LEVEL_LABEL[l]), h("td", {}, `${s.seen}/${s.total}`), h("td", {}, s.learning), h("td", {}, s.review), h("td", {}, s.mature), h("td", {}, s.due), h("td", { style: "min-width:120px" }, bar(pct)));
   });
   const today = store.data.log[todayKey()] || 0;
-  return [h("h2", {}, "Hafalan per level"),
-    table(["Level", "Dilihat", "Belajar", "Ulasan", "Matang (≥21 hr)", "Jatuh tempo", ""], rows),
-    h("p", { class: "hint" }, `Ulasan hari ini: ${today}. Kolom bar = persentase kata yang sudah lulus tahap belajar.`),
-    h("h2", {}, "Latihan soal"),
-    table(["Keterampilan", "Dijawab", "Benar", "%"], Object.entries(SKILL_LABEL).map(([k, label]) => {
+  return {
+    hafalan: panel("Hafalan per level", table(["Level", "Dilihat", "Belajar", "Ulasan", "Matang (≥21 hr)", "Jatuh tempo", "Kemajuan"], rows),
+      h("p", { class: "hint" }, `Ulasan hari ini: ${today}. Bar = persentase kata yang sudah lulus tahap belajar.`)),
+    latihan: panel("Latihan soal per keterampilan", table(["Keterampilan", "Dijawab", "Benar", "%"], Object.entries(SKILL_LABEL).map(([k, label]) => {
       const p = store.data.practice?.[k] || { n: 0, ok: 0 };
       return h("tr", {}, h("td", {}, label), h("td", {}, p.n), h("td", {}, p.ok), h("td", {}, p.n ? Math.round((100 * p.ok) / p.n) : "—"));
-    }))];
+    }))),
+  };
 }
 
 export function viewProgress(app) {
-  app.render(...progressNodes(app), ...statsNodes(app));
+  const { hafalan, latihan } = statsPanels(app);
+  const nodes = progressNodes(app, latihan);
+  app.render(...nodes, hafalan);
 }
