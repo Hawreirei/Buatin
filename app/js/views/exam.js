@@ -101,7 +101,7 @@ function running(app) {
 
   const used = S.plays[q.id] || 0;
   const m = {
-    kind: "exam", response: resp[S.q], reveal: false,
+    kind: "exam", response: resp[S.q], reveal: false, writeMode: app.store.settings.writeMode,
     onAnswer: (r) => { resp[S.q] = r; viewExam(app); },
     onWrite: (v) => {                                           // typing must not re-render (it would drop focus)
       resp[S.q] = v;

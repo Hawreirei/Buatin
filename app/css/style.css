@@ -257,3 +257,4 @@ kbd { font: 600 12px var(--font-ui); background: var(--surface-2); border: 1px s
 
 .opts.tiles { grid-template-columns: repeat(auto-fit, minmax(64px, 1fr)); max-width: 460px; margin: 14px auto; }
 .opts.tiles .tile { text-align: center; padding: 10px 0; font-size: 30px; }
+.blankbox .blankfill { min-width: 1.4em; text-align: center; border-bottom: 2px solid var(--text); font-size: 28px; }

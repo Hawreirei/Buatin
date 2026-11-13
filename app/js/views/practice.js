@@ -77,7 +77,7 @@ function question(app) {
   const a = state.answered;
   const play = (rate) => speakSequence(listeningParts(q), rate);
   const m = {
-    kind: "practice", response: a?.response, reveal: !!a,
+    kind: "practice", response: a?.response, reveal: !!a, writeMode: app.store.settings.writeMode,
     onAnswer: (r) => finish(app, q, r),
     listening: { play, playsLeft: null, textShown: state.textShown || !!a, toggleText: () => { state.textShown = !state.textShown; viewPractice(app); } },
     pinyin: { shown: state.pinyinShown, toggle: () => { state.pinyinShown = !state.pinyinShown; viewPractice(app); } },

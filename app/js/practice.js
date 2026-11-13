@@ -4,7 +4,7 @@ import { shuffle } from "./deck.js";
 export const SKILLS = { reading: "Membaca", writing: "Menulis", listening: "Mendengar" };
 export const TYPE_HELP = {
   cloze_wordbank: "Pilih kata yang tepat untuk mengisi bagian kosong.",
-  write_hanzi_from_pinyin: "Pilih hanzi yang hilang (pinyin di atas kotak), lalu tekan Periksa. Bisa juga diketik.",
+  write_hanzi_from_pinyin: "Pilih hanzi yang hilang (pinyin ditunjukkan di atas kotak).",
   audio_question_pick_answer: "Dengarkan pertanyaan, lalu pilih jawaban yang tepat.",
   audio_dialog_question_mcq: "Dengarkan dialog dan pertanyaan, lalu pilih jawaban yang tepat.",
   audio_passage_question_mcq: "Dengarkan teks dan pertanyaan, lalu pilih jawaban yang tepat.",
