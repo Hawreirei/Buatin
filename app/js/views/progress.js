@@ -1,5 +1,5 @@
 import { h, btn } from "../ui.js";
-import { LEVEL_LABEL, meaning } from "../deck.js";
+import { LEVEL_LABEL, meaning, posLabel } from "../deck.js";
 import { todayKey } from "../store.js";
 import { stats } from "../session.js";
 import { accuracy, groupAccuracy, dailySeries, streak, activeDayKeys, weakWords, posAccuracy, examTrend, leeches, buildWeakSet, recommendations } from "../analytics.js";
@@ -8,9 +8,13 @@ import { startPracticeWith, presetPractice } from "./practice.js";
 
 const NS = "http://www.w3.org/2000/svg";
 const TYPE_LABEL = {
-  cloze_wordbank: "Isi kata (membaca)", write_hanzi_from_pinyin: "Tulis hanzi (menulis)", audio_question_pick_answer: "Dengar tanya-jawab",
-  audio_dialog_question_mcq: "Dengar dialog", audio_passage_question_mcq: "Dengar teks",
+  cloze_wordbank: "Isi kata", write_hanzi_from_pinyin: "Tulis hanzi dari pinyin", sentence_match_picture: "Cocokkan kalimat dan gambar",
+  short_text_mcq: "Teks pendek", passage_mcq: "Paragraf bacaan", audio_question_pick_answer: "Dengar tanya-jawab",
+  audio_dialog_question_mcq: "Dengar dialog", audio_passage_question_mcq: "Dengar teks", audio_dialog_match_picture: "Dengar dialog, pilih gambar",
+  audio_phrase_pick_picture: "Dengar frasa, pilih gambar", audio_sentence_pick_picture: "Dengar kalimat, pilih gambar",
 };
+const CATS = [["skill", "Keterampilan"], ["type", "Jenis soal"], ["level", "Level"], ["pos", "Jenis kata"]];
+let cat = "skill";
 const RANGES = [["14", "14 hari"], ["30", "30 hari"], ["all", "Semua"]];
 let range = "all";
 
@@ -55,13 +59,13 @@ export function sparkline(values) {
 
 const panel = (title, ...kids) => h("div", { class: "panel" }, title ? h("h2", {}, title) : null, ...kids);
 const tone = (pct) => (pct == null ? "" : pct < 50 ? "low" : pct < 75 ? "mid" : "");
-/** Label + bar + value rows; weakest first. */
+/** Aligned label | bar | value rows, weakest first. */
 const bars = (g, labels = {}) => {
   const rows = Object.entries(g).sort((a, b) => (a[1].pct ?? 101) - (b[1].pct ?? 101));
   return rows.length ? h("div", { class: "bargroup" }, ...rows.map(([k, a]) => h("div", { class: "barrow" },
-    h("span", {}, labels[k] ?? k),
-    h("div", { class: "bar", role: "progressbar", "aria-valuenow": a.pct ?? 0, "aria-valuemin": 0, "aria-valuemax": 100 }, h("i", { class: tone(a.pct), style: `width:${a.pct ?? 0}%` })),
-    h("span", { class: "val" }, a.pct == null ? "—" : `${a.pct}% · ${a.ok}/${a.n}`)))) : h("p", { class: "empty" }, "Belum ada data.");
+    h("span", { class: "lbl" }, labels[k] ?? k),
+    h("div", { class: "bar", role: "progressbar", "aria-label": labels[k] ?? k, "aria-valuenow": a.pct ?? 0, "aria-valuemin": 0, "aria-valuemax": 100 }, h("i", { class: tone(a.pct), style: `width:${Math.max(a.pct ?? 0, a.n ? 2 : 0)}%` })),
+    h("span", { class: "val" }, h("b", {}, a.pct == null ? "—" : `${a.pct}%`), h("small", {}, `${a.ok}/${a.n}`))))) : h("p", { class: "empty" }, "Belum ada data.");
 };
 const bar = (pct) => h("div", { class: "bar", role: "progressbar", "aria-valuenow": pct ?? 0, "aria-valuemin": 0, "aria-valuemax": 100, style: "min-width:80px" }, h("i", { style: `width:${pct ?? 0}%` }));
 
@@ -120,12 +124,14 @@ function progressNodes(app, latihan) {
   const weakW = weakWords(ev).slice(0, 15);
   const leech = leeches(store.data.cards, vocabById);
 
-  const weakTables = ev.length ? [
-    panel("Per keterampilan", bars(bySkill, SKILL_LABEL)),
-    panel("Per jenis soal", bars(byType, TYPE_LABEL)),
-    panel("Per level", bars(byLevel, LEVEL_LABEL)),
-    panel("Per jenis kata", bars(byPos)),
-  ] : [];
+  const posLabels = Object.fromEntries(Object.keys(byPos).map((k) => [k, posLabel(k) || k]));
+  const catData = { skill: [bySkill, SKILL_LABEL], type: [byType, TYPE_LABEL], level: [byLevel, LEVEL_LABEL], pos: [byPos, posLabels] };
+  const [catGroup, catLabels] = catData[cat];
+  const catPanel = ev.length ? [panel("Akurasi per kategori",
+    h("div", { class: "seg", role: "tablist", "aria-label": "Kategori" }, ...CATS.map(([v, label]) =>
+      h("label", {}, h("input", { type: "radio", name: "cat", value: v, checked: cat === v, onchange: () => { cat = v; viewProgress(app); } }), h("span", {}, label)))),
+    h("div", { style: "margin-top:16px" }, bars(catGroup, catLabels)),
+    h("p", { class: "hint" }, "Diurutkan dari yang paling lemah. Merah di bawah 50%, kuning 50–74%, hijau 75% ke atas."))] : [];
   const wordPanels = [
     weakW.length ? panel("Kata yang sering salah", table(["Kata", "Pinyin", "Arti", "Salah", "Status"], weakW.filter((w) => vocabById[w.id]).map((w) => {
       const v = vocabById[w.id];
@@ -139,7 +145,7 @@ function progressNodes(app, latihan) {
     cards,
     h("div", { class: "split even" }, trend, examBlock),
     h("div", { class: "grid-2" }, panel("Kelemahan & saran", recList), latihan),
-    weakTables.length ? h("div", { class: "grid-2" }, ...weakTables) : null,
+    ...catPanel,
     wordPanels.length ? h("div", { class: "grid-2" }, ...wordPanels) : null,
   ];
 }
