@@ -64,3 +64,31 @@ export function shuffle(arr, rand = Math.random) {
   }
   return a;
 }
+
+/* ---- featured word of the home page: changes every few hours, in the learner's local time ---- */
+export const FEATURE_HOURS = 3;
+const HOUR_MS = 3_600_000;
+const localTz = (now) => new Date(now).getTimezoneOffset();     // minutes, like Date#getTimezoneOffset
+
+/** Index of the current time slot; slot boundaries fall on local-time multiples of `hours`. */
+export function featuredSlot(now = Date.now(), hours = FEATURE_HOURS, tzOffsetMin = localTz(now)) {
+  return Math.floor((now - tzOffsetMin * 60_000) / (hours * HOUR_MS));
+}
+
+/** Milliseconds until the next slot starts. */
+export function msToNextSlot(now = Date.now(), hours = FEATURE_HOURS, tzOffsetMin = localTz(now)) {
+  const len = hours * HOUR_MS;
+  const local = now - tzOffsetMin * 60_000;
+  return len - (((local % len) + len) % len);
+}
+
+const gcd = (a, b) => (b ? gcd(b, a % b) : a);
+
+/** Word for a slot. A stride coprime with the list size visits every word before repeating, in a scattered order. */
+export function featuredWord(words, slot) {
+  const n = words.length;
+  if (!n) return null;
+  let stride = Math.max(1, Math.floor(n * 0.618)) | 1;
+  while (gcd(stride, n) !== 1) stride += 2;
+  return words[(((slot % n) + n) % n * stride) % n];
+}

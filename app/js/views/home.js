@@ -1,30 +1,44 @@
 // Beranda: landing view. Only describes features that exist; numbers come from the loaded data.
-import { LEVEL_LABEL, meaning, posLabel } from "../deck.js";
+import { LEVEL_LABEL, meaning, posLabel, FEATURE_HOURS, featuredSlot, featuredWord, msToNextSlot } from "../deck.js";
 import { buildQueue } from "../session.js";
 import { accuracy, streak, activeDayKeys } from "../analytics.js";
 import { examAvailable } from "../exam.js";
 import { h, btn, speak } from "../ui.js";
 
 const nf = new Intl.NumberFormat("id-ID");
-const dayIndex = () => Math.floor(Date.now() / 86_400_000);
 
 /** Words that have a hand-written Indonesian meaning, used for the hero card and the sample table. */
 function sampleWords(app) {
   return app.vocab.filter((w) => w.level === 1 && app.idData[w.id]);
 }
 
-function hero(app) {
-  const samples = sampleWords(app);
-  const w = samples[dayIndex() % Math.max(1, samples.length)];
-  const due = buildQueue(app.vocab, app.store);
-  const todo = due.due.length + due.fresh.length;
-  const card = w ? h("div", { class: "card hero-card" },
-    h("div", { class: "eyebrow" }, "Kata hari ini · ", LEVEL_LABEL[w.level]),
+/** The featured word card. While it is on screen it swaps itself when the next time slot starts. */
+let featuredTimer = null;
+function featuredCard(app) {
+  const pool = app.vocab.filter((w) => app.idData[w.id]);       // words with a hand-written Indonesian meaning
+  const w = featuredWord(pool, featuredSlot());
+  if (!w) return null;
+  const card = h("div", { class: "card hero-card" },
+    h("div", { class: "eyebrow" }, "Kata pilihan · ", LEVEL_LABEL[w.level]),
     h("div", { class: "hanzi", lang: "zh-Hans" }, w.word),
     h("div", { class: "pinyin" }, w.pinyin),
     h("div", { class: "gloss" }, meaning(w, app.idData, 2)),
     h("div", { class: "meta" }, h("span", { class: "badge" }, posLabel(w.pos) || "—"), h("span", { class: "badge hand" }, LEVEL_LABEL[w.level])),
-    btn("🔊 Dengar", () => speak(w.word), "btn primary", { "aria-label": `Dengar ${w.word}` })) : null;
+    btn("🔊 Dengar", () => speak(w.word), "btn primary", { "aria-label": `Dengar ${w.word}` }),
+    h("div", { class: "hint", style: "margin-top:12px" }, `Berganti setiap ${FEATURE_HOURS} jam`));
+  clearTimeout(featuredTimer);
+  featuredTimer = setTimeout(function tick() {
+    if (!card.isConnected) return;                              // user left the home page: stop
+    const next = featuredCard(app);
+    if (next) card.replaceWith(next);
+  }, msToNextSlot() + 500);
+  return card;
+}
+
+function hero(app) {
+  const due = buildQueue(app.vocab, app.store);
+  const todo = due.due.length + due.fresh.length;
+  const card = featuredCard(app);
   return h("section", { class: "home-hero" },
     h("div", {},
       h("div", { class: "eyebrow" }, "HSK 3.0 · Silabus 2025"),
