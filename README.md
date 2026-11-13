@@ -1,10 +1,10 @@
-# Buatin — Latihan HSK 3.0
+# Learning Chinese — Latihan HSK 3.0
 
-[![CI](https://github.com/Hawreirei/Buatin/actions/workflows/ci-pages.yml/badge.svg)](https://github.com/Hawreirei/Buatin/actions/workflows/ci-pages.yml)
+[![CI](https://github.com/Hawreirei/LearnChinese/actions/workflows/ci-pages.yml/badge.svg)](https://github.com/Hawreirei/LearnChinese/actions/workflows/ci-pages.yml)
 [![Kode: MIT](https://img.shields.io/badge/kode-MIT-green.svg)](LICENSE)
 [![Konten: CC BY-SA 4.0](https://img.shields.io/badge/konten-CC%20BY--SA%204.0-blue.svg)](LICENSE-CONTENT.md)
 
-**Demo:** <https://hawreirei.github.io/Buatin/> (aktif setelah GitHub Pages dinyalakan, lihat [Menerbitkan](#menerbitkan-di-github-pages))
+**Demo:** <https://hawreirei.github.io/LearnChinese/> (aktif setelah GitHub Pages dinyalakan, lihat [Menerbitkan](#menerbitkan-di-github-pages))
 
 Aplikasi web gratis dan sumber terbuka untuk berlatih **HSK 3.0 (silabus 2025)** dalam Bahasa Indonesia. Berjalan sepenuhnya di browser, tanpa akun; progres tersimpan di perangkat Anda.
 
@@ -28,7 +28,7 @@ Soal yang jenis resminya belum ada diganti pengganti terdekat dan ditandai di la
 ## Mulai cepat
 
 ```bash
-git clone https://github.com/Hawreirei/Buatin.git && cd Buatin
+git clone https://github.com/Hawreirei/LearnChinese.git && cd LearnChinese
 python3 -m http.server 8080        # buka http://localhost:8080/app/
 ```
 

@@ -39,7 +39,7 @@ Tampilan (`app/js/views/`), semuanya menerima satu objek `app` dari `main.js` (`
 
 `ui.js` berisi pembantu DOM (teks selalu lewat `textContent`, tidak pernah `innerHTML`) dan suara (Web Speech API, zh-CN; dialog 男/女 memakai nada berbeda).
 
-## Data lokal (`localStorage`, kunci `buatin.vocab.v1`)
+## Data lokal (`localStorage`, kunci `learning-chinese.vocab.v1`; data lama di `buatin.vocab.v1` dipindahkan otomatis saat pertama dibuka)
 
 ```json
 { "version": 1,

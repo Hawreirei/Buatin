@@ -4,7 +4,7 @@
 Every piece of original content (meanings, example sentences, translations, listening/reading
 questions, picture scenes, cloze/write items) with empty reviewer columns and a status dropdown.
 
-Usage: python3 scripts/build_review_sheet.py [--out review/Buatin-review-laoshi.xlsx]
+Usage: python3 scripts/build_review_sheet.py [--out review/Learning-Chinese-review-laoshi.xlsx]
 """
 import argparse
 import json
@@ -60,7 +60,7 @@ def sheet(wb, title, cols, rows, widths, reviewer):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--out", default="review/Buatin-review-laoshi.xlsx")
+    ap.add_argument("--out", default="review/Learning-Chinese-review-laoshi.xlsx")
     out = ROOT / ap.parse_args().out
     out.parent.mkdir(parents=True, exist_ok=True)
 
@@ -74,7 +74,7 @@ def main():
     ws = wb.active
     ws.title = "说明 Petunjuk"
     lines = [
-        ("Lembar review konten Buatin (aplikasi latihan HSK 3.0, bahasa pengantar Indonesia)", True),
+        ("Lembar review konten Learning Chinese (aplikasi latihan HSK 3.0, bahasa pengantar Indonesia)", True),
         (f"Versi data: {sha}. Cakupan: HSK 1–3 (kosakata 1.000 kata, soal membaca/mendengar/menulis, soal bergambar).", False),
         ("", False),
         ("感谢您帮忙审阅！Terima kasih sudah membantu mengoreksi.", True),
@@ -92,7 +92,7 @@ def main():
         ("• 填空: soal isi kata dibuat otomatis dari kalimat contoh; tandai jika ada pilihan salah yang juga bisa dipakai (ambigu) atau kalimat tidak wajar.", False),
         ("• Pinyin kalimat dibuat otomatis (nada 3 tidak diubah) dan mungkin ada yang kurang tepat; mohon tandai jika terlihat salah.", False),
         ("", False),
-        ("Konten ini dibuat dengan bantuan AI dan BELUM direview penutur asli. Koreksi Anda akan dimasukkan ke proyek sumber terbuka Buatin (konten CC BY-SA 4.0).", True),
+        ("Konten ini dibuat dengan bantuan AI dan BELUM direview penutur asli. Koreksi Anda akan dimasukkan ke proyek sumber terbuka Learning Chinese (konten CC BY-SA 4.0).", True),
         ("Kolom ID (mis. 391, c190, p63, t41) sama dengan nomor yang tampil di aplikasi.", False),
     ]
     for text, bold in lines:

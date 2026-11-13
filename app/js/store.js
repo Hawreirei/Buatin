@@ -1,7 +1,8 @@
 // Progress persistence. Storage is injectable (tests / private-mode fallback).
 import { newCard } from "./srs.js";
 
-const KEY = "buatin.vocab.v1";
+const KEY = "learning-chinese.vocab.v1";
+const LEGACY_KEY = "buatin.vocab.v1";   // name used before the rename; read once so saved progress survives
 export const MAX_EVENTS = 5000;
 export const DEFAULT_SETTINGS = { levels: [1], newPerDay: 10, speak: true };
 
@@ -33,7 +34,14 @@ export class Store {
 
   #load() {
     try {
-      const raw = JSON.parse(this.storage.getItem(KEY));
+      let raw = JSON.parse(this.storage.getItem(KEY));
+      if (!raw) {
+        raw = JSON.parse(this.storage.getItem(LEGACY_KEY));
+        if (raw && raw.version === 1) {            // migrate: copy to the new key, then drop the old one
+          this.storage.setItem(KEY, JSON.stringify(raw));
+          this.storage.removeItem(LEGACY_KEY);
+        }
+      }
       if (raw && raw.version === 1) return { ...raw, settings: { ...DEFAULT_SETTINGS, ...raw.settings } };
     } catch { /* fall through */ }
     return { version: 1, cards: {}, settings: { ...DEFAULT_SETTINGS }, daily: { date: "", introduced: 0 }, log: {} };
