@@ -220,10 +220,12 @@ button.btn.light { background: var(--surface); color: var(--heading); border-col
 kbd { font: 600 12px var(--font-ui); background: var(--surface-2); border: 1px solid var(--line-strong); border-bottom-width: 2px; border-radius: 6px; padding: 1px 6px; }
 .stats-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
 .stats-strip .stat { padding: 18px 10px; }
-.bargroup { display: grid; gap: 12px; }
-.barrow { display: grid; grid-template-columns: minmax(90px, 1.2fr) 2fr auto; align-items: center; gap: 12px; font-size: 14px; }
-.barrow .val { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 13px; min-width: 7ch; text-align: right; }
-.barrow .bar { height: 10px; }
+.bargroup { display: grid; grid-template-columns: minmax(120px, max-content) 1fr max-content; gap: 12px 16px; align-items: center; }
+.barrow { display: contents; font-size: 14px; }
+.barrow .lbl { overflow-wrap: anywhere; }
+.barrow .val { display: flex; align-items: baseline; justify-content: flex-end; gap: 8px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.barrow .val b { min-width: 4ch; text-align: right; color: var(--heading); } .barrow .val small { color: var(--muted); font-size: 12px; min-width: 5ch; }
+.barrow .bar { height: 12px; }
 .barrow .bar > i.low { background: var(--accent); } .barrow .bar > i.mid { background: #d9a441; }
 .empty { color: var(--muted); font-size: 14px; padding: 8px 0; }
 .chart { max-width: none; border: 0; background: none; }
@@ -244,10 +246,11 @@ kbd { font: 600 12px var(--font-ui); background: var(--surface-2); border: 1px s
   .cards { grid-template-columns: repeat(4, 1fr); }
 }
 .chart .axis { font-size: 11px; }
-.panel .seg { max-width: 100%; flex-wrap: wrap; }
+.seg { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+.seg::-webkit-scrollbar { display: none; }
+.seg span { white-space: nowrap; }
+@media (max-width: 480px) { .seg span { padding: 6px 10px; } .bargroup { gap: 12px; grid-template-columns: minmax(90px, max-content) 1fr max-content; } }
 .panel th, .panel td { white-space: nowrap; } .panel td:nth-child(3):not(.zh) { white-space: normal; }
 .feat { align-content: start; }
-.grid-2 { align-items: stretch; }
-.grid-2 > .panel { height: 100%; }
 @media (min-width: 900px) { .grid-2 > :only-child { grid-column: 1 / -1; } }
 .panel th { white-space: normal; }
