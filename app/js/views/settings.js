@@ -1,5 +1,5 @@
 import { LEVEL_LABEL } from "../deck.js";
-import { h, btn } from "../ui.js";
+import { h, btn, speak } from "../ui.js";
 import { resetQuiz } from "./quiz.js";
 
 export function viewSettings(app) {
@@ -30,6 +30,20 @@ export function viewSettings(app) {
     h("a", { href: url, download: "learning-chinese-progres.json" }).click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
+  const voiceInfo = h("pre", { class: "hint", style: "white-space:pre-wrap;margin:8px 0 0" });
+  const showVoices = () => {
+    if (!("speechSynthesis" in window)) { voiceInfo.textContent = "Browser ini tidak mendukung suara (speechSynthesis)."; return; }
+    const v = speechSynthesis.getVoices();
+    const zh = v.filter((x) => /^zh/i.test(x.lang));
+    voiceInfo.textContent = `Browser: ${navigator.userAgent}\nJumlah suara: ${v.length}\nSuara Mandarin: ${zh.length ? zh.map((x) => `${x.name} (${x.lang}${x.localService ? ", lokal" : ", online"})`).join("; ") : "TIDAK ADA"}`;
+  };
+  const voiceTest = panel0();
+  function panel0() {
+    return h("div", {},
+      h("div", { class: "row", style: "justify-content:flex-start" },
+        btn("🔊 你好", () => speak("你好"), "btn"), btn("🔊 谢谢", () => speak("谢谢"), "btn"), btn("🔊 再见", () => speak("再见"), "btn"), btn("🔊 我喜欢吃苹果", () => speak("我喜欢吃苹果"), "btn")),
+      btn("Cek suara perangkat", showVoices, "btn"), voiceInfo);
+  }
   const panel = (title, ...kids) => h("div", { class: "panel" }, h("h2", {}, title), ...kids);
   app.render(h("div", { class: "pagehead" }, h("div", {}, h("h2", {}, "Pengaturan"), h("p", { class: "hint" }, "Disimpan di perangkat ini."))),
     h("div", { class: "grid-2" },
@@ -38,7 +52,8 @@ export function viewSettings(app) {
       panel("Soal menulis hanzi", h("div", {}, modeRadio("choice", "Pilihan ganda (4 hanzi, ketuk langsung)"), h("br"), modeRadio("tiles", "Bank hanzi (6 kepingan + kotak ketik, lalu Periksa)")),
         h("p", { class: "hint" }, "Tidak perlu keyboard Mandarin. Mode bank hanzi tetap bisa diketik jika kamu punya keyboard Mandarin.")),
       panel("Suara", h("label", {}, speakBox, " Ucapkan kata saat jawaban ditampilkan"),
-        h("p", { class: "hint" }, "Memakai suara bawaan perangkat (zh-CN). Jika tidak ada suara Mandarin terpasang, tombol suara tidak akan berbunyi.")),
+        h("p", { class: "hint" }, "Memakai suara bawaan perangkat (zh-CN). Jika tidak ada suara Mandarin terpasang, tombol suara tidak akan berbunyi."),
+        h("p", { class: "hint" }, "Tes: tekan keempat tombol di bawah. Kalau terdengar berbeda-beda, suara berfungsi."), voiceTest),
       panel("Latihan bicara", h("label", {}, scoreBox, " Nilai ucapan dengan pengenalan ucapan browser"),
         h("p", { class: "hint" }, "Rekaman suara tidak disimpan dan tidak dikirim oleh aplikasi ini. Di Chrome dan Edge, pengenalan ucapan memakai layanan penyedia browser lewat internet; matikan opsi ini bila tidak mau audio diproses di sana (rekam-dan-bandingkan tetap bisa dipakai)."),
         h("label", { style: "display:block;margin-top:14px" }, toneBox, " Penilaian nada (eksperimental)"),
