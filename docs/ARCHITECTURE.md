@@ -98,7 +98,7 @@ Belum ada: `match_question_to_answer`, `audio_statement_question_mcq`, `choose_m
 
 Satu berkas `content/lessons/<id>.json` per pelajaran; `build_lessons.py` memeriksa dan membangunnya ke `data/hsk3/lessons.json`. Soal pelajaran **disimpan di dalam pelajaran** (bukan di `questions.json`), memakai bentuk soal yang sama sehingga `views/question.js` menggambarnya tanpa perubahan.
 
-- Pelajaran: `perkenalan` (HSK 1), `belanja` (HSK 2), `restoran` (HSK 3); daftar diurutkan dari level terendah. `"names": ["小明"]` mengizinkan nama diri sebagai kepingan walau bukan kata silabus.
+- Pelajaran: `perkenalan` (HSK 1), `belanja` dan `tanya-arah` (HSK 2), `restoran` (HSK 3); daftar diurutkan dari level terendah. `"names": ["小明"]` mengizinkan nama diri sebagai kepingan walau bukan kata silabus.
 - Beranda menampilkan kartu tiap pelajaran (yang sedang berjalan atau berikutnya diberi bingkai), dan Kemajuan punya panel "Pelajaran bertema" (langkah, persen per langkah, kalimat bicara yang lulus) dengan tombol buka pelajaran.
 - Hanzi isi pelajaran dikunci ke silabus sampai `level` pelajaran; **judul** (`zh`) dikecualikan karena hanya penanda (mis. 餐厅 adalah kata HSK 4, judul "在餐厅" tetap dipakai).
 - `keySentences[].tokens` harus tersambung menjadi kalimat; pinyin per kata diturunkan dari alur pinyin aplikasi (bukan diketik). `"order": false` mengeluarkan kalimat dari soal susun. Kalimat kunci tidak boleh berisi 儿 (erhua, mis. 一点儿): jumlah suku kata pinyin tidak sama dengan jumlah hanzi dan pembangun menolaknya; kata itu boleh dipakai di soal dengar/baca.
