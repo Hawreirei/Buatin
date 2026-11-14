@@ -60,6 +60,15 @@ class SyllabusTests(unittest.TestCase):
             self.assertEqual(h.get(lvl, 0), exp, f"handwriting L{lvl}")
         self.assertEqual(sum(h.values()), 1200)
 
+    def test_stroke_data_for_every_handwriting_char(self):
+        strokes = D / "strokes"
+        for x in load("handwriting.json"):
+            f = strokes / f"{ord(x['char']):x}.json"
+            self.assertTrue(f.exists(), x["char"])
+            d = json.loads(f.read_text("utf-8"))
+            self.assertTrue(d["strokes"] and len(d["strokes"]) == len(d["medians"]), x["char"])
+        self.assertTrue((strokes / "ARPHICPL.TXT").exists())   # licence travels with the data
+
     def test_only_needed_syllabus_files_are_shipped(self):
         names = {p.name for p in D.glob("*.json")}
         self.assertEqual(names, {"vocab.json", "handwriting.json", "vocab_id.json", "questions.json", "blueprints.json", "lookalikes.json", "lessons.json", "SOURCE.json"})

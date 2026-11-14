@@ -29,6 +29,7 @@ Logika murni (tanpa DOM, diuji di `tests/js/`):
 | `exam.js` | membangun ujian dari blueprint resmi, penilaian per bagian |
 | `speech.js` | latihan bicara: penilaian kemiripan (LCS per hanzi, angka → hanzi), pembungkus rekam (MediaRecorder) dan pengenalan ucapan (Web Speech API, zh-CN) |
 | `tone.js` | kontur nada (eksperimental): pitch YIN → potong per suku kata (DP) → bentuk nada relatif rentang penutur → cocokkan dengan nada pinyin; murni, diuji dengan suara sintetis |
+| `writing.js` | tab Tulis: indeks hanzi → kata, filter, aturan "dikuasai", catatan latihan, jalur coretan bebas; data goresan di `data/hsk3/strokes/<kode hex>.json` (dimuat per hanzi) |
 | `lesson.js` | pelajaran bertema: lima langkah, progres, nomor soal, id kata kunci, ringkasan per pelajaran, pelajaran berikutnya untuk Beranda |
 | `order.js` | soal susun kalimat: acak kepingan (tidak pernah langsung benar), periksa urutan (`alt` = urutan lain yang sah) |
 | `analytics.js` | tren, kelemahan, kata sulit, rekomendasi, set latihan kelemahan |
@@ -39,6 +40,7 @@ Tampilan (`app/js/views/`), semuanya menerima satu objek `app` dari `main.js` (`
 |---|---|
 | `study.js`, `quiz.js`, `browse.js`, `settings.js` | Hafalan, Kuis, Daftar, Pengaturan |
 | `practice.js`, `exam.js` | Latihan, Ujian |
+| `write.js` | Tulis: animasi urutan goresan, tebalkan hanzi samar (bebas atau diperiksa per goresan), tulis dari ingatan; memakai Hanzi Writer di `js/vendor/` |
 | `lessons.js` | Pelajaran: daftar, halaman pelajaran, stepper, langkah Listening/Reading/Writing/Speaking/Vocab |
 | `progress.js` | Kemajuan (analisis + ringkasan hafalan) |
 | `question.js` | **satu-satunya tempat** yang menggambar soal; dipakai Latihan dan Ujian lewat "adaptor mode" (`kind`, `response`, `reveal`, `onAnswer`, …). Soal baru = ubah di sini saja |

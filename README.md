@@ -17,6 +17,7 @@ Aplikasi web gratis dan sumber terbuka untuk berlatih **HSK 3.0 (silabus 2025)**
 | Tab | Fungsi |
 |---|---|
 | **Pelajaran** | Skenario bertema dengan lima langkah (dengar, baca, tulis, bicara, kosakata): kalimat kunci berpinyin per kata, soal per langkah, kata kunci bisa ditambahkan ke Hafalan. Saat ini: "自我介绍 Perkenalan diri" (HSK 1), "买东西 Belanja" dan "问路 Bertanya arah" (HSK 2), "在餐厅 Di restoran" dan "看病 Di rumah sakit" (HSK 3). Langkah bicara: rekam suara dan bandingkan dengan model, plus penilaian kata yang terdengar lewat pengenalan ucapan browser (Chrome/Edge/Safari), plus opsi eksperimental penilaian kontur nada per suku kata yang dihitung di perangkat |
+| **Tulis** | Belajar menulis 1.200 hanzi tulis resmi: animasi urutan goresan, menebalkan hanzi samar (opsional diperiksa per goresan), dan menulis dari ingatan; progres per hanzi tersimpan |
 | **Hafalan** | Flashcard dengan pengulangan berjarak (SM-2 + langkah belajar), arti Indonesia, kalimat contoh + pinyin + terjemahan, suara; pintasan Spasi dan 1–4 |
 | **Latihan** | 2.746 soal: isi kata, tulis hanzi, susun kalimat, tanya-jawab, dialog dan teks mendengar, soal bergambar, teks pendek dan paragraf bacaan; umpan balik dan penjelasan langsung |
 | **Ujian** | Simulasi bertimer HSK 1–3: jumlah soal, bagian, dan waktu mengikuti tabel resmi CTI; bagian terkunci setelah selesai |
@@ -47,7 +48,7 @@ npm run build                      # bangun ulang data dari content/ dan bluepri
 |---|---|
 | `app/` | aplikasi web statis, tanpa build dan tanpa dependensi |
 | `content/` | konten tulisan sendiri: arti, kalimat, soal, dialog, teks, adegan gambar |
-| `data/hsk3/` | daftar kata resmi (`vocab.json`), hanzi tulis (`handwriting.json`), dan hasil build (`vocab_id.json`, `questions.json`, `blueprints.json`) |
+| `data/hsk3/` | daftar kata resmi (`vocab.json`), hanzi tulis (`handwriting.json`), dan hasil build (`vocab_id.json`, `questions.json`, `blueprints.json`), serta data goresan `strokes/` (dibangun `scripts/build_strokes.py`, lisensi Arphic) |
 | `blueprints/` | struktur ujian resmi per level (jumlah soal, bagian, waktu) |
 | `scripts/` | pembangun data, soal, lembar review, dan situs |
 | `tests/` | tes Python (data, konten, soal) dan JavaScript (logika aplikasi) |

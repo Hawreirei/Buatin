@@ -114,6 +114,10 @@ export class Store {
     return add.length;
   }
 
+  /** Handwriting practice per character: { n, best, ok, t } (see writing.js nextRecord). */
+  writingRecord(ch) { return this.data.writing?.[ch] ?? null; }
+  saveWriting(ch, rec) { (this.data.writing ||= {})[ch] = rec; this.save(); }
+
   recordReview(now = Date.now()) {
     const k = todayKey(now);
     this.data.log[k] = (this.data.log[k] || 0) + 1;
