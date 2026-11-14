@@ -95,6 +95,7 @@ export function openWrite(app, ch) {
   Object.assign(st, { ch, query: "", todo: false });
   st.levels.clear();
   app.go("write");
+  window.scrollTo(0, 0);          // on small screens the card sits below the fold; show the writing box
 }
 
 function stop() {
