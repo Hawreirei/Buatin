@@ -1,0 +1,200 @@
+{
+  "id": "cuaca",
+  "level": 1,
+  "seq": 6,
+  "zh": "天气",
+  "title": "Cuaca hari ini",
+  "summary": "Bertanya dan menjelaskan cuaca, serta suka atau tidaknya pada cuaca tertentu.",
+  "keySentences": [
+    {
+      "zh": "今天天气怎么样？",
+      "id": "Bagaimana cuaca hari ini?",
+      "tokens": [
+        "今天",
+        "天气",
+        "怎么样",
+        "？"
+      ]
+    },
+    {
+      "zh": "今天很热。",
+      "id": "Hari ini panas.",
+      "tokens": [
+        "今天",
+        "很",
+        "热",
+        "。"
+      ],
+      "order": false
+    },
+    {
+      "zh": "今天不太冷。",
+      "id": "Hari ini tidak terlalu dingin.",
+      "tokens": [
+        "今天",
+        "不",
+        "太",
+        "冷",
+        "。"
+      ]
+    },
+    {
+      "zh": "明天会下雨吗？",
+      "id": "Apakah besok akan hujan?",
+      "tokens": [
+        "明天",
+        "会",
+        "下雨",
+        "吗",
+        "？"
+      ]
+    },
+    {
+      "zh": "我不喜欢下雨。",
+      "id": "Aku tidak suka hujan.",
+      "tokens": [
+        "我",
+        "不",
+        "喜欢",
+        "下雨",
+        "。"
+      ]
+    },
+    {
+      "zh": "现在天气很好。",
+      "id": "Sekarang cuacanya bagus.",
+      "tokens": [
+        "现在",
+        "天气",
+        "很",
+        "好",
+        "。"
+      ],
+      "alt": [
+        "天气现在很好。"
+      ]
+    },
+    {
+      "zh": "昨天太热了。",
+      "id": "Kemarin panas sekali.",
+      "tokens": [
+        "昨天",
+        "太",
+        "热",
+        "了",
+        "。"
+      ],
+      "order": false
+    },
+    {
+      "zh": "天气冷，我喝热茶。",
+      "id": "Cuaca dingin, aku minum teh panas.",
+      "tokens": [
+        "天气",
+        "冷",
+        "，",
+        "我",
+        "喝",
+        "热",
+        "茶",
+        "。"
+      ],
+      "order": false
+    }
+  ],
+  "keyWords": [
+    "天气",
+    "热",
+    "冷",
+    "下雨",
+    "雨",
+    "太",
+    "怎么样",
+    "今天",
+    "明天",
+    "昨天"
+  ],
+  "listening": [
+    {
+      "kind": "qa",
+      "q": "今天天气怎么样？",
+      "ok": "今天很热。",
+      "wrong": [
+        "我在家。",
+        "他是老师。"
+      ],
+      "tq": "Bagaimana cuaca hari ini?",
+      "ta": "Hari ini panas."
+    },
+    {
+      "kind": "dialog",
+      "text": "女：明天会下雨吗？/男：会，明天会下雨。",
+      "q": "明天天气怎么样？",
+      "ok": "下雨",
+      "wrong": [
+        "很热",
+        "很好"
+      ],
+      "t_text": "Perempuan: Apakah besok akan hujan? / Laki-laki: Ya, besok akan hujan.",
+      "t_q": "Bagaimana cuaca besok?",
+      "t_ok": "Hujan"
+    },
+    {
+      "kind": "dialog",
+      "text": "男：今天太热了，你喝水吗？/女：好，谢谢。",
+      "q": "今天天气怎么样？",
+      "ok": "很热",
+      "wrong": [
+        "很冷",
+        "下雨"
+      ],
+      "t_text": "Laki-laki: Hari ini panas sekali, kamu mau minum air? / Perempuan: Baik, terima kasih.",
+      "t_q": "Bagaimana cuaca hari ini?",
+      "t_ok": "Panas"
+    }
+  ],
+  "reading": [
+    {
+      "kind": "cloze",
+      "stem": "今天太（　）了，我想喝水。",
+      "ok": "热",
+      "wrong": [
+        "吃",
+        "喝",
+        "看"
+      ],
+      "zh": "今天太热了，我想喝水。",
+      "id": "Hari ini panas sekali, aku ingin minum air."
+    },
+    {
+      "kind": "cloze",
+      "stem": "明天会下（　）吗？",
+      "ok": "雨",
+      "wrong": [
+        "书",
+        "茶",
+        "饭"
+      ],
+      "zh": "明天会下雨吗？",
+      "id": "Apakah besok akan hujan?"
+    },
+    {
+      "kind": "text",
+      "text": "今天很冷，我在家喝热茶。昨天很热，我想去学校。",
+      "q": "★ 今天天气怎么样？",
+      "ok": "很冷",
+      "wrong": [
+        "很热",
+        "下雨"
+      ],
+      "t_text": "Hari ini dingin, aku di rumah minum teh panas. Kemarin panas, aku ingin pergi ke sekolah.",
+      "t_q": "Bagaimana cuaca hari ini?",
+      "t_ok": "Dingin"
+    }
+  ],
+  "speaking": [
+    "今天天气怎么样？",
+    "明天会下雨吗？",
+    "我不喜欢下雨。"
+  ]
+}

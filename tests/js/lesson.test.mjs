@@ -98,7 +98,7 @@ test("a pinned word that already has a card is not offered again", () => {
 });
 
 test("lessons are ordered easiest first and each can be summarised", () => {
-  assert.deepEqual(lessons.map((l) => [l.id, l.level]), [["perkenalan", 1], ["belanja", 2], ["tanya-arah", 2], ["restoran", 3], ["rumah-sakit", 3]]);
+  assert.deepEqual(lessons.map((l) => [l.id, l.level]), [["sapaan", 1], ["perkenalan", 1], ["angka-waktu", 1], ["keluarga", 1], ["makan-minum", 1], ["cuaca", 1], ["sekolah", 1], ["belanja", 2], ["tanya-arah", 2], ["restoran", 3], ["rumah-sakit", 3]]);
   const s = new Store(mem());
   const empty = lessonSummary(lessons[0], s.lessonProgress("perkenalan"));
   assert.deepEqual({ done: empty.done, started: empty.started, speaking: empty.speaking }, { done: 0, started: false, speaking: null });
@@ -112,7 +112,7 @@ test("lessons are ordered easiest first and each can be summarised", () => {
 
 test("nextLesson: continue the started unfinished one, else the first not started, else none", () => {
   const s = new Store(mem());
-  assert.equal(nextLesson(lessons, s).id, "perkenalan");
+  assert.equal(nextLesson(lessons, s).id, "sapaan");                    // the first lesson of the easiest level
   s.saveLessonStep("restoran", "listening", { ok: 1, n: 3 });          // restoran started: continue it, not the first untouched one
   assert.equal(nextLesson(lessons, s).id, "restoran");
   for (const l of lessons) for (const st of STEPS) s.saveLessonStep(l.id, st.key);

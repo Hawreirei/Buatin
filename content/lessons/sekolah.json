@@ -1,0 +1,207 @@
+{
+  "id": "sekolah",
+  "level": 1,
+  "seq": 7,
+  "zh": "在学校",
+  "title": "Di sekolah",
+  "summary": "Menyebut hal-hal di sekolah dan kegiatan belajar bahasa Mandarin.",
+  "keySentences": [
+    {
+      "zh": "我在学校学习汉语。",
+      "id": "Aku belajar bahasa Mandarin di sekolah.",
+      "tokens": [
+        "我",
+        "在",
+        "学校",
+        "学习",
+        "汉语",
+        "。"
+      ]
+    },
+    {
+      "zh": "老师说，请读书。",
+      "id": "Guru berkata, silakan baca buku.",
+      "tokens": [
+        "老师",
+        "说",
+        "，",
+        "请",
+        "读",
+        "书",
+        "。"
+      ],
+      "order": false
+    },
+    {
+      "zh": "他是我的同学。",
+      "id": "Dia teman sekelasku.",
+      "tokens": [
+        "他",
+        "是",
+        "我",
+        "的",
+        "同学",
+        "。"
+      ]
+    },
+    {
+      "zh": "我会写这个字。",
+      "id": "Aku bisa menulis huruf ini.",
+      "tokens": [
+        "我",
+        "会",
+        "写",
+        "这个",
+        "字",
+        "。"
+      ]
+    },
+    {
+      "zh": "你的汉语很好。",
+      "id": "Bahasa Mandarinmu bagus.",
+      "tokens": [
+        "你",
+        "的",
+        "汉语",
+        "很",
+        "好",
+        "。"
+      ]
+    },
+    {
+      "zh": "我们八点上课。",
+      "id": "Kami mulai pelajaran jam delapan.",
+      "tokens": [
+        "我们",
+        "八",
+        "点",
+        "上课",
+        "。"
+      ],
+      "alt": [
+        "八点我们上课。"
+      ]
+    },
+    {
+      "zh": "请你说汉语。",
+      "id": "Silakan bicara bahasa Mandarin.",
+      "tokens": [
+        "请",
+        "你",
+        "说",
+        "汉语",
+        "。"
+      ],
+      "order": false
+    },
+    {
+      "zh": "我不会写这个字。",
+      "id": "Aku tidak bisa menulis huruf ini.",
+      "tokens": [
+        "我",
+        "不",
+        "会",
+        "写",
+        "这个",
+        "字",
+        "。"
+      ],
+      "order": false
+    }
+  ],
+  "keyWords": [
+    "学校",
+    "老师",
+    "学生",
+    "学习",
+    "汉语",
+    "书",
+    "读",
+    "写",
+    "字",
+    "同学"
+  ],
+  "listening": [
+    {
+      "kind": "qa",
+      "q": "你在哪儿学习汉语？",
+      "ok": "我在学校学习。",
+      "wrong": [
+        "我喝茶。",
+        "明天见。"
+      ],
+      "tq": "Di mana kamu belajar bahasa Mandarin?",
+      "ta": "Aku belajar di sekolah."
+    },
+    {
+      "kind": "dialog",
+      "text": "男：你会写这个字吗？/女：我会。",
+      "q": "女的会写这个字吗？",
+      "ok": "会",
+      "wrong": [
+        "不会",
+        "不知道"
+      ],
+      "t_text": "Laki-laki: Kamu bisa menulis huruf ini? / Perempuan: Aku bisa.",
+      "t_q": "Apakah si perempuan bisa menulis huruf ini?",
+      "t_ok": "Bisa"
+    },
+    {
+      "kind": "dialog",
+      "text": "女：你们几点上课？/男：我们八点上课。",
+      "q": "他们几点上课？",
+      "ok": "八点",
+      "wrong": [
+        "七点",
+        "九点"
+      ],
+      "t_text": "Perempuan: Jam berapa kalian mulai pelajaran? / Laki-laki: Kami mulai jam delapan.",
+      "t_q": "Jam berapa mereka mulai pelajaran?",
+      "t_ok": "Jam delapan"
+    }
+  ],
+  "reading": [
+    {
+      "kind": "cloze",
+      "stem": "我在学校学习（　）。",
+      "ok": "汉语",
+      "wrong": [
+        "米饭",
+        "苹果",
+        "牛奶"
+      ],
+      "zh": "我在学校学习汉语。",
+      "id": "Aku belajar bahasa Mandarin di sekolah."
+    },
+    {
+      "kind": "cloze",
+      "stem": "老师说，请（　）书。",
+      "ok": "读",
+      "wrong": [
+        "喝",
+        "吃",
+        "去"
+      ],
+      "zh": "老师说，请读书。",
+      "id": "Guru berkata, silakan baca buku."
+    },
+    {
+      "kind": "text",
+      "text": "我是学生，我在学校学习汉语。老师很好，同学也很好。",
+      "q": "★ 他在哪儿学习汉语？",
+      "ok": "学校",
+      "wrong": [
+        "家",
+        "医院"
+      ],
+      "t_text": "Aku seorang pelajar, aku belajar bahasa Mandarin di sekolah. Gurunya baik, teman-teman sekelas juga baik.",
+      "t_q": "Di mana dia belajar bahasa Mandarin?",
+      "t_ok": "Di sekolah"
+    }
+  ],
+  "speaking": [
+    "我在学校学习汉语。",
+    "你的汉语很好。",
+    "我会写这个字。"
+  ]
+}

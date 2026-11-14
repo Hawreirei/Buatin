@@ -1,0 +1,202 @@
+{
+  "id": "makan-minum",
+  "level": 1,
+  "seq": 5,
+  "zh": "吃什么，喝什么",
+  "title": "Makanan dan minuman sehari-hari",
+  "summary": "Menyebut makanan dan minuman, menyatakan keinginan dan selera.",
+  "keySentences": [
+    {
+      "zh": "你喝茶吗？",
+      "id": "Kamu mau minum teh?",
+      "tokens": [
+        "你",
+        "喝",
+        "茶",
+        "吗",
+        "？"
+      ]
+    },
+    {
+      "zh": "我想吃米饭。",
+      "id": "Aku ingin makan nasi.",
+      "tokens": [
+        "我",
+        "想",
+        "吃",
+        "米饭",
+        "。"
+      ]
+    },
+    {
+      "zh": "我要一杯牛奶。",
+      "id": "Aku mau segelas susu.",
+      "tokens": [
+        "我",
+        "要",
+        "一",
+        "杯",
+        "牛奶",
+        "。"
+      ]
+    },
+    {
+      "zh": "苹果很好吃。",
+      "id": "Apelnya enak sekali.",
+      "tokens": [
+        "苹果",
+        "很",
+        "好吃",
+        "。"
+      ],
+      "order": false
+    },
+    {
+      "zh": "你想喝什么？",
+      "id": "Kamu ingin minum apa?",
+      "tokens": [
+        "你",
+        "想",
+        "喝",
+        "什么",
+        "？"
+      ]
+    },
+    {
+      "zh": "我不喝茶，我喝水。",
+      "id": "Aku tidak minum teh, aku minum air.",
+      "tokens": [
+        "我",
+        "不",
+        "喝",
+        "茶",
+        "，",
+        "我",
+        "喝",
+        "水",
+        "。"
+      ],
+      "order": false
+    },
+    {
+      "zh": "这个面包很好吃。",
+      "id": "Roti ini enak sekali.",
+      "tokens": [
+        "这个",
+        "面包",
+        "很",
+        "好吃",
+        "。"
+      ]
+    },
+    {
+      "zh": "请给我一个鸡蛋。",
+      "id": "Tolong beri aku satu telur.",
+      "tokens": [
+        "请",
+        "给",
+        "我",
+        "一",
+        "个",
+        "鸡蛋",
+        "。"
+      ],
+      "order": false
+    }
+  ],
+  "keyWords": [
+    "吃",
+    "喝",
+    "米饭",
+    "水",
+    "茶",
+    "牛奶",
+    "苹果",
+    "面包",
+    "鸡蛋",
+    "好吃"
+  ],
+  "listening": [
+    {
+      "kind": "qa",
+      "q": "你想喝什么？",
+      "ok": "我想喝茶。",
+      "wrong": [
+        "我在学校。",
+        "我是学生。"
+      ],
+      "tq": "Kamu ingin minum apa?",
+      "ta": "Aku ingin minum teh."
+    },
+    {
+      "kind": "dialog",
+      "text": "女：你吃米饭吗？/男：不吃，我想吃面包。",
+      "q": "男的想吃什么？",
+      "ok": "面包",
+      "wrong": [
+        "米饭",
+        "苹果"
+      ],
+      "t_text": "Perempuan: Kamu makan nasi? / Laki-laki: Tidak, aku ingin makan roti.",
+      "t_q": "Apa yang ingin dimakan si laki-laki?",
+      "t_ok": "Roti"
+    },
+    {
+      "kind": "dialog",
+      "text": "男：这个苹果好吃吗？/女：很好吃！",
+      "q": "苹果怎么样？",
+      "ok": "很好吃",
+      "wrong": [
+        "很热",
+        "不好吃"
+      ],
+      "t_text": "Laki-laki: Apel ini enak? / Perempuan: Enak sekali!",
+      "t_q": "Bagaimana apelnya?",
+      "t_ok": "Enak sekali"
+    }
+  ],
+  "reading": [
+    {
+      "kind": "cloze",
+      "stem": "我想（　）一杯茶。",
+      "ok": "喝",
+      "wrong": [
+        "吃",
+        "去",
+        "看"
+      ],
+      "zh": "我想喝一杯茶。",
+      "id": "Aku ingin minum secangkir teh."
+    },
+    {
+      "kind": "cloze",
+      "stem": "这个苹果很（　）。",
+      "ok": "好吃",
+      "wrong": [
+        "学校",
+        "老师",
+        "天气"
+      ],
+      "zh": "这个苹果很好吃。",
+      "id": "Apel ini enak sekali."
+    },
+    {
+      "kind": "text",
+      "text": "早上我吃面包和鸡蛋，喝牛奶。晚上我吃米饭，喝茶。",
+      "q": "★ 早上他喝什么？",
+      "ok": "牛奶",
+      "wrong": [
+        "茶",
+        "水"
+      ],
+      "t_text": "Pagi hari aku makan roti dan telur, minum susu. Malam hari aku makan nasi, minum teh.",
+      "t_q": "Apa yang dia minum di pagi hari?",
+      "t_ok": "Susu"
+    }
+  ],
+  "speaking": [
+    "你喝茶吗？",
+    "我想吃米饭。",
+    "苹果很好吃。"
+  ]
+}

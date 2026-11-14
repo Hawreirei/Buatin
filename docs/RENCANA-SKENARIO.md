@@ -1,6 +1,6 @@
 # Rencana Skenario Tambahan HSK 1–6
 
-Status: **gelombang 0 (persiapan: arti Indonesia per kata kunci, kepingan frasa HSK 4+, pemeriksa bacaan khusus, pengelompokan UI per level, lembar review) sudah dikerjakan; gelombang 1 (HSK 1) sedang dikerjakan.** Sisanya masih rencana.
+Status: **gelombang 0 (persiapan: arti Indonesia per kata kunci, kepingan frasa HSK 4+, pemeriksa bacaan khusus, pengelompokan UI per level, lembar review) sudah dikerjakan; gelombang 1 (HSK 1, 6 skenario baru → 7) sudah dikerjakan.** Sisanya masih rencana.
 
 Permintaan: tambah skenario pelajaran untuk HSK 1–6, **minimal 5 per level** (jangan hanya 1 atau sedikit di HSK 1), dengan memperhatikan kosakata tiap level. Dokumen ini berisi daftar skenario, kosakata kandidat, perubahan teknis yang dibutuhkan, urutan kerja, dan hal yang perlu Anda putuskan.
 
@@ -528,12 +528,12 @@ Per skenario: ±8 kalimat kunci, 10–12 kata kunci, 3 soal dengar, 3 soal baca,
 | Level | Id | Judul | Status |
 |---|---|---|---|
 | HSK 1 | `perkenalan` | 自我介绍 · Perkenalan diri | sudah ada |
-| HSK 1 | `sapaan` | 问候 · Sapaan dan sopan santun | **rencana** |
-| HSK 1 | `angka-waktu` | 数字和时间 · Angka, tanggal, dan jam | **rencana** |
-| HSK 1 | `keluarga` | 我的家人 · Keluarga saya | **rencana** |
-| HSK 1 | `cuaca` | 天气 · Cuaca hari ini | **rencana** |
-| HSK 1 | `makan-minum` | 吃什么，喝什么 · Makanan dan minuman sehari-hari | **rencana** |
-| HSK 1 | `sekolah` | 在学校 · Di sekolah | **rencana** |
+| HSK 1 | `sapaan` | 问候 · Sapaan dan sopan santun | **sudah ada (gelombang 1)** |
+| HSK 1 | `angka-waktu` | 数字和时间 · Angka, tanggal, dan jam | **sudah ada (gelombang 1)** |
+| HSK 1 | `keluarga` | 我的家人 · Keluarga saya | **sudah ada (gelombang 1)** |
+| HSK 1 | `cuaca` | 天气 · Cuaca hari ini | **sudah ada (gelombang 1)** |
+| HSK 1 | `makan-minum` | 吃什么，喝什么 · Makanan dan minuman sehari-hari | **sudah ada (gelombang 1)** |
+| HSK 1 | `sekolah` | 在学校 · Di sekolah | **sudah ada (gelombang 1)** |
 | HSK 2 | `belanja` | 买东西 · Belanja | sudah ada |
 | HSK 2 | `tanya-arah` | 问路 · Bertanya arah | sudah ada |
 | HSK 2 | `telepon` | 打电话 · Menelepon dan janjian | **rencana** |

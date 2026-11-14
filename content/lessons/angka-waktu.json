@@ -1,0 +1,205 @@
+{
+  "id": "angka-waktu",
+  "level": 1,
+  "seq": 3,
+  "zh": "数字和时间",
+  "title": "Angka, tanggal, dan jam",
+  "summary": "Menyebut angka, bertanya dan menjawab jam, tanggal, serta hari.",
+  "keySentences": [
+    {
+      "zh": "现在几点？",
+      "id": "Sekarang jam berapa?",
+      "tokens": [
+        "现在",
+        "几",
+        "点",
+        "？"
+      ]
+    },
+    {
+      "zh": "现在八点。",
+      "id": "Sekarang jam delapan.",
+      "tokens": [
+        "现在",
+        "八",
+        "点",
+        "。"
+      ],
+      "order": false
+    },
+    {
+      "zh": "今天几月几号？",
+      "id": "Hari ini tanggal berapa?",
+      "tokens": [
+        "今天",
+        "几",
+        "月",
+        "几",
+        "号",
+        "？"
+      ]
+    },
+    {
+      "zh": "今天星期三。",
+      "id": "Hari ini hari Rabu.",
+      "tokens": [
+        "今天",
+        "星期",
+        "三",
+        "。"
+      ],
+      "order": false
+    },
+    {
+      "zh": "我八点去学校。",
+      "id": "Aku pergi ke sekolah jam delapan.",
+      "tokens": [
+        "我",
+        "八",
+        "点",
+        "去",
+        "学校",
+        "。"
+      ],
+      "alt": [
+        "八点我去学校。"
+      ]
+    },
+    {
+      "zh": "现在是三点半。",
+      "id": "Sekarang jam setengah empat.",
+      "tokens": [
+        "现在",
+        "是",
+        "三",
+        "点",
+        "半",
+        "。"
+      ]
+    },
+    {
+      "zh": "你几点去学校？",
+      "id": "Jam berapa kamu pergi ke sekolah?",
+      "tokens": [
+        "你",
+        "几",
+        "点",
+        "去",
+        "学校",
+        "？"
+      ],
+      "alt": [
+        "几点你去学校？"
+      ]
+    },
+    {
+      "zh": "今天十月二十号。",
+      "id": "Hari ini tanggal 20 Oktober.",
+      "tokens": [
+        "今天",
+        "十",
+        "月",
+        "二",
+        "十",
+        "号",
+        "。"
+      ],
+      "order": false
+    }
+  ],
+  "keyWords": [
+    "几",
+    "点",
+    "分钟",
+    "月",
+    "号",
+    "星期",
+    "年",
+    "今天",
+    "明天",
+    "现在"
+  ],
+  "listening": [
+    {
+      "kind": "qa",
+      "q": "现在几点？",
+      "ok": "现在八点。",
+      "wrong": [
+        "今天星期三。",
+        "我有两个。"
+      ],
+      "tq": "Sekarang jam berapa?",
+      "ta": "Sekarang jam delapan."
+    },
+    {
+      "kind": "dialog",
+      "text": "男：今天几号？/女：今天十号。",
+      "q": "今天几号？",
+      "ok": "十号",
+      "wrong": [
+        "七号",
+        "二十号"
+      ],
+      "t_text": "Laki-laki: Hari ini tanggal berapa? / Perempuan: Hari ini tanggal sepuluh.",
+      "t_q": "Hari ini tanggal berapa?",
+      "t_ok": "Tanggal sepuluh"
+    },
+    {
+      "kind": "dialog",
+      "text": "女：你几点去学校？/男：我八点去。",
+      "q": "男的几点去学校？",
+      "ok": "八点",
+      "wrong": [
+        "七点",
+        "九点"
+      ],
+      "t_text": "Perempuan: Jam berapa kamu pergi ke sekolah? / Laki-laki: Aku pergi jam delapan.",
+      "t_q": "Jam berapa si laki-laki pergi ke sekolah?",
+      "t_ok": "Jam delapan"
+    }
+  ],
+  "reading": [
+    {
+      "kind": "cloze",
+      "stem": "现在（　）点？",
+      "ok": "几",
+      "wrong": [
+        "谁",
+        "吃",
+        "去"
+      ],
+      "zh": "现在几点？",
+      "id": "Sekarang jam berapa?"
+    },
+    {
+      "kind": "cloze",
+      "stem": "今天星期（　）。",
+      "ok": "三",
+      "wrong": [
+        "吗",
+        "好",
+        "是"
+      ],
+      "zh": "今天星期三。",
+      "id": "Hari ini hari Rabu."
+    },
+    {
+      "kind": "text",
+      "text": "我八点去学校，十二点吃饭，五点回家。",
+      "q": "★ 他几点吃饭？",
+      "ok": "十二点",
+      "wrong": [
+        "八点",
+        "五点"
+      ],
+      "t_text": "Aku pergi ke sekolah jam delapan, makan jam dua belas, pulang jam lima.",
+      "t_q": "Jam berapa dia makan?",
+      "t_ok": "Jam dua belas"
+    }
+  ],
+  "speaking": [
+    "现在几点？",
+    "今天几月几号？",
+    "我八点去学校。"
+  ]
+}

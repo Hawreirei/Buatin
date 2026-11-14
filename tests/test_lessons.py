@@ -62,9 +62,34 @@ class LessonTests(unittest.TestCase):
         # HSK 3 characters 咳嗽痛肚嗓挂 are not in the syllabus yet: they must not appear anywhere (the level lock test covers the text)
         self.assertTrue(all(k.get("extra") or k["level"] <= 3 for k in lesson["keyWords"]))
 
+    def test_every_lesson_has_the_full_set(self):
+        for l in L:
+            n = {k: len(v) for k, v in l["steps"].items()}
+            self.assertGreaterEqual(n["listening"], 3, l["id"])
+            self.assertGreaterEqual(n["reading"], 3, l["id"])
+            self.assertGreaterEqual(n["writing"], 5, l["id"])
+            self.assertGreaterEqual(len(l["keyWords"]), 8, l["id"])
+            self.assertGreaterEqual(len(l["speaking"]), 3, l["id"])
+            self.assertGreaterEqual(len(l["keySentences"]), 6, l["id"])
+
+    def test_scenarios_per_level_follow_the_plan(self):
+        """docs/RENCANA-SKENARIO.md: HSK 1 gets 7 scenarios and every level at least 5 once all waves are done."""
+        count = {}
+        for l in L:
+            count[l["level"]] = count.get(l["level"], 0) + 1
+        self.assertGreaterEqual(count[1], 7)
+
+    def test_hsk1_wave_lessons_present(self):
+        ids = {l["id"] for l in L if l["level"] == 1}
+        self.assertTrue({"sapaan", "perkenalan", "angka-waktu", "keluarga", "makan-minum", "cuaca", "sekolah"} <= ids)
+        for l in L:
+            if l["level"] == 1:
+                self.assertFalse(any(re.search("(?<!女)儿(?!子)", s["zh"]) for s in l["keySentences"]), l["id"])   # erhua; 女儿/儿子 are words
+
     def test_lessons_sorted_easiest_first(self):
-        keys = [(l["level"], l["id"]) for l in L]
-        self.assertEqual(keys, sorted(keys))
+        levels = [l["level"] for l in L]
+        self.assertEqual(levels, sorted(levels))                      # inside a level the order is the content files' "seq"
+        self.assertEqual([l["id"] for l in L if l["level"] == 1][:2], ["sapaan", "perkenalan"])
 
     def test_committed_data_is_current(self):
         """lessons.json must be what the content files build to (run `npm run build` after editing content/lessons)."""

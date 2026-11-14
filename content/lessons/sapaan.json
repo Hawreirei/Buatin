@@ -1,0 +1,195 @@
+{
+  "id": "sapaan",
+  "level": 1,
+  "seq": 1,
+  "zh": "问候",
+  "title": "Sapaan dan sopan santun",
+  "summary": "Menyapa, menanyakan kabar, berterima kasih, minta maaf, dan berpamitan.",
+  "keySentences": [
+    {
+      "zh": "你好吗？",
+      "id": "Apa kabar?",
+      "tokens": [
+        "你",
+        "好",
+        "吗",
+        "？"
+      ]
+    },
+    {
+      "zh": "我很好，谢谢。",
+      "id": "Aku baik, terima kasih.",
+      "tokens": [
+        "我",
+        "很",
+        "好",
+        "，",
+        "谢谢",
+        "。"
+      ],
+      "alt": [
+        "谢谢，我很好。"
+      ]
+    },
+    {
+      "zh": "我也很好。",
+      "id": "Aku juga baik.",
+      "tokens": [
+        "我",
+        "也",
+        "很",
+        "好",
+        "。"
+      ]
+    },
+    {
+      "zh": "对不起，没关系。",
+      "id": "Maaf, tidak apa-apa.",
+      "tokens": [
+        "对不起",
+        "，",
+        "没关系",
+        "。"
+      ],
+      "order": false
+    },
+    {
+      "zh": "早上好！",
+      "id": "Selamat pagi!",
+      "tokens": [
+        "早上",
+        "好",
+        "！"
+      ],
+      "order": false
+    },
+    {
+      "zh": "老师好！",
+      "id": "Halo, Bu/Pak guru!",
+      "tokens": [
+        "老师",
+        "好",
+        "！"
+      ],
+      "order": false
+    },
+    {
+      "zh": "我们明天见。",
+      "id": "Kita bertemu besok.",
+      "tokens": [
+        "我们",
+        "明天",
+        "见",
+        "。"
+      ],
+      "alt": [
+        "明天我们见。"
+      ]
+    },
+    {
+      "zh": "你们好吗？",
+      "id": "Apa kabar kalian?",
+      "tokens": [
+        "你们",
+        "好",
+        "吗",
+        "？"
+      ]
+    }
+  ],
+  "keyWords": [
+    "你好",
+    "谢谢",
+    "不客气",
+    "对不起",
+    "没关系",
+    "再见",
+    "早上",
+    "老师",
+    "明天",
+    "请"
+  ],
+  "listening": [
+    {
+      "kind": "qa",
+      "q": "你好吗？",
+      "ok": "我很好，谢谢。",
+      "wrong": [
+        "我是学生。",
+        "我在学校。"
+      ],
+      "tq": "Apa kabar?",
+      "ta": "Aku baik, terima kasih."
+    },
+    {
+      "kind": "dialog",
+      "text": "女：老师好！/男：你好，请坐。",
+      "q": "谁是老师？",
+      "ok": "男的",
+      "wrong": [
+        "女的",
+        "他们都是老师"
+      ],
+      "t_text": "Perempuan: Halo, Pak guru! / Laki-laki: Halo, silakan duduk.",
+      "t_q": "Siapa gurunya?",
+      "t_ok": "Si laki-laki"
+    },
+    {
+      "kind": "dialog",
+      "text": "男：对不起！/女：没关系。",
+      "q": "女的说什么？",
+      "ok": "没关系",
+      "wrong": [
+        "谢谢",
+        "再见"
+      ],
+      "t_text": "Laki-laki: Maaf! / Perempuan: Tidak apa-apa.",
+      "t_q": "Apa kata si perempuan?",
+      "t_ok": "Tidak apa-apa"
+    }
+  ],
+  "reading": [
+    {
+      "kind": "cloze",
+      "stem": "对不起，（　）关系。",
+      "ok": "没",
+      "wrong": [
+        "吃",
+        "去",
+        "写"
+      ],
+      "zh": "对不起，没关系。",
+      "id": "Maaf, tidak apa-apa."
+    },
+    {
+      "kind": "cloze",
+      "stem": "我们明天（　）！",
+      "ok": "见",
+      "wrong": [
+        "高",
+        "大",
+        "小"
+      ],
+      "zh": "我们明天见！",
+      "id": "Sampai besok!"
+    },
+    {
+      "kind": "text",
+      "text": "早上我在学校，老师说你好，我说老师好。",
+      "q": "★ 老师说什么？",
+      "ok": "你好",
+      "wrong": [
+        "再见",
+        "对不起"
+      ],
+      "t_text": "Pagi hari aku di sekolah, guru bilang halo, aku bilang halo Bu/Pak guru.",
+      "t_q": "Apa kata guru?",
+      "t_ok": "Halo"
+    }
+  ],
+  "speaking": [
+    "你好吗？",
+    "我很好，谢谢。",
+    "我们明天见。"
+  ]
+}

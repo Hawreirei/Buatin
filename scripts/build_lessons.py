@@ -12,6 +12,8 @@ Quality rules (re-checked in tests/test_lessons.py):
     way (行 háng, 长 zhǎng, 还 huán, 都 dū, 好 hào, ...) must be covered by an entry in the lesson's "readings" ({"银行": "yín háng"}),
     so every unusual reading has been looked at on purpose and shows up in the review sheet.
 
+A lesson may carry "seq": N (teaching order inside its level; default 100, ties by id).
+
 Usage: python3 -I scripts/build_lessons.py
 """
 import importlib.util
@@ -249,8 +251,8 @@ def build_all():
         if lesson["id"] in seen or lesson["id"] != path.stem:
             problems.append(f"{path.name}: id must be unique and equal to the file name")
         seen.add(lesson["id"])
-        out.append(build(lesson, vocab, ent, allowed, problems))
-    out.sort(key=lambda l: (l["level"], l["id"]))             # easiest first
+        out.append((lesson.get("seq", 100), build(lesson, vocab, ent, allowed, problems)))
+    out = [l for _, l in sorted(out, key=lambda x: (x[1]["level"], x[0], x[1]["id"]))]      # easiest level first; "seq" is the teaching order inside a level
     return out, problems
 
 

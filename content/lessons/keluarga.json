@@ -1,0 +1,207 @@
+{
+  "id": "keluarga",
+  "level": 1,
+  "seq": 4,
+  "zh": "我的家人",
+  "title": "Keluarga saya",
+  "summary": "Menyebut anggota keluarga, jumlah orang, dan pekerjaan mereka.",
+  "keySentences": [
+    {
+      "zh": "你家有几口人？",
+      "id": "Keluargamu ada berapa orang?",
+      "tokens": [
+        "你",
+        "家",
+        "有",
+        "几",
+        "口",
+        "人",
+        "？"
+      ]
+    },
+    {
+      "zh": "我家有五口人。",
+      "id": "Keluargaku ada lima orang.",
+      "tokens": [
+        "我",
+        "家",
+        "有",
+        "五",
+        "口",
+        "人",
+        "。"
+      ],
+      "order": false
+    },
+    {
+      "zh": "我有一个哥哥和一个妹妹。",
+      "id": "Aku punya satu kakak laki-laki dan satu adik perempuan.",
+      "tokens": [
+        "我",
+        "有",
+        "一",
+        "个",
+        "哥哥",
+        "和",
+        "一",
+        "个",
+        "妹妹",
+        "。"
+      ],
+      "order": false
+    },
+    {
+      "zh": "我爸爸是医生。",
+      "id": "Ayahku seorang dokter.",
+      "tokens": [
+        "我",
+        "爸爸",
+        "是",
+        "医生",
+        "。"
+      ]
+    },
+    {
+      "zh": "我妈妈是老师。",
+      "id": "Ibuku seorang guru.",
+      "tokens": [
+        "我",
+        "妈妈",
+        "是",
+        "老师",
+        "。"
+      ],
+      "order": false
+    },
+    {
+      "zh": "我姐姐工作很忙。",
+      "id": "Kakak perempuanku sibuk bekerja.",
+      "tokens": [
+        "我",
+        "姐姐",
+        "工作",
+        "很",
+        "忙",
+        "。"
+      ]
+    },
+    {
+      "zh": "他们都很好。",
+      "id": "Mereka semua baik.",
+      "tokens": [
+        "他们",
+        "都",
+        "很",
+        "好",
+        "。"
+      ]
+    },
+    {
+      "zh": "我有一个女儿。",
+      "id": "Aku punya satu anak perempuan.",
+      "tokens": [
+        "我",
+        "有",
+        "一",
+        "个",
+        "女儿",
+        "。"
+      ]
+    }
+  ],
+  "keyWords": [
+    "爸爸",
+    "妈妈",
+    "哥哥",
+    "姐姐",
+    "弟弟",
+    "妹妹",
+    "儿子",
+    "女儿",
+    "家",
+    "口"
+  ],
+  "listening": [
+    {
+      "kind": "qa",
+      "q": "你家有几口人？",
+      "ok": "我家有五口人。",
+      "wrong": [
+        "我有一个朋友。",
+        "我在学校。"
+      ],
+      "tq": "Keluargamu ada berapa orang?",
+      "ta": "Keluargaku ada lima orang."
+    },
+    {
+      "kind": "dialog",
+      "text": "男：你有哥哥吗？/女：我没有哥哥，我有一个姐姐。",
+      "q": "女的有什么？",
+      "ok": "一个姐姐",
+      "wrong": [
+        "一个哥哥",
+        "一个妹妹"
+      ],
+      "t_text": "Laki-laki: Kamu punya kakak laki-laki? / Perempuan: Aku tidak punya kakak laki-laki, aku punya satu kakak perempuan.",
+      "t_q": "Apa yang dimiliki si perempuan?",
+      "t_ok": "Satu kakak perempuan"
+    },
+    {
+      "kind": "dialog",
+      "text": "女：你爸爸做什么工作？/男：他是医生。",
+      "q": "男的爸爸做什么工作？",
+      "ok": "医生",
+      "wrong": [
+        "老师",
+        "学生"
+      ],
+      "t_text": "Perempuan: Apa pekerjaan ayahmu? / Laki-laki: Dia seorang dokter.",
+      "t_q": "Apa pekerjaan ayah si laki-laki?",
+      "t_ok": "Dokter"
+    }
+  ],
+  "reading": [
+    {
+      "kind": "cloze",
+      "stem": "我家有五（　）人。",
+      "ok": "口",
+      "wrong": [
+        "岁",
+        "块",
+        "件"
+      ],
+      "zh": "我家有五口人。",
+      "id": "Keluargaku ada lima orang."
+    },
+    {
+      "kind": "cloze",
+      "stem": "我爸爸是（　）。",
+      "ok": "医生",
+      "wrong": [
+        "苹果",
+        "学校",
+        "电话"
+      ],
+      "zh": "我爸爸是医生。",
+      "id": "Ayahku seorang dokter."
+    },
+    {
+      "kind": "text",
+      "text": "我家有五口人。爸爸是医生，妈妈是老师，哥哥和妹妹是学生。",
+      "q": "★ 谁是医生？",
+      "ok": "爸爸",
+      "wrong": [
+        "妈妈",
+        "哥哥"
+      ],
+      "t_text": "Keluargaku ada lima orang. Ayah dokter, ibu guru, kakak laki-laki dan adik perempuan adalah pelajar.",
+      "t_q": "Siapa yang menjadi dokter?",
+      "t_ok": "Ayah"
+    }
+  ],
+  "speaking": [
+    "你家有几口人？",
+    "我爸爸是医生。",
+    "我有一个女儿。"
+  ]
+}
