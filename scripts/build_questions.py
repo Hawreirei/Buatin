@@ -4,6 +4,7 @@
 Types (names follow blueprints/hsk3.0):
   cloze_wordbank              reading   fill the blank in an example sentence (4 options, 1 correct)
   write_hanzi_from_pinyin     writing   type the missing hanzi given its pinyin
+  order_sentence              writing   put shuffled word/punctuation pieces of an example sentence in order
   audio_question_pick_answer  listening hear a question (TTS), pick the answer (3 options)
 
 Sources are the hand-written, level-linted sentences (content/id/level-*.psv -> vocab_id.json) and the
@@ -142,6 +143,73 @@ def make_write(vocab, ent):
             "stem": zh.replace(ch, BLANK, 1), "hint_pinyin": syl, "answer": ch,
             "explain": {"zh": zh, "pinyin": e["contoh"]["pinyin"], "id": e["contoh"]["id"],
                         "word": word, "word_pinyin": w["pinyin"], "arti": e["arti"]},
+        })
+    return out
+
+
+# Words that can move around in a Chinese sentence (time words) or join lists, so more than one order would be
+# correct. Sentences containing them are never used for ordering items.
+ORDER_AMBIGUOUS = {"今天", "明天", "昨天", "现在", "早上", "上午", "中午", "下午", "晚上", "每天", "以前", "以后",
+                   "和", "或者", "还是", "一起", "已经", "刚才", "后天", "前天", "今年", "明年", "去年"}
+PUNCT = "，。？！"
+NUMBER_PIECES = set("一二三四五六七八九十百千万零两块毛元分个")
+
+
+def segment(zh, words):
+    """Forward maximum matching over `words` (a set of pure-hanzi syllabus words); punctuation is its own piece,
+    an unknown hanzi becomes a one-character piece."""
+    longest = max(map(len, words))
+    out, i = [], 0
+    while i < len(zh):
+        if not HAN.match(zh[i]):
+            out.append(zh[i])
+            i += 1
+            continue
+        for n in range(min(longest, len(zh) - i), 0, -1):
+            piece = zh[i:i + n]
+            if n == 1 or (piece in words and all(HAN.match(c) for c in piece)):
+                out.append(piece)
+                i += n
+                break
+    return out
+
+
+def make_order(vocab, ent):
+    """One ordering item per example sentence with 3-7 word pieces and (practically) one valid order.
+    Pieces are words of the syllabus up to the sentence's level; the answer is the audited sentence itself."""
+    out, seen, by_level = [], set(), {}
+    for wid, e in sorted(ent.items()):
+        w = vocab[wid]
+        zh = e["contoh"]["zh"]
+        if zh in seen:
+            continue
+        words = by_level.get(w["level"])
+        if words is None:
+            words = by_level[w["level"]] = {x["word"] for x in vocab.values() if x["level"] <= w["level"] and all(HAN.match(c) for c in x["word"])}
+        pieces = segment(zh, words)
+        body = [t for t in pieces if t not in PUNCT]
+        if "".join(pieces) != zh or not 3 <= len(body) <= 7 or not set(zh) - set(PUNCT):
+            continue
+        if sum(1 for t in body if t in NUMBER_PIECES) >= 3:
+            continue                      # price/number strings (三块五毛): the pieces read as noise
+        if any(t in ORDER_AMBIGUOUS for t in pieces) or any(not HAN.match(c) and c not in PUNCT for c in zh):
+            continue
+        clauses, cur = [], 0               # word pieces per comma-separated clause
+        for t in pieces:
+            if t == "，":
+                clauses.append(cur)
+                cur = 0
+            elif t not in PUNCT:
+                cur += 1
+        clauses.append(cur)
+        if sum(1 for n in clauses if n >= 2) > 1:
+            continue                      # two full clauses could swap places
+        seen.add(zh)
+        out.append({
+            "id": f"o{wid}", "type": "order_sentence", "skill": "writing", "level": w["level"],
+            "stem": e["contoh"]["id"], "tokens": pieces, "answer": zh,
+            "explain": {"zh": zh, "pinyin": e["contoh"]["pinyin"], "id": e["contoh"]["id"],
+                        "word": w["word"], "word_pinyin": w["pinyin"], "arti": e["arti"]},
         })
     return out
 
@@ -409,7 +477,7 @@ def main():
     vocab, ent = load_all()
     problems = []
     allowed = bid.allowed_chars(vocab)
-    items = make_cloze(vocab, ent) + make_write(vocab, ent) + make_listen(allowed, problems)
+    items = make_cloze(vocab, ent) + make_write(vocab, ent) + make_order(vocab, ent) + make_listen(allowed, problems)
     items += make_dialogs(allowed, problems, 1)
     items += make_pictures(problems)
     items += make_texts(allowed, problems)

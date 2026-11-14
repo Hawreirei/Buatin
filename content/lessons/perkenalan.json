@@ -1,0 +1,40 @@
+{
+  "id": "perkenalan",
+  "level": 1,
+  "zh": "自我介绍",
+  "title": "Perkenalan diri",
+  "summary": "Menyapa, menyebut nama, umur, dan keluarga.",
+  "names": ["小明"],
+  "keySentences": [
+    {"zh": "你好，我叫小明。", "id": "Halo, namaku Xiaoming.", "tokens": ["你好", "，", "我", "叫", "小明", "。"], "alt": ["我叫小明，你好。"]},
+    {"zh": "你叫什么名字？", "id": "Siapa namamu?", "tokens": ["你", "叫", "什么", "名字", "？"]},
+    {"zh": "很高兴认识你。", "id": "Senang berkenalan denganmu.", "tokens": ["很", "高兴", "认识", "你", "。"]},
+    {"zh": "我是学生。", "id": "Aku seorang siswa.", "tokens": ["我", "是", "学生", "。"], "order": false},
+    {"zh": "你今年多大？", "id": "Berapa umurmu tahun ini?", "tokens": ["你", "今年", "多", "大", "？"], "order": false},
+    {"zh": "我今年二十岁。", "id": "Aku tahun ini berumur dua puluh tahun.", "tokens": ["我", "今年", "二", "十", "岁", "。"], "order": false},
+    {"zh": "我家有四口人。", "id": "Keluargaku ada empat orang.", "tokens": ["我", "家", "有", "四", "口", "人", "。"]},
+    {"zh": "我喜欢看电影。", "id": "Aku suka menonton film.", "tokens": ["我", "喜欢", "看", "电影", "。"]}
+  ],
+  "keyWords": ["叫", "名字", "认识", "高兴", "学生", "老师", "朋友", "今年", "岁", "喜欢"],
+  "listening": [
+    {"kind": "qa", "q": "你叫什么名字？", "ok": "我叫小明。", "wrong": ["我是学生。", "我很高兴。"],
+     "tq": "Siapa namamu?", "ta": "Namaku Xiaoming."},
+    {"kind": "dialog", "text": "女：你好，你叫什么名字？/男：我叫小明，很高兴认识你。", "q": "男的叫什么名字？",
+     "ok": "小明", "wrong": ["小东", "小白"],
+     "t_text": "Perempuan: Halo, siapa namamu? / Laki-laki: Namaku Xiaoming, senang berkenalan denganmu.", "t_q": "Siapa nama si laki-laki?", "t_ok": "Xiaoming"},
+    {"kind": "dialog", "text": "男：你今年多大？/女：我今年二十岁，你呢？", "q": "女的今年多大？",
+     "ok": "二十岁", "wrong": ["十二岁", "二十二岁"],
+     "t_text": "Laki-laki: Berapa umurmu tahun ini? / Perempuan: Aku tahun ini dua puluh tahun, kamu?", "t_q": "Berapa umur si perempuan tahun ini?", "t_ok": "Dua puluh tahun"}
+  ],
+  "reading": [
+    {"kind": "cloze", "stem": "你叫什么（　）？", "ok": "名字", "wrong": ["学校", "电话", "医院"],
+     "zh": "你叫什么名字？", "id": "Siapa namamu?"},
+    {"kind": "cloze", "stem": "很高兴（　）你。", "ok": "认识", "wrong": ["吃", "喝", "买"],
+     "zh": "很高兴认识你。", "id": "Senang berkenalan denganmu."},
+    {"kind": "text", "text": "我叫小明，今年二十岁。我是学生，我家有四口人。我喜欢看电影。", "q": "★ 小明喜欢做什么？",
+     "ok": "看电影", "wrong": ["看书", "做饭"],
+     "t_text": "Namaku Xiaoming, tahun ini berumur dua puluh tahun. Aku seorang siswa, keluargaku ada empat orang. Aku suka menonton film.",
+     "t_q": "Apa yang suka dilakukan Xiaoming?", "t_ok": "Menonton film"}
+  ],
+  "speaking": ["你好，我叫小明。", "很高兴认识你。", "我家有四口人。"]
+}

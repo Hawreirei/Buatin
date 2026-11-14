@@ -2,9 +2,17 @@
 import { review, isDue, newCard } from "./srs.js";
 import { wordsForLevels } from "./deck.js";
 
+/** Pinned words (added from a lesson) come first, whatever the level setting and the daily limit say. */
+function pinnedWords(vocab, store) {
+  const want = new Set(store.pinned.filter((id) => !store.card(id)));
+  return want.size ? vocab.filter((w) => want.has(w.id)) : [];
+}
+
 export function buildQueue(vocab, store, now = Date.now()) {
   const { levels, newPerDay } = store.settings;
-  const words = wordsForLevels(vocab, levels);
+  const pinned = pinnedWords(vocab, store);
+  const pinnedIds = new Set(pinned.map((w) => w.id));
+  const words = wordsForLevels(vocab, levels).filter((w) => !pinnedIds.has(w.id));
   const dueCards = [];
   const unseen = [];
   for (const w of words) {
@@ -14,7 +22,7 @@ export function buildQueue(vocab, store, now = Date.now()) {
   }
   dueCards.sort((a, b) => a.c.due - b.c.due);
   const slots = Math.max(0, newPerDay - store.introducedToday(now));
-  const fresh = unseen.slice(0, slots).map((w) => ({ w, c: newCard(w.id) }));
+  const fresh = [...pinned, ...unseen.slice(0, slots)].map((w) => ({ w, c: newCard(w.id) }));
   return { due: dueCards, fresh, total: dueCards.length + fresh.length };
 }
 

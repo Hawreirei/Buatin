@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { buildSet, check, summarize, availableLevels, questionKey, withTiles, setLookalikes } from "../../app/js/practice.js";
+import { shuffledBank, checkOrder } from "../../app/js/order.js";
 import { Store } from "../../app/js/store.js";
 
 const Q = JSON.parse(readFileSync(new URL("../../data/hsk3/questions.json", import.meta.url), "utf-8"));
@@ -99,4 +100,28 @@ test("withTiles prefers look-alike characters as distractors", () => {
   setLookalikes({});
   assert.equal(t.tiles.filter((x) => sim.includes(x)).length, 5);
   assert.equal(t.choices.filter((x) => sim.includes(x)).length, 3);
+});
+
+test("order_sentence: buildSet adds a shuffled bank that is never the answer; check needs the full sentence", () => {
+  const set = buildSet(Q, { skills: ["writing"], levels: [1, 2, 3], count: 60 });
+  const orders = set.filter((q) => q.type === "order_sentence");
+  assert.ok(orders.length > 0);
+  for (const q of orders) {
+    assert.deepEqual([...q.bank].sort(), [...q.tokens].sort(), q.id);       // same pieces
+    assert.notEqual(q.bank.join(""), q.answer, q.id);                       // already-correct order is never shown
+    assert.equal(check(q, q.tokens).correct, true);
+    assert.equal(check(q, q.tokens.slice(0, -1)).correct, false);           // incomplete
+    assert.equal(check(q, [...q.tokens].reverse()).correct, false);
+    assert.equal(check(q, []).correct, false);
+    assert.equal(check(q, undefined).correct, false);
+  }
+});
+
+test("order: shuffledBank keeps pieces, differs from the answer; alternatives are accepted", () => {
+  const t = ["我", "想", "吃", "饭", "。"];
+  for (let i = 0; i < 50; i++) { const b = shuffledBank(t); assert.deepEqual([...b].sort(), [...t].sort()); assert.notEqual(b.join(""), t.join("")); }
+  assert.deepEqual(shuffledBank(["好", "好"]), ["好", "好"]);                 // identical pieces: nothing to differ
+  const q = { answer: "我想吃饭。", alt: ["吃饭我想。"], tokens: t };
+  assert.equal(checkOrder(q, ["吃饭", "我想", "。"]).correct, true);
+  assert.equal(checkOrder(q, ["饭", "我", "想", "吃", "。"]).correct, false);
 });

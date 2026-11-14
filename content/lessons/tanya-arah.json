@@ -1,0 +1,39 @@
+{
+  "id": "tanya-arah",
+  "level": 2,
+  "zh": "问路",
+  "title": "Bertanya arah",
+  "summary": "Menanyakan lokasi, jarak, dan arah ke suatu tempat.",
+  "keySentences": [
+    {"zh": "请问，洗手间在哪里？", "id": "Permisi, toilet di mana?", "tokens": ["请问", "，", "洗手间", "在", "哪里", "？"]},
+    {"zh": "地铁站在前面。", "id": "Stasiun kereta bawah tanah ada di depan.", "tokens": ["地铁", "站", "在", "前面", "。"]},
+    {"zh": "往左走，就到了。", "id": "Jalan ke kiri, lalu sampai.", "tokens": ["往", "左", "走", "，", "就", "到", "了", "。"], "order": false},
+    {"zh": "学校离这里很近。", "id": "Sekolah dekat dari sini.", "tokens": ["学校", "离", "这里", "很", "近", "。"]},
+    {"zh": "医院在商店旁边。", "id": "Rumah sakit ada di sebelah toko.", "tokens": ["医院", "在", "商店", "旁边", "。"]},
+    {"zh": "我怎么去机场？", "id": "Bagaimana aku pergi ke bandara?", "tokens": ["我", "怎么", "去", "机场", "？"], "order": false},
+    {"zh": "坐地铁十分钟就到。", "id": "Naik kereta bawah tanah sepuluh menit sampai.", "tokens": ["坐", "地铁", "十", "分钟", "就", "到", "。"], "order": false},
+    {"zh": "机场离这里很远。", "id": "Bandara jauh dari sini.", "tokens": ["机场", "离", "这里", "很", "远", "。"]}
+  ],
+  "keyWords": ["洗手间", "地铁", "车站", "左边", "右边", "前面", "旁边", "离", "远", "近"],
+  "listening": [
+    {"kind": "qa", "q": "请问，洗手间在哪里？", "ok": "在前面，右边。", "wrong": ["我很喜欢。", "谢谢你。"],
+     "tq": "Permisi, toilet di mana?", "ta": "Di depan, sebelah kanan."},
+    {"kind": "dialog", "text": "女：请问，学校离这里远吗？/男：不远，走路十分钟就到。", "q": "学校远吗？",
+     "ok": "不远", "wrong": ["很远", "在医院旁边"],
+     "t_text": "Perempuan: Permisi, apakah sekolah jauh dari sini? / Laki-laki: Tidak jauh, jalan kaki sepuluh menit sampai.", "t_q": "Apakah sekolah jauh?", "t_ok": "Tidak jauh"},
+    {"kind": "dialog", "text": "男：请问，地铁站在哪里？/女：往左走，在商店旁边。", "q": "地铁站在哪里？",
+     "ok": "在商店旁边", "wrong": ["在学校后面", "在医院前面"],
+     "t_text": "Laki-laki: Permisi, stasiun kereta bawah tanah di mana? / Perempuan: Jalan ke kiri, ada di sebelah toko.", "t_q": "Di mana stasiun kereta bawah tanah?", "t_ok": "Di sebelah toko"}
+  ],
+  "reading": [
+    {"kind": "cloze", "stem": "学校（　）这里很近，走路五分钟就到。", "ok": "离", "wrong": ["在", "给", "吗"],
+     "zh": "学校离这里很近，走路五分钟就到。", "id": "Sekolah dekat dari sini, jalan kaki lima menit sampai."},
+    {"kind": "cloze", "stem": "请问，地铁站（　）哪里？", "ok": "在", "wrong": ["吃", "看", "有"],
+     "zh": "请问，地铁站在哪里？", "id": "Permisi, stasiun kereta bawah tanah di mana?"},
+    {"kind": "text", "text": "我家在学校旁边，学校的前面有一个商店，商店的右边是地铁站。我每天坐地铁去公司。", "q": "★ 地铁站在哪里？",
+     "ok": "商店的右边", "wrong": ["学校的后面", "商店的左边"],
+     "t_text": "Rumahku ada di sebelah sekolah, di depan sekolah ada sebuah toko, di sebelah kanan toko adalah stasiun kereta bawah tanah. Setiap hari aku naik kereta bawah tanah ke kantor.",
+     "t_q": "Di mana stasiun kereta bawah tanah?", "t_ok": "Di sebelah kanan toko"}
+  ],
+  "speaking": ["请问，洗手间在哪里？", "地铁站在前面。", "学校离这里很近。"]
+}

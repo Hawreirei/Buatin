@@ -1,11 +1,12 @@
 // Progress & weakness analytics over the local event log. Pure functions, no DOM.
 import { todayKey } from "./store.js";
 import { shuffle } from "./deck.js";
+import { withTiles } from "./practice.js";
 
 const DAY = 86_400_000;
 
 export function wordIdOfQuestion(q) {
-  const m = /^[cw](\d+)$/.exec(q.id ?? "");
+  const m = /^[cwo](\d+)$/.exec(q.id ?? "");
   return m ? Number(m[1]) : null;
 }
 
@@ -50,6 +51,9 @@ export function streak(activeDays, now = Date.now()) {
 export function activeDayKeys(events, reviewLog = {}) {
   return [...new Set([...events.map((e) => todayKey(e.t)), ...Object.keys(reviewLog).filter((k) => reviewLog[k] > 0)])];
 }
+
+/** Skills that Latihan has questions for (speaking is practised only inside lessons). */
+const practiceable = (events) => events.filter((e) => e.s !== "speaking");
 
 /** Types/skills ordered weakest first, only with enough answers to mean something. */
 export function weakest(events, keyFn, minN = 5) {
@@ -125,12 +129,12 @@ export function buildWeakSet(questions, events, { count = 10, levels = null } = 
   const perWord = new Set();
   for (const q of onWeakWords) { const w = wordIdOfQuestion(q); if (!perWord.has(w)) { perWord.add(w); take(q); } }
   if (picked.length < count) {
-    const skills = weakest(events, (e) => e.s, 3);
+    const skills = weakest(practiceable(events), (e) => e.s, 3);
     const skill = skills[0]?.key;
     for (const q of shuffle(questions.filter((q) => ok(q) && (!skill || q.skill === skill)), rand)) take(q);
   }
   if (picked.length < count) for (const q of shuffle(questions.filter(ok), rand)) take(q);
-  return picked.map((q) => (q.options ? { ...q, options: shuffle(q.options, rand) } : q));
+  return picked.map((q) => withTiles(q.options ? { ...q, options: shuffle(q.options, rand) } : q, questions, rand));   // tiles/pieces for write and order items
 }
 
 /** Plain-language findings with an optional action the UI can turn into a button. */
@@ -140,7 +144,7 @@ export function recommendations({ events, exams, cards, vocabById }) {
     recs.push({ kind: "start", text: "Data belum cukup. Kerjakan beberapa latihan soal (minimal 10 soal) agar kelemahan bisa dianalisis." });
     return recs;
   }
-  const skills = weakest(events, (e) => e.s, 5);
+  const skills = weakest(practiceable(events), (e) => e.s, 5);
   const label = { reading: "Membaca", writing: "Menulis", listening: "Mendengar" };
   if (skills.length) {
     const w = skills[0];

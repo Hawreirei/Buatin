@@ -5,10 +5,12 @@ import { stats } from "../session.js";
 import { accuracy, groupAccuracy, dailySeries, streak, activeDayKeys, weakWords, posAccuracy, examTrend, leeches, buildWeakSet, recommendations } from "../analytics.js";
 import { SKILL_LABEL } from "../exam.js";
 import { startPracticeWith, presetPractice } from "./practice.js";
+import { openLesson } from "./lessons.js";
+import { lessonSummary } from "../lesson.js";
 
 const NS = "http://www.w3.org/2000/svg";
 const TYPE_LABEL = {
-  cloze_wordbank: "Isi kata", write_hanzi_from_pinyin: "Tulis hanzi dari pinyin", sentence_match_picture: "Cocokkan kalimat dan gambar",
+  cloze_wordbank: "Isi kata", write_hanzi_from_pinyin: "Tulis hanzi dari pinyin", order_sentence: "Susun kalimat", speak_sentence: "Ucapkan kalimat", sentence_match_picture: "Cocokkan kalimat dan gambar",
   short_text_mcq: "Teks pendek", passage_mcq: "Paragraf bacaan", audio_question_pick_answer: "Dengar tanya-jawab",
   audio_dialog_question_mcq: "Dengar dialog", audio_passage_question_mcq: "Dengar teks", audio_dialog_match_picture: "Dengar dialog, pilih gambar",
   audio_phrase_pick_picture: "Dengar frasa, pilih gambar", audio_sentence_pick_picture: "Dengar kalimat, pilih gambar",
@@ -170,8 +172,22 @@ function statsPanels(app) {
   };
 }
 
+/** Themed lessons: steps done and the score of each step. */
+function lessonsPanel(app) {
+  if (!app.lessons?.length) return null;
+  const cell = (p) => h("td", {}, p == null ? "—" : `${p}%`);
+  const rows = app.lessons.map((l) => {
+    const x = lessonSummary(l, app.store.lessonProgress(l.id));
+    return h("tr", {}, h("td", {}, btn(`${l.zh} ${l.title}`, () => openLesson(app, l.id), "btn mini-text", { "aria-label": `Buka pelajaran ${l.title}` })),
+      h("td", {}, LEVEL_LABEL[l.level]), h("td", { style: "min-width:110px" }, bar(Math.round((100 * x.done) / x.total)), h("small", { class: "hint" }, `${x.done}/${x.total}`)),
+      cell(x.pct.listening), cell(x.pct.reading), cell(x.pct.writing), h("td", {}, x.speaking ? `${x.speaking.ok}/${x.speaking.n}` : "—"));
+  });
+  return panel("Pelajaran bertema", table(["Pelajaran", "Level", "Langkah", "Mendengar", "Membaca", "Menulis", "Bicara (lulus)"], rows),
+    h("p", { class: "hint" }, "Persen = jawaban benar pada percobaan terakhir tiap langkah. Bicara = kalimat yang lulus (≥70%) dari yang dinilai."));
+}
+
 export function viewProgress(app) {
   const { hafalan, latihan } = statsPanels(app);
   const nodes = progressNodes(app, latihan);
-  app.render(...nodes, hafalan);
+  app.render(...nodes, lessonsPanel(app), hafalan);
 }

@@ -4,6 +4,7 @@ import { setLookalikes } from "./practice.js";
 import { Store } from "./store.js";
 import { viewHome } from "./views/home.js";
 import { viewStudy, resetStudy, studyKey } from "./views/study.js";
+import { viewLessons, leaveLessons } from "./views/lessons.js";
 import { viewPractice } from "./views/practice.js";
 import { viewExam, examRunning, abortExam } from "./views/exam.js";
 import { viewQuiz } from "./views/quiz.js";
@@ -21,11 +22,12 @@ const app = {
   idData: {},               // vocab_id.json: id -> {arti, contoh:{zh,pinyin,id}}
   questions: [],            // questions.json
   blueprints: {},           // blueprints.json (official exam structure per level)
+  lessons: [],              // lessons.json (themed lessons with their own questions)
   render: (...nodes) => view.replaceChildren(...nodes.flat().filter((n) => n != null && n !== false)),   // replaceChildren(null) would print "null"
   go,
 };
 
-const views = { home: viewHome, study: viewStudy, practice: viewPractice, exam: viewExam, quiz: viewQuiz, browse: viewBrowse, progress: viewProgress, settings: viewSettings };
+const views = { home: viewHome, lessons: viewLessons, study: viewStudy, practice: viewPractice, exam: viewExam, quiz: viewQuiz, browse: viewBrowse, progress: viewProgress, settings: viewSettings };
 let tab = "home";
 
 function go(t) {
@@ -33,6 +35,7 @@ function go(t) {
     if (!confirm("Ujian sedang berlangsung. Keluar sekarang akan membatalkan ujian (tidak disimpan). Keluar?")) return;
     abortExam();
   }
+  if (tab === "lessons" && t !== "lessons") leaveLessons();
   tab = t;
   view.dataset.view = t;
   for (const b of document.querySelectorAll("#tabs button")) b.setAttribute("aria-selected", String(b.dataset.tab === t));
@@ -62,12 +65,12 @@ const getJson = async (name, fallback) => {
 
 async function boot() {
   try {
-    const [vocab, handwriting, idData, questions, blueprints, lookalikes] = await Promise.all([
+    const [vocab, handwriting, idData, questions, blueprints, lookalikes, lessons] = await Promise.all([
       getJson("vocab.json"), getJson("handwriting.json"),
-      getJson("vocab_id.json", {}), getJson("questions.json", []), getJson("blueprints.json", {}), getJson("lookalikes.json", {}),
+      getJson("vocab_id.json", {}), getJson("questions.json", []), getJson("blueprints.json", {}), getJson("lookalikes.json", {}), getJson("lessons.json", []),
     ]);
     setLookalikes(lookalikes);
-    Object.assign(app, { vocab, handwriting: new Set(handwriting.map((x) => x.char)), idData, questions, blueprints });
+    Object.assign(app, { vocab, handwriting: new Set(handwriting.map((x) => x.char)), idData, questions, blueprints, lessons });
     go("home");
   } catch (err) {
     app.render(h("p", { class: "notice" }, `Gagal memuat data: ${err.message}. Jalankan server dari akar repo: python3 -m http.server 8080, lalu buka /app/.`));

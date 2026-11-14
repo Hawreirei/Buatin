@@ -35,7 +35,8 @@ class QuestionBankTests(unittest.TestCase):
         for p in (ROOT / "blueprints/hsk3.0").glob("level-[123].yaml"):
             bp = yaml.safe_load(p.read_text(encoding="utf-8"))
             types |= {part["type"] for s in bp["sections"] for part in s["parts"]}
-        for t in {q["type"] for q in Q}:
+        practice_only = {"order_sentence"}      # not an official section type yet; used in Latihan only
+        for t in {q["type"] for q in Q} - practice_only:
             self.assertIn(t, types)
 
     def test_cloze_rules(self):
@@ -79,6 +80,21 @@ class QuestionBankTests(unittest.TestCase):
             for c in ALLOWED[q["level"]]:
                 if c != q["answer"]:
                     self.assertNotIn(q["hint_pinyin"], {r.lower() for r in pinyin(c, style=Style.TONE, heteronym=True)[0]}, (q["id"], c))
+
+    def test_order_rules(self):
+        items = by("order_sentence")
+        self.assertGreaterEqual(len(items), 500)
+        for q in items:
+            self.assertEqual("".join(q["tokens"]), q["answer"], q["id"])
+            self.assertEqual(q["answer"], q["explain"]["zh"], q["id"])
+            body = [t for t in q["tokens"] if t not in bq.PUNCT]
+            self.assertTrue(3 <= len(body) <= 7, q["id"])
+            self.assertEqual(q["tokens"][-1] in bq.PUNCT, True, q["id"])        # sentences end with punctuation
+            self.assertFalse(set(q["tokens"]) & bq.ORDER_AMBIGUOUS, q["id"])    # no movable time words / lists
+            self.assertTrue(q["stem"] and q["stem"] == q["explain"]["id"], q["id"])
+            for ch in q["answer"]:
+                if HAN.match(ch):
+                    self.assertIn(ch, ALLOWED[q["level"]], (q["id"], ch))
 
     def test_listening_rules(self):
         for q in by("audio_question_pick_answer"):

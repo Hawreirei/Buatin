@@ -16,11 +16,12 @@ Aplikasi web gratis dan sumber terbuka untuk berlatih **HSK 3.0 (silabus 2025)**
 
 | Tab | Fungsi |
 |---|---|
+| **Pelajaran** | Skenario bertema dengan lima langkah (dengar, baca, tulis, bicara, kosakata): kalimat kunci berpinyin per kata, soal per langkah, kata kunci bisa ditambahkan ke Hafalan. Saat ini: "自我介绍 Perkenalan diri" (HSK 1), "买东西 Belanja" dan "问路 Bertanya arah" (HSK 2), "在餐厅 Di restoran" dan "看病 Di rumah sakit" (HSK 3). Langkah bicara: rekam suara dan bandingkan dengan model, plus penilaian kata yang terdengar lewat pengenalan ucapan browser (Chrome/Edge/Safari), plus opsi eksperimental penilaian kontur nada per suku kata yang dihitung di perangkat |
 | **Hafalan** | Flashcard dengan pengulangan berjarak (SM-2 + langkah belajar), arti Indonesia, kalimat contoh + pinyin + terjemahan, suara; pintasan Spasi dan 1–4 |
-| **Latihan** | 1.918 soal: isi kata, tulis hanzi, tanya-jawab, dialog dan teks mendengar, soal bergambar, teks pendek dan paragraf bacaan; umpan balik dan penjelasan langsung |
+| **Latihan** | 2.746 soal: isi kata, tulis hanzi, susun kalimat, tanya-jawab, dialog dan teks mendengar, soal bergambar, teks pendek dan paragraf bacaan; umpan balik dan penjelasan langsung |
 | **Ujian** | Simulasi bertimer HSK 1–3: jumlah soal, bagian, dan waktu mengikuti tabel resmi CTI; bagian terkunci setelah selesai |
 | **Kuis**, **Daftar** | Kuis arti kata; pencarian kosakata |
-| **Kemajuan** | Tren akurasi, riwayat simulasi, kelemahan per keterampilan/jenis soal/level/jenis kata, kata yang sering salah, kata sulit di hafalan, tombol "Latihan kelemahan" |
+| **Kemajuan** | Tren akurasi, riwayat simulasi, ringkasan tiap pelajaran, kelemahan per keterampilan/jenis soal/level/jenis kata, kata yang sering salah, kata sulit di hafalan, tombol "Latihan kelemahan" |
 | **Pengaturan** | Level, kata baru per hari, suara, ekspor/impor/reset progres |
 
 Soal yang jenis resminya belum ada diganti pengganti terdekat dan ditandai di layar; skor simulasi adalah perkiraan, bukan skor resmi (sistem skor resmi HSK 3.0 belum diketahui). Detail teknis dan daftar jenis soal: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).

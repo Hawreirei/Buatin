@@ -4,7 +4,7 @@ import { newCard } from "./srs.js";
 const KEY = "learning-chinese.vocab.v1";
 const LEGACY_KEY = "buatin.vocab.v1";   // name used before the rename; read once so saved progress survives
 export const MAX_EVENTS = 5000;
-export const DEFAULT_SETTINGS = { levels: [1], newPerDay: 10, speak: true, writeMode: "choice" };
+export const DEFAULT_SETTINGS = { levels: [1], newPerDay: 10, speak: true, writeMode: "choice", scoreSpeech: true, toneContour: false };
 
 export function todayKey(now = Date.now()) {
   const d = new Date(now);
@@ -92,6 +92,26 @@ export class Store {
     (this.data.exams ||= []).push(rec);
     if (this.data.exams.length > 200) this.data.exams.shift();
     this.save();
+  }
+
+  /** Lesson progress: { steps: { <step>: { ok, n, t } }, t } (speaking/vocab have ok = n = 0). */
+  lessonProgress(id) { return this.data.lessons?.[id] ?? null; }
+  saveLessonStep(id, step, { ok = 0, n = 0 } = {}, now = Date.now()) {
+    const l = ((this.data.lessons ||= {})[id] ||= { steps: {}, t: now });
+    l.steps[step] = { ok, n, t: now };
+    l.t = now;
+    this.save();
+  }
+  resetLesson(id) { if (this.data.lessons) delete this.data.lessons[id]; this.save(); }
+
+  /** Words the learner asked to study next ("Tambah ke hafalan" in a lesson); the study queue takes them first. */
+  get pinned() { return this.data.pinned ?? []; }
+  pin(ids) {
+    const have = new Set(this.pinned);
+    const add = ids.filter((id) => !have.has(id));
+    if (add.length) (this.data.pinned = [...this.pinned, ...add]);
+    this.save();
+    return add.length;
   }
 
   recordReview(now = Date.now()) {

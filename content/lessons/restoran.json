@@ -1,0 +1,40 @@
+{
+  "id": "restoran",
+  "level": 3,
+  "zh": "在餐厅",
+  "title": "Di restoran",
+  "summary": "Memanggil pelayan, memesan makanan, dan membayar.",
+  "keySentences": [
+    {"zh": "服务员，请给我菜单。", "id": "Pelayan, tolong berikan saya menu.", "tokens": ["服务员", "，", "请", "给", "我", "菜单", "。"], "alt": ["请给我菜单，服务员。"]},
+    {"zh": "你想吃什么？", "id": "Kamu ingin makan apa?", "tokens": ["你", "想", "吃", "什么", "？"]},
+    {"zh": "我要一碗米饭。", "id": "Aku mau semangkuk nasi.", "tokens": ["我", "要", "一", "碗", "米饭", "。"]},
+    {"zh": "这个菜很好吃。", "id": "Masakan ini enak sekali.", "tokens": ["这个", "菜", "很", "好吃", "。"]},
+    {"zh": "请给我一杯茶。", "id": "Tolong berikan saya secangkir teh.", "tokens": ["请", "给", "我", "一", "杯", "茶", "。"]},
+    {"zh": "一共多少钱？", "id": "Totalnya berapa?", "tokens": ["一共", "多少", "钱", "？"], "order": false}
+  ],
+  "keyWords": [
+    {"zh": "服务员", "pinyin": "fúwùyuán", "id": "pelayan"},
+    "菜单", "米饭", "好吃", "碗", "茶", "鱼", "贵", "便宜", "多少", "钱"
+  ],
+  "listening": [
+    {"kind": "qa", "q": "你想吃什么？", "ok": "我想吃米饭。", "wrong": ["我在饭馆。", "我是学生。"],
+     "tq": "Kamu ingin makan apa?", "ta": "Aku ingin makan nasi."},
+    {"kind": "dialog", "text": "女：服务员，请给我菜单。/男：好的，您想喝点儿什么？", "q": "女的在哪儿？",
+     "ok": "在饭馆", "wrong": ["在学校", "在医院"],
+     "t_text": "Perempuan: Pelayan, tolong berikan saya menu. / Laki-laki: Baik, Anda ingin minum apa?", "t_q": "Di mana si perempuan?", "t_ok": "Di restoran"},
+    {"kind": "dialog", "text": "女：一共多少钱？/男：一共四十五块。", "q": "一共多少钱？",
+     "ok": "四十五块", "wrong": ["四十块", "五十四块"],
+     "t_text": "Perempuan: Totalnya berapa? / Laki-laki: Totalnya empat puluh lima yuan.", "t_q": "Totalnya berapa?", "t_ok": "Empat puluh lima yuan"}
+  ],
+  "reading": [
+    {"kind": "cloze", "stem": "这个菜很（　），我还想再吃一碗。", "ok": "好吃", "wrong": ["医院", "学校", "朋友"],
+     "zh": "这个菜很好吃，我还想再吃一碗。", "id": "Masakan ini sangat enak, aku masih ingin makan satu mangkuk lagi."},
+    {"kind": "cloze", "stem": "我想喝一（　）茶。", "ok": "杯", "wrong": ["本", "件", "岁"],
+     "zh": "我想喝一杯茶。", "id": "Aku ingin minum secangkir teh."},
+    {"kind": "text", "text": "今天我和朋友去饭馆吃饭。我们看了菜单，要了鱼和米饭。鱼很好吃，也不贵，一共四十五块。", "q": "★ 他们觉得鱼怎么样？",
+     "ok": "好吃，也不贵", "wrong": ["很贵，不好吃", "不好吃，但是很便宜"],
+     "t_text": "Hari ini aku dan temanku pergi makan di restoran. Kami melihat menu dan memesan ikan dan nasi. Ikannya enak dan tidak mahal, totalnya empat puluh lima yuan.",
+     "t_q": "Bagaimana menurut mereka ikannya?", "t_ok": "Enak dan tidak mahal"}
+  ],
+  "speaking": ["服务员，请给我菜单。", "我要一碗米饭。", "一共多少钱？"]
+}
