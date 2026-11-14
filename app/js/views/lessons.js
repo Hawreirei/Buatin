@@ -4,7 +4,7 @@ import { h, btn, speak, speakSequence, stopSpeaking, listeningParts } from "../u
 import { LEVEL_LABEL } from "../deck.js";
 import { withTiles, check } from "../practice.js";
 import { shuffle } from "../deck.js";
-import { STEPS, QUESTION_STEPS, stepQuestions, isStepDone, doneCount, isComplete, nextStep, questionPosition, stepPercent, lessonWordIds } from "../lesson.js";
+import { groupByLevel, levelSummary, STEPS, QUESTION_STEPS, stepQuestions, isStepDone, doneCount, isComplete, nextStep, questionPosition, stepPercent, lessonWordIds } from "../lesson.js";
 import { recognitionSupported, recorderSupported, startAttempt, scoreAttempt, errorMessage, cleanZh, PASS_PCT } from "../speech.js";
 import { analyzeTones, decodeBlob, syllableTones, expectedTones, TEMPLATES, TONE_ERRORS } from "../tone.js";
 import { questionBody, isListening, explanation, answerLabel } from "./question.js";
@@ -84,16 +84,41 @@ function wordCard(w) {
 }
 
 /* ---------- list ---------- */
+const FILTER_KEY = "learning-chinese.lessons.level";           // a per-device convenience, not part of the progress data
+let levelFilter = (() => { try { return localStorage.getItem(FILTER_KEY) || "all"; } catch { return "all"; } })();
+const setFilter = (v) => { levelFilter = String(v); try { localStorage.setItem(FILTER_KEY, levelFilter); } catch { /* private mode */ } };
+
+/** Open the lesson list, optionally narrowed to one level ("all" or 1-6). Used by the home page. */
+export function openLessonList(app, level = "all") {
+  state.live?.ctl.stop();
+  releaseAudio();
+  setFilter(level);
+  state = { ...fresh(), screen: "list" };
+  app.go("lessons");
+}
+
+function lessonCard(app, l) {
+  const p = app.store.lessonProgress(l.id);
+  return h("button", { type: "button", class: "lesson-card", onclick: () => toLesson(app, l.id) },
+    h("span", { class: "badge" }, LEVEL_LABEL[l.level]),
+    h("span", { class: "lzh", lang: "zh-Hans" }, l.zh), h("strong", {}, l.title), h("span", { class: "hint" }, l.summary),
+    progressBar(p), h("span", { class: "hint" }, `${doneCount(p)}/${STEPS.length} langkah`));
+}
+
 function list(app) {
+  const sums = levelSummary(app.lessons, app.store);
+  if (levelFilter !== "all" && !sums.some((x) => String(x.level) === levelFilter)) levelFilter = "all";   // a stored level that has no lessons
+  const chip = (value, label) => h("button", { type: "button", class: "chip-btn", "aria-pressed": String(levelFilter === String(value)), onclick: () => { setFilter(value); viewLessons(app); } }, label);
+  const groups = groupByLevel(app.lessons).filter((g) => levelFilter === "all" || String(g.level) === levelFilter);
   app.render(
     h("div", { class: "pagehead" }, h("div", {}, h("h2", {}, "Pelajaran"), h("p", { class: "hint" }, "Satu tema, lima langkah: mendengar, membaca, menulis, berbicara, dan kosakata."))),
-    h("div", { class: "lesson-grid" }, ...app.lessons.map((l) => {
-      const p = app.store.lessonProgress(l.id);
-      return h("button", { type: "button", class: "lesson-card", onclick: () => toLesson(app, l.id) },
-        h("span", { class: "badge" }, LEVEL_LABEL[l.level]),
-        h("span", { class: "lzh", lang: "zh-Hans" }, l.zh), h("strong", {}, l.title), h("span", { class: "hint" }, l.summary),
-        progressBar(p), h("span", { class: "hint" }, `${doneCount(p)}/${STEPS.length} langkah`));
-    })));
+    h("div", { class: "chips", role: "group", "aria-label": "Pilih level" }, chip("all", `Semua · ${app.lessons.length}`), ...sums.map((x) => chip(x.level, `${LEVEL_LABEL[x.level]} · ${x.complete}/${x.total}`))),
+    ...groups.map((g) => {
+      const sm = sums.find((x) => x.level === g.level);
+      return h("section", { class: "level-group" },
+        h("h3", { class: "level-head" }, LEVEL_LABEL[g.level], " ", h("small", {}, `${sm.complete}/${sm.total} selesai`)),
+        h("div", { class: "lesson-grid" }, ...g.lessons.map((l) => lessonCard(app, l))));
+    }));
 }
 
 /* ---------- lesson page ---------- */

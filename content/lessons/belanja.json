@@ -4,6 +4,7 @@
   "zh": "买东西",
   "title": "Belanja",
   "summary": "Bertanya harga, memilih barang, dan membeli.",
+  "readings": {"便宜": "pián yi"},
   "keySentences": [
     {"zh": "请问，这件衣服多少钱？", "id": "Permisi, baju ini berapa harganya?", "tokens": ["请问", "，", "这", "件", "衣服", "多少", "钱", "？"]},
     {"zh": "这个太贵了。", "id": "Yang ini terlalu mahal.", "tokens": ["这个", "太", "贵", "了", "。"], "order": false},

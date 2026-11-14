@@ -82,6 +82,62 @@ class LessonTests(unittest.TestCase):
                     self.assertNotEqual(a, q["answer"])
         self.assertGreaterEqual(n, 2)                    # 请给我菜单，服务员。 and 我叫小明，你好。
 
+    # ---- authoring rules (checked on small in-memory lessons)
+    @staticmethod
+    def _problems(level, sentences, key_words=(), readings=None, extra=None):
+        vocab = {w["id"]: w for w in bl.bid.load("vocab.json")}
+        ent = {int(k): v for k, v in bl.bid.load("vocab_id.json").items()}
+        lesson = {"id": "t", "level": level, "zh": "测", "title": "T", "summary": "s", "keySentences": sentences,
+                  "keyWords": list(key_words), "listening": [], "reading": [], "speaking": [], **({"readings": readings} if readings else {}), **(extra or {})}
+        problems = []
+        out = bl.build(lesson, vocab, ent, bl.bid.allowed_chars(vocab), problems)
+        return out, problems
+
+    def test_key_word_with_own_meaning(self):
+        s = [{"zh": "我去面试。", "id": "x", "tokens": ["我", "去", "面试", "。"]}]
+        out, p = self._problems(4, s, [{"word": "面试", "arti": "wawancara kerja"}])
+        self.assertEqual(p, [])
+        kw = out["keyWords"][0]
+        self.assertEqual((kw["word"], kw["arti"], kw["level"]), ("面试", "wawancara kerja", 4))
+        self.assertIn("wid", kw)                                          # a syllabus word: it can be added to Hafalan
+        _, p = self._problems(4, s, ["面试"])                              # bare string: HSK 4+ words have no hand-written meaning
+        self.assertTrue(any("Indonesian meaning" in x for x in p))
+        _, p = self._problems(3, s, [{"word": "面试", "arti": "x"}])        # above the lesson's level
+        self.assertTrue(any("must be a syllabus word" in x for x in p))
+
+    def test_phrase_pieces_only_from_hsk4_and_at_most_eight(self):
+        zh = "我对这个工作很满意。"
+        ph = [{"zh": zh, "id": "x", "tokens": ["我", "对这个工作", "很", "满意", "。"], "phrases": True}]
+        self.assertEqual(self._problems(4, ph)[1], [])
+        self.assertTrue(any("HSK 4+" in x for x in self._problems(3, ph)[1]))
+        no_flag = [{"zh": zh, "id": "x", "tokens": ["我", "对这个工作", "很", "满意", "。"]}]
+        self.assertTrue(any("not a syllabus word" in x for x in self._problems(4, no_flag)[1]))
+        nine = [{"zh": "我们在这里很好吃饭。", "id": "x", "tokens": list("我们在这里很好吃饭") + ["。"], "phrases": True}]
+        self.assertTrue(any("more than 8 pieces" in x for x in self._problems(4, nine)[1]))
+        self.assertEqual(self._problems(4, [{**nine[0], "order": False}])[1], [])
+
+    def test_unusual_readings_must_be_listed(self):
+        s = [{"zh": "银行在前面。", "id": "x", "tokens": ["银行", "在", "前面", "。"]}]
+        _, p = self._problems(3, s)
+        self.assertTrue(any("行 is read háng" in x for x in p), p)
+        out, p = self._problems(3, s, readings={"银行": "yín háng"})
+        self.assertEqual(p, [])
+        self.assertTrue(out["keySentences"][0]["pinyin"].startswith("yín háng"))
+        _, p = self._problems(3, s, readings={"银行": "yín háng", "长大": "zhǎng dà"})
+        self.assertTrue(any("does not occur" in x for x in p))             # a listed reading that is never used is a typo
+        _, p = self._problems(3, s, readings={"银行": "yín"})
+        self.assertTrue(any("one pinyin syllable per hanzi" in x for x in p))
+
+    def test_erhua_does_not_hide_unusual_readings(self):
+        self.assertEqual(bl.unusual_readings("喝一点儿茶", lambda t: "hē yì diǎnr chá"), [])
+        self.assertEqual(bl.unusual_readings("银行", lambda t: "yín háng"), [(1, "行", "háng")])
+        self.assertEqual(bl.unusual_readings("便宜一点儿", lambda t: "pián yi yì diǎnr")[0][1], "便")
+
+    def test_readings_are_in_the_data(self):
+        by_id = {l["id"]: l for l in L}
+        self.assertEqual(by_id["perkenalan"]["readings"], {"高兴": "gāo xìng"})
+        self.assertEqual(by_id["belanja"]["readings"], {"便宜": "pián yi"})
+
     def test_ids_unique_and_files_match(self):
         self.assertEqual(len({l["id"] for l in L}), len(L))
         self.assertEqual({p.stem for p in (ROOT / "content/lessons").glob("*.json")}, {l["id"] for l in L})

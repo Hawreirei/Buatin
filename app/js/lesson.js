@@ -52,3 +52,19 @@ export function nextLesson(lessons, store) {
   const state = (l) => store.lessonProgress(l.id);
   return lessons.find((l) => state(l) && !isComplete(state(l))) ?? lessons.find((l) => !state(l)) ?? null;
 }
+
+/** Lessons grouped by level, easiest first: [{ level, lessons }]. Order inside a level is kept. */
+export function groupByLevel(lessons) {
+  const by = new Map();
+  for (const l of lessons) (by.get(l.level) ?? by.set(l.level, []).get(l.level)).push(l);
+  return [...by.entries()].sort((a, b) => a[0] - b[0]).map(([level, ls]) => ({ level, lessons: ls }));
+}
+
+/** Per level: total lessons, how many are complete, and how many are started (some step done). */
+export function levelSummary(lessons, store) {
+  return groupByLevel(lessons).map(({ level, lessons: ls }) => ({
+    level, total: ls.length,
+    complete: ls.filter((l) => isComplete(store.lessonProgress(l.id))).length,
+    started: ls.filter((l) => doneCount(store.lessonProgress(l.id)) > 0).length,
+  }));
+}

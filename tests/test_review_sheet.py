@@ -28,7 +28,7 @@ class ReviewSheetTests(unittest.TestCase):
         self.assertGreater(counts["填空 Isi kata"], 1500)
         import json
         lessons = json.loads((ROOT / "data/hsk3/lessons.json").read_text(encoding="utf-8"))
-        expect = sum(len(l["keySentences"]) + len(l["keyWords"]) + len(l["steps"]["listening"]) + len(l["steps"]["reading"]) for l in lessons)
+        expect = sum(len(l["keySentences"]) + len(l["keyWords"]) + len(l.get("readings", {})) + len(l["steps"]["listening"]) + len(l["steps"]["reading"]) for l in lessons)
         self.assertEqual(counts["课文 Pelajaran"], expect)
         ws = wb["词汇 Kosakata"]
         self.assertEqual(ws.cell(row=1, column=10).value.split()[0], "状态")   # reviewer status column

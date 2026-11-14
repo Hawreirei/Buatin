@@ -6,7 +6,7 @@ import { accuracy, groupAccuracy, dailySeries, streak, activeDayKeys, weakWords,
 import { SKILL_LABEL } from "../exam.js";
 import { startPracticeWith, presetPractice } from "./practice.js";
 import { openLesson } from "./lessons.js";
-import { lessonSummary } from "../lesson.js";
+import { lessonSummary, groupByLevel } from "../lesson.js";
 
 const NS = "http://www.w3.org/2000/svg";
 const TYPE_LABEL = {
@@ -172,17 +172,26 @@ function statsPanels(app) {
   };
 }
 
-/** Themed lessons: steps done and the score of each step. */
+/** Themed lessons: steps done and the score of each step, one collapsible block per level. */
 function lessonsPanel(app) {
   if (!app.lessons?.length) return null;
   const cell = (p) => h("td", {}, p == null ? "—" : `${p}%`);
-  const rows = app.lessons.map((l) => {
-    const x = lessonSummary(l, app.store.lessonProgress(l.id));
-    return h("tr", {}, h("td", {}, btn(`${l.zh} ${l.title}`, () => openLesson(app, l.id), "btn mini-text", { "aria-label": `Buka pelajaran ${l.title}` })),
-      h("td", {}, LEVEL_LABEL[l.level]), h("td", { style: "min-width:110px" }, bar(Math.round((100 * x.done) / x.total)), h("small", { class: "hint" }, `${x.done}/${x.total}`)),
-      cell(x.pct.listening), cell(x.pct.reading), cell(x.pct.writing), h("td", {}, x.speaking ? `${x.speaking.ok}/${x.speaking.n}` : "—"));
+  const groups = groupByLevel(app.lessons);
+  const sums = groups.map((g) => g.lessons.map((l) => lessonSummary(l, app.store.lessonProgress(l.id))));
+  const firstOpen = Math.max(0, sums.findIndex((xs) => xs.some((x) => x.started)));   // open the level the learner is working on
+  const blocks = groups.map((g, gi) => {
+    const rows = g.lessons.map((l, i) => {
+      const x = sums[gi][i];
+      return h("tr", {}, h("td", {}, btn(`${l.zh} ${l.title}`, () => openLesson(app, l.id), "btn mini-text", { "aria-label": `Buka pelajaran ${l.title}` })),
+        h("td", { style: "min-width:110px" }, bar(Math.round((100 * x.done) / x.total)), h("small", { class: "hint" }, `${x.done}/${x.total}`)),
+        cell(x.pct.listening), cell(x.pct.reading), cell(x.pct.writing), h("td", {}, x.speaking ? `${x.speaking.ok}/${x.speaking.n}` : "—"));
+    });
+    const complete = sums[gi].filter((x) => x.complete).length;
+    return h("details", { class: "level-details", open: gi === firstOpen },
+      h("summary", {}, h("strong", {}, LEVEL_LABEL[g.level]), h("span", { class: "hint" }, ` ${complete}/${g.lessons.length} selesai`)),
+      table(["Pelajaran", "Langkah", "Mendengar", "Membaca", "Menulis", "Bicara (lulus)"], rows));
   });
-  return panel("Pelajaran bertema", table(["Pelajaran", "Level", "Langkah", "Mendengar", "Membaca", "Menulis", "Bicara (lulus)"], rows),
+  return panel("Pelajaran bertema", ...blocks,
     h("p", { class: "hint" }, "Persen = jawaban benar pada percobaan terakhir tiap langkah. Bicara = kalimat yang lulus (≥70%) dari yang dinilai."));
 }
 

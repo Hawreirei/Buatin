@@ -4,6 +4,7 @@
   "zh": "在餐厅",
   "title": "Di restoran",
   "summary": "Memanggil pelayan, memesan makanan, dan membayar.",
+  "readings": {"便宜": "pián yi"},
   "keySentences": [
     {"zh": "服务员，请给我菜单。", "id": "Pelayan, tolong berikan saya menu.", "tokens": ["服务员", "，", "请", "给", "我", "菜单", "。"], "alt": ["请给我菜单，服务员。"]},
     {"zh": "你想吃什么？", "id": "Kamu ingin makan apa?", "tokens": ["你", "想", "吃", "什么", "？"]},

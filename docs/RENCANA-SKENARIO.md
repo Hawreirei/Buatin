@@ -1,6 +1,6 @@
 # Rencana Skenario Tambahan HSK 1–6
 
-Status: **rencana, belum ada yang dikerjakan.** Tidak ada berkas aplikasi atau konten yang diubah; dokumen ini adalah satu-satunya perubahan.
+Status: **gelombang 0 (persiapan: arti Indonesia per kata kunci, kepingan frasa HSK 4+, pemeriksa bacaan khusus, pengelompokan UI per level, lembar review) sudah dikerjakan; gelombang 1 (HSK 1) sedang dikerjakan.** Sisanya masih rencana.
 
 Permintaan: tambah skenario pelajaran untuk HSK 1–6, **minimal 5 per level** (jangan hanya 1 atau sedikit di HSK 1), dengan memperhatikan kosakata tiap level. Dokumen ini berisi daftar skenario, kosakata kandidat, perubahan teknis yang dibutuhkan, urutan kerja, dan hal yang perlu Anda putuskan.
 

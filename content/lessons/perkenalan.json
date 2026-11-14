@@ -5,6 +5,7 @@
   "title": "Perkenalan diri",
   "summary": "Menyapa, menyebut nama, umur, dan keluarga.",
   "names": ["小明"],
+  "readings": {"高兴": "gāo xìng"},
   "keySentences": [
     {"zh": "你好，我叫小明。", "id": "Halo, namaku Xiaoming.", "tokens": ["你好", "，", "我", "叫", "小明", "。"], "alt": ["我叫小明，你好。"]},
     {"zh": "你叫什么名字？", "id": "Siapa namamu?", "tokens": ["你", "叫", "什么", "名字", "？"]},

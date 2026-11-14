@@ -167,6 +167,8 @@ def main():
             rows.append([name, l["level"], "关键句 kalimat kunci", sen["zh"], sen["pinyin"], "", "", sen["id"]])
         for k in l["keyWords"]:
             rows.append([name, l["level"], "关键词 kata kunci" + ("（非大纲 di luar silabus）" if k.get("extra") else ""), k["word"], k["pinyin"], "", "", k["arti"]])
+        for phrase, pin in l.get("readings", {}).items():             # readings written on purpose (non-default pinyin): please check
+            rows.append([name, l["level"], "拼音 bacaan khusus (cek pinyin)", phrase, pin, "", "", ""])
         for step in ("listening", "reading"):
             for q in l["steps"][step]:
                 wrong = " / ".join(o.get("zh") or o.get("word") for o in q["options"] if (o.get("zh") or o.get("word")) != q["answer"])

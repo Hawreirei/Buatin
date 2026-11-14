@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { lessonSummary, nextLesson, STEPS, stepQuestions, isStepDone, doneCount, isComplete, nextStep, questionPosition, stepPercent, lessonWordIds } from "../../app/js/lesson.js";
+import { groupByLevel, levelSummary, lessonSummary, nextLesson, STEPS, stepQuestions, isStepDone, doneCount, isComplete, nextStep, questionPosition, stepPercent, lessonWordIds } from "../../app/js/lesson.js";
 import { Store } from "../../app/js/store.js";
 import { buildQueue } from "../../app/js/session.js";
 import { withTiles, check } from "../../app/js/practice.js";
@@ -143,4 +143,14 @@ test("ordering items accept the listed alternative order, nothing else", () => {
   assert.equal(check(q, q.tokens).correct, true);
   assert.equal(check(q, ["请", "给", "我", "菜单", "，", "服务员", "。"]).correct, true);     // the alternative, pieces rearranged
   assert.equal(check(q, ["服务员", "请", "给", "我", "菜单", "，", "。"]).correct, false);
+});
+
+test("groupByLevel: easiest level first, order inside a level kept; levelSummary counts complete and started", () => {
+  const ls = [{ id: "c", level: 3 }, { id: "a", level: 1 }, { id: "b", level: 1 }, { id: "d", level: 2 }];
+  assert.deepEqual(groupByLevel(ls).map((g) => [g.level, g.lessons.map((l) => l.id)]), [[1, ["a", "b"]], [2, ["d"]], [3, ["c"]]]);
+  assert.deepEqual(groupByLevel([]), []);
+  const s = new Store(mem());
+  for (const st of STEPS) s.saveLessonStep("a", st.key);                 // a: complete
+  s.saveLessonStep("b", "listening", { ok: 1, n: 3 });                   // b: started
+  assert.deepEqual(levelSummary(ls, s), [{ level: 1, total: 2, complete: 1, started: 2 }, { level: 2, total: 1, complete: 0, started: 0 }, { level: 3, total: 1, complete: 0, started: 0 }]);
 });

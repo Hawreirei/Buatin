@@ -361,3 +361,14 @@ label.inline { display: inline-flex; align-items: center; gap: 6px; font-size: 1
 .hz:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 @media (max-width: 480px) { .hzgrid { max-height: 300px; } }
 @media (prefers-reduced-motion: reduce) { .wlayer svg * { transition: none; } }
+
+/* ---- pelajaran per level ---- */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.chip-btn { font: inherit; font-size: 14px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--text); cursor: pointer; }
+.chip-btn:hover { border-color: var(--brand); }
+.chip-btn[aria-pressed="true"] { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); font-weight: 600; }
+.chip-btn:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.level-group { margin: 18px 0 6px; }
+.level-head { margin: 0 0 4px; font-size: 18px; } .level-head small { font-size: 13px; font-weight: 400; color: var(--muted); }
+.level-details { margin: 10px 0; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); padding: 4px 12px 10px; }
+.level-details > summary { cursor: pointer; padding: 8px 0; list-style-position: inside; }
