@@ -1,0 +1,39 @@
+{
+  "id": "rumah-sakit",
+  "level": 3,
+  "zh": "看病",
+  "title": "Di rumah sakit",
+  "summary": "Menjelaskan keluhan, mendengar saran dokter, dan minum obat.",
+  "keySentences": [
+    {"zh": "我不舒服。", "id": "Aku tidak enak badan.", "tokens": ["我", "不", "舒服", "。"], "order": false},
+    {"zh": "你哪里不舒服？", "id": "Bagian mana yang tidak enak?", "tokens": ["你", "哪里", "不", "舒服", "？"]},
+    {"zh": "我头疼，还发烧了。", "id": "Kepalaku sakit, dan juga demam.", "tokens": ["我", "头", "疼", "，", "还", "发烧", "了", "。"], "order": false},
+    {"zh": "医生让我多休息。", "id": "Dokter menyuruhku banyak istirahat.", "tokens": ["医生", "让", "我", "多", "休息", "。"]},
+    {"zh": "这个药一天吃三次。", "id": "Obat ini diminum tiga kali sehari.", "tokens": ["这个", "药", "一", "天", "吃", "三", "次", "。"], "order": false},
+    {"zh": "你吃药了吗？", "id": "Sudah minum obat?", "tokens": ["你", "吃", "药", "了", "吗", "？"]},
+    {"zh": "你不要担心。", "id": "Jangan khawatir.", "tokens": ["你", "不要", "担心", "。"]},
+    {"zh": "我想去医院看病。", "id": "Aku ingin pergi ke rumah sakit untuk berobat.", "tokens": ["我", "想", "去", "医院", "看病", "。"]}
+  ],
+  "keyWords": ["医生", "看病", "药", "舒服", "感冒", "发烧", "疼", "休息", "次", "担心"],
+  "listening": [
+    {"kind": "qa", "q": "你哪里不舒服？", "ok": "我头疼，还有点儿发烧。", "wrong": ["我要买苹果。", "我在学校。"],
+     "tq": "Bagian mana yang tidak enak?", "ta": "Kepalaku sakit, dan agak demam."},
+    {"kind": "dialog", "text": "男：你怎么了？/女：我感冒了，头很疼。", "q": "女的怎么了？",
+     "ok": "感冒了", "wrong": ["饿了", "累了"],
+     "t_text": "Laki-laki: Kamu kenapa? / Perempuan: Aku masuk angin, kepalaku sangat sakit.", "t_q": "Si perempuan kenapa?", "t_ok": "Masuk angin"},
+    {"kind": "dialog", "text": "女：医生，这个药怎么吃？/男：一天三次，饭后吃。", "q": "这个药一天吃几次？",
+     "ok": "三次", "wrong": ["两次", "一次"],
+     "t_text": "Perempuan: Dokter, obat ini cara minumnya bagaimana? / Laki-laki: Tiga kali sehari, diminum setelah makan.", "t_q": "Obat ini diminum berapa kali sehari?", "t_ok": "Tiga kali"}
+  ],
+  "reading": [
+    {"kind": "cloze", "stem": "你生病了，应该去（　）。", "ok": "医院", "wrong": ["商店", "饭馆", "学校"],
+     "zh": "你生病了，应该去医院。", "id": "Kamu sakit, sebaiknya pergi ke rumah sakit."},
+    {"kind": "cloze", "stem": "这个药一天吃三（　）。", "ok": "次", "wrong": ["件", "条", "岁"],
+     "zh": "这个药一天吃三次。", "id": "Obat ini diminum tiga kali sehari."},
+    {"kind": "text", "text": "我昨天开始发烧，头也很疼。今天我去医院看病。医生说我感冒了，让我多喝水，多休息，还要吃药。", "q": "★ 医生让他做什么？",
+     "ok": "多休息，多喝水，吃药", "wrong": ["多吃饭，少喝水", "去学校上课"],
+     "t_text": "Sejak kemarin aku demam dan kepalaku juga sakit. Hari ini aku pergi ke rumah sakit berobat. Dokter bilang aku masuk angin, menyuruhku banyak minum air, banyak istirahat, dan minum obat.",
+     "t_q": "Apa yang dokter suruh dia lakukan?", "t_ok": "Banyak istirahat, banyak minum air, dan minum obat"}
+  ],
+  "speaking": ["你哪里不舒服？", "我头疼，还发烧了。", "你不要担心。"]
+}

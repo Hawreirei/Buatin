@@ -54,6 +54,14 @@ class LessonTests(unittest.TestCase):
         self.assertEqual({k: len(v) for k, v in lesson["steps"].items()}, {"listening": 3, "reading": 3, "writing": 5})
         self.assertFalse(any("儿" in s["zh"] for s in lesson["keySentences"]))     # 哪儿 -> 哪里: erhua would break the pinyin alignment
 
+    def test_rumah_sakit_present_and_complete(self):
+        lesson = next(l for l in L if l["id"] == "rumah-sakit")
+        self.assertEqual(lesson["level"], 3)
+        self.assertEqual({k: len(v) for k, v in lesson["steps"].items()}, {"listening": 3, "reading": 3, "writing": 5})
+        self.assertFalse(any("儿" in s["zh"] for s in lesson["keySentences"]))
+        # HSK 3 characters 咳嗽痛肚嗓挂 are not in the syllabus yet: they must not appear anywhere (the level lock test covers the text)
+        self.assertTrue(all(k.get("extra") or k["level"] <= 3 for k in lesson["keyWords"]))
+
     def test_lessons_sorted_easiest_first(self):
         keys = [(l["level"], l["id"]) for l in L]
         self.assertEqual(keys, sorted(keys))
