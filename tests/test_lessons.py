@@ -32,6 +32,18 @@ class LessonTests(unittest.TestCase):
         self.assertGreaterEqual(len(lesson["keyWords"]), 8)
         self.assertGreaterEqual(len(lesson["speaking"]), 1)
 
+    def test_perkenalan_present_and_complete(self):
+        lesson = next(l for l in L if l["id"] == "perkenalan")
+        self.assertEqual(lesson["level"], 1)
+        self.assertEqual({k: len(v) for k, v in lesson["steps"].items()}, {"listening": 3, "reading": 3, "writing": 5})
+        self.assertGreaterEqual(len(lesson["keyWords"]), 8)
+        # a name is allowed as a piece even though it is not a syllabus word
+        self.assertIn("小明", next(s for s in lesson["keySentences"] if s["zh"].startswith("你好"))["tokens"])
+
+    def test_lessons_sorted_easiest_first(self):
+        keys = [(l["level"], l["id"]) for l in L]
+        self.assertEqual(keys, sorted(keys))
+
     def test_ids_unique_and_files_match(self):
         self.assertEqual(len({l["id"] for l in L}), len(L))
         self.assertEqual({p.stem for p in (ROOT / "content/lessons").glob("*.json")}, {l["id"] for l in L})

@@ -1,6 +1,6 @@
 # Rancangan: Pelajaran Bertema (Skenario 5 Langkah)
 
-Status: tahap 1 (susun kalimat), 2 (pelajaran restoran) dan 3 (speaking tingkat 1+2) sudah dikerjakan; tingkat 3 (kontur nada) belum. Dibuat dari dua tangkapan layar referensi dan pembacaan kode saat ini.
+Status: tahap 1 (susun kalimat), 2 (pelajaran restoran) dan 3 (speaking tingkat 1+2) dan 5 (skenario perkenalan, kartu Beranda, panel Kemajuan) sudah dikerjakan; tingkat 3 (kontur nada) belum. Dibuat dari dua tangkapan layar referensi dan pembacaan kode saat ini.
 
 ## 1. Yang terbaca dari referensi
 

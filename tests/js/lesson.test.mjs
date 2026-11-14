@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { STEPS, stepQuestions, isStepDone, doneCount, isComplete, nextStep, questionPosition, stepPercent, lessonWordIds } from "../../app/js/lesson.js";
+import { lessonSummary, nextLesson, STEPS, stepQuestions, isStepDone, doneCount, isComplete, nextStep, questionPosition, stepPercent, lessonWordIds } from "../../app/js/lesson.js";
 import { Store } from "../../app/js/store.js";
 import { buildQueue } from "../../app/js/session.js";
 import { withTiles, check } from "../../app/js/practice.js";
@@ -95,4 +95,34 @@ test("a pinned word that already has a card is not offered again", () => {
   s.pin([id]);
   s.putCard({ ...s.ensureCard(id), state: "review", due: Date.now() + 86400000 });
   assert.ok(!buildQueue(vocab, s).fresh.some((x) => x.w.id === id));
+});
+
+test("lessons are ordered easiest first and each can be summarised", () => {
+  assert.deepEqual(lessons.map((l) => l.id), ["perkenalan", "restoran"]);
+  const s = new Store(mem());
+  const empty = lessonSummary(lessons[0], s.lessonProgress("perkenalan"));
+  assert.deepEqual({ done: empty.done, started: empty.started, speaking: empty.speaking }, { done: 0, started: false, speaking: null });
+  s.saveLessonStep("perkenalan", "listening", { ok: 2, n: 3 });
+  s.saveLessonStep("perkenalan", "speaking", { ok: 1, n: 2 });
+  const x = lessonSummary(lessons[0], s.lessonProgress("perkenalan"));
+  assert.deepEqual({ done: x.done, total: x.total, started: x.started, complete: x.complete }, { done: 2, total: 5, started: true, complete: false });
+  assert.deepEqual(x.pct, { listening: 67, reading: null, writing: null });
+  assert.deepEqual(x.speaking, { ok: 1, n: 2 });
+});
+
+test("nextLesson: continue the started unfinished one, else the first not started, else none", () => {
+  const s = new Store(mem());
+  assert.equal(nextLesson(lessons, s).id, "perkenalan");
+  s.saveLessonStep("restoran", "listening", { ok: 1, n: 3 });          // restoran started: continue it, not the first untouched one
+  assert.equal(nextLesson(lessons, s).id, "restoran");
+  for (const l of lessons) for (const st of STEPS) s.saveLessonStep(l.id, st.key);
+  assert.equal(nextLesson(lessons, s), null);
+});
+
+test("every lesson question can be answered correctly (all lessons)", () => {
+  for (const l of lessons) for (const k of ["listening", "reading", "writing"]) for (const raw of stepQuestions(l, k)) {
+    const q = withTiles(raw, [], () => 0.3);
+    const right = q.type === "order_sentence" ? q.tokens : q.options.find((o) => (o.word ?? o.zh) === q.answer);
+    assert.equal(check(q, right).correct, true, q.id);
+  }
 });

@@ -3,6 +3,8 @@ import { LEVEL_LABEL, meaning, posLabel, FEATURE_HOURS, featuredSlot, featuredWo
 import { buildQueue } from "../session.js";
 import { accuracy, streak, activeDayKeys } from "../analytics.js";
 import { examAvailable } from "../exam.js";
+import { STEPS, doneCount, nextLesson } from "../lesson.js";
+import { openLesson } from "./lessons.js";
 import { h, btn, speak } from "../ui.js";
 
 const nf = new Intl.NumberFormat("id-ID");
@@ -81,6 +83,26 @@ function how(app) {
         h("strong", {}, f.title), h("span", {}, f.text)))));
 }
 
+/** Themed lessons: continue where you left off, or start the first one. */
+function lessons(app) {
+  if (!app.lessons?.length) return null;
+  const next = nextLesson(app.lessons, app.store);
+  const card = (l) => {
+    const n = doneCount(app.store.lessonProgress(l.id));
+    return h("button", { type: "button", class: `lesson-card${next?.id === l.id ? " next" : ""}`, onclick: () => openLesson(app, l.id) },
+      h("span", { class: "badge" }, LEVEL_LABEL[l.level]), h("span", { class: "lzh", lang: "zh-Hans" }, l.zh), h("strong", {}, l.title),
+      h("span", { class: "hint" }, l.summary),
+      h("div", { class: "bar", role: "progressbar", "aria-valuemin": 0, "aria-valuemax": STEPS.length, "aria-valuenow": n, "aria-label": "Langkah selesai" }, h("i", { style: `width:${(100 * n) / STEPS.length}%` })),
+      h("span", { class: "hint" }, n === STEPS.length ? "Selesai ✓" : n ? `${n}/${STEPS.length} langkah · lanjutkan` : "Belum dimulai"));
+  };
+  return h("section", {},
+    h("div", { class: "eyebrow" }, "Pelajaran bertema"),
+    h("h2", { class: "section" }, "Belajar lewat situasi nyata."),
+    h("p", { class: "lead small" }, "Satu tema, lima langkah: mendengar, membaca, menulis, berbicara, dan kosakata."),
+    h("div", { class: "lesson-grid" }, ...app.lessons.map(card)),
+    h("div", { class: "row left" }, btn("Semua pelajaran", () => app.go("lessons"), "btn")));
+}
+
 const STRIPE = ["#d9501f", "#e3a898", "#c9cbc4", "#6f9f80", "#2a5846", "#d9501f"];
 
 function path(app) {
@@ -124,5 +146,5 @@ function cta(app) {
 }
 
 export function viewHome(app) {
-  app.render(h("div", { class: "home" }, hero(app), strip(app), how(app), path(app), sample(app), cta(app)));
+  app.render(h("div", { class: "home" }, hero(app), strip(app), how(app), lessons(app), path(app), sample(app), cta(app)));
 }

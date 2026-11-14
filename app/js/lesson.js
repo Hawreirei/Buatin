@@ -39,3 +39,16 @@ export function stepPercent(progress, step) {
 
 /** Syllabus word ids of the lesson's key words (extras such as 服务员 are not in the syllabus, so they have none). */
 export const lessonWordIds = (lesson) => lesson.keyWords.filter((k) => k.wid != null).map((k) => k.wid);
+
+/** Per-lesson numbers for the progress page: steps done, % per question step, speaking as passed/scored. */
+export function lessonSummary(lesson, progress) {
+  const pct = Object.fromEntries(QUESTION_STEPS.map((k) => [k, stepPercent(progress, k)]));
+  const sp = progress?.steps?.speaking ?? null;
+  return { id: lesson.id, done: doneCount(progress), total: STEPS.length, complete: isComplete(progress), pct, speaking: sp && sp.n ? { ok: sp.ok, n: sp.n } : null, started: !!progress };
+}
+
+/** The lesson to continue from the home page: a started, unfinished one first, else the first not started, else null. */
+export function nextLesson(lessons, store) {
+  const state = (l) => store.lessonProgress(l.id);
+  return lessons.find((l) => state(l) && !isComplete(state(l))) ?? lessons.find((l) => !state(l)) ?? null;
+}

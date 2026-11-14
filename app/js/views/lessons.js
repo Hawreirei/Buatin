@@ -29,6 +29,13 @@ const open = (app, patch) => {
   state = { ...state, ...patch };
   viewLessons(app);
 };
+/** Open one lesson from elsewhere (home, progress). */
+export function openLesson(app, id) {
+  state.live?.ctl.stop();
+  releaseAudio();
+  state = { ...fresh(), screen: "lesson", id };
+  app.go("lessons");
+}
 const backToList = (app) => open(app, { screen: "list", id: null });
 const toLesson = (app, id = state.id) => open(app, { screen: "lesson", id, step: null });
 

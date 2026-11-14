@@ -28,7 +28,7 @@ Logika murni (tanpa DOM, diuji di `tests/js/`):
 | `practice.js` | menyusun set latihan, memeriksa jawaban, ringkasan |
 | `exam.js` | membangun ujian dari blueprint resmi, penilaian per bagian |
 | `speech.js` | latihan bicara: penilaian kemiripan (LCS per hanzi, angka → hanzi), pembungkus rekam (MediaRecorder) dan pengenalan ucapan (Web Speech API, zh-CN) |
-| `lesson.js` | pelajaran bertema: lima langkah, progres, nomor soal, id kata kunci |
+| `lesson.js` | pelajaran bertema: lima langkah, progres, nomor soal, id kata kunci, ringkasan per pelajaran, pelajaran berikutnya untuk Beranda |
 | `order.js` | soal susun kalimat: acak kepingan (tidak pernah langsung benar), periksa urutan (`alt` = urutan lain yang sah) |
 | `analytics.js` | tren, kelemahan, kata sulit, rekomendasi, set latihan kelemahan |
 
@@ -97,6 +97,8 @@ Belum ada: `match_question_to_answer`, `audio_statement_question_mcq`, `choose_m
 
 Satu berkas `content/lessons/<id>.json` per pelajaran; `build_lessons.py` memeriksa dan membangunnya ke `data/hsk3/lessons.json`. Soal pelajaran **disimpan di dalam pelajaran** (bukan di `questions.json`), memakai bentuk soal yang sama sehingga `views/question.js` menggambarnya tanpa perubahan.
 
+- Pelajaran: `restoran` (HSK 3) dan `perkenalan` (HSK 1); daftar diurutkan dari level terendah. `"names": ["小明"]` mengizinkan nama diri sebagai kepingan walau bukan kata silabus.
+- Beranda menampilkan kartu tiap pelajaran (yang sedang berjalan atau berikutnya diberi bingkai), dan Kemajuan punya panel "Pelajaran bertema" (langkah, persen per langkah, kalimat bicara yang lulus) dengan tombol buka pelajaran.
 - Hanzi isi pelajaran dikunci ke silabus sampai `level` pelajaran; **judul** (`zh`) dikecualikan karena hanya penanda (mis. 餐厅 adalah kata HSK 4, judul "在餐厅" tetap dipakai).
 - `keySentences[].tokens` harus tersambung menjadi kalimat; pinyin per kata diturunkan dari alur pinyin aplikasi (bukan diketik). `"order": false` mengeluarkan kalimat dari soal susun.
 - `keyWords`: teks = kata silabus (≤ level, punya arti Indonesia); objek `{zh, pinyin, id}` = kata tambahan di luar silabus (mis. 服务员), tidak masuk Hafalan.

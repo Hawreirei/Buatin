@@ -4,7 +4,7 @@ speaking, vocab). Each lesson carries its own questions, already in the shapes v
 
 Quality rules (re-checked in tests/test_lessons.py):
   - every hanzi of the lesson body is in the syllabus up to the lesson's level (the title is a heading and exempt);
-  - tokens of a key sentence join back to the sentence, and each is a syllabus word (<= level), a lesson extra, or one hanzi;
+  - tokens of a key sentence join back to the sentence, and each is a syllabus word (<= level), a lesson extra or name, or one hanzi;
   - key words resolve to syllabus words that have a hand-written Indonesian meaning;
   - pinyin comes from the same pipeline as the rest of the app (per token, never typed by hand).
 
@@ -40,7 +40,7 @@ def build(lesson, vocab, ent, allowed, problems):
         if bad:
             problems.append(f"{loc}: chars above level {level} in {where}: {''.join(bad)}")
 
-    extras = {k["zh"] for k in lesson["keyWords"] if isinstance(k, dict)}
+    extras = {k["zh"] for k in lesson["keyWords"] if isinstance(k, dict)} | set(lesson.get("names", []))   # names (小明) may be a piece without being a syllabus word
 
     # ---- key sentences
     sentences = []
@@ -169,6 +169,7 @@ def main():
             problems.append(f"{path.name}: id must be unique and equal to the file name")
         seen.add(lesson["id"])
         out.append(build(lesson, vocab, ent, allowed, problems))
+    out.sort(key=lambda l: (l["level"], l["id"]))             # easiest first
     if problems:
         print("\n".join(problems))
         sys.exit(1)
