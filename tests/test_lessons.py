@@ -40,6 +40,14 @@ class LessonTests(unittest.TestCase):
         # a name is allowed as a piece even though it is not a syllabus word
         self.assertIn("小明", next(s for s in lesson["keySentences"] if s["zh"].startswith("你好"))["tokens"])
 
+    def test_belanja_present_and_complete(self):
+        lesson = next(l for l in L if l["id"] == "belanja")
+        self.assertEqual(lesson["level"], 2)
+        self.assertEqual({k: len(v) for k, v in lesson["steps"].items()}, {"listening": 3, "reading": 3, "writing": 5})
+        self.assertGreaterEqual(len(lesson["keyWords"]), 8)
+        # sentences with 一点儿-style erhua are not used as key sentences (pinyin and hanzi would not line up)
+        self.assertFalse(any("儿" in s["zh"] for s in lesson["keySentences"]))
+
     def test_lessons_sorted_easiest_first(self):
         keys = [(l["level"], l["id"]) for l in L]
         self.assertEqual(keys, sorted(keys))

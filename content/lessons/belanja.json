@@ -1,0 +1,38 @@
+{
+  "id": "belanja",
+  "level": 2,
+  "zh": "买东西",
+  "title": "Belanja",
+  "summary": "Bertanya harga, memilih barang, dan membeli.",
+  "keySentences": [
+    {"zh": "请问，这件衣服多少钱？", "id": "Permisi, baju ini berapa harganya?", "tokens": ["请问", "，", "这", "件", "衣服", "多少", "钱", "？"]},
+    {"zh": "这个太贵了。", "id": "Yang ini terlalu mahal.", "tokens": ["这个", "太", "贵", "了", "。"], "order": false},
+    {"zh": "我想买一条裤子。", "id": "Aku ingin membeli sebuah celana.", "tokens": ["我", "想", "买", "一", "条", "裤子", "。"]},
+    {"zh": "可以看一下吗？", "id": "Boleh dilihat sebentar?", "tokens": ["可以", "看", "一下", "吗", "？"]},
+    {"zh": "有别的颜色吗？", "id": "Ada warna lain?", "tokens": ["有", "别", "的", "颜色", "吗", "？"]},
+    {"zh": "这个三十块钱。", "id": "Yang ini tiga puluh yuan.", "tokens": ["这个", "三", "十", "块", "钱", "。"], "order": false},
+    {"zh": "我买两个苹果。", "id": "Aku beli dua apel.", "tokens": ["我", "买", "两", "个", "苹果", "。"]}
+  ],
+  "keyWords": ["商店", "买", "衣服", "件", "多少", "钱", "贵", "便宜", "颜色", "裤子"],
+  "listening": [
+    {"kind": "qa", "q": "这件衣服多少钱？", "ok": "一百二十块。", "wrong": ["我很喜欢。", "在商店里。"],
+     "tq": "Baju ini berapa harganya?", "ta": "Seratus dua puluh yuan."},
+    {"kind": "dialog", "text": "女：这个太贵了，可以便宜一点儿吗？/男：好的，给你八十块吧。", "q": "女的想怎么样？",
+     "ok": "想便宜一点儿", "wrong": ["想多买一件", "想去超市"],
+     "t_text": "Perempuan: Ini terlalu mahal, boleh lebih murah sedikit? / Laki-laki: Baik, untukmu delapan puluh yuan.", "t_q": "Si perempuan ingin bagaimana?", "t_ok": "Ingin harga yang lebih murah"},
+    {"kind": "dialog", "text": "男：你想买什么？/女：我想买一条裤子，有别的颜色吗？", "q": "女的想买什么？",
+     "ok": "一条裤子", "wrong": ["两个苹果", "一本书"],
+     "t_text": "Laki-laki: Kamu ingin membeli apa? / Perempuan: Aku ingin membeli celana, ada warna lain?", "t_q": "Apa yang ingin dibeli si perempuan?", "t_ok": "Sebuah celana"}
+  ],
+  "reading": [
+    {"kind": "cloze", "stem": "这件衣服太（　）了，我不想买。", "ok": "贵", "wrong": ["医院", "商店", "苹果"],
+     "zh": "这件衣服太贵了，我不想买。", "id": "Baju ini terlalu mahal, aku tidak ingin membelinya."},
+    {"kind": "cloze", "stem": "我想买两（　）苹果。", "ok": "个", "wrong": ["件", "条", "岁"],
+     "zh": "我想买两个苹果。", "id": "Aku ingin membeli dua apel."},
+    {"kind": "text", "text": "我今天去商店买东西。我买了一条裤子，一百块；还买了两个苹果，十块。", "q": "★ 他买了什么？",
+     "ok": "一条裤子和两个苹果", "wrong": ["一件衣服和两个苹果", "一条裤子和两本书"],
+     "t_text": "Hari ini aku pergi ke toko untuk berbelanja. Aku membeli sebuah celana, seratus yuan; juga membeli dua apel, sepuluh yuan.",
+     "t_q": "Apa yang dia beli?", "t_ok": "Sebuah celana dan dua apel"}
+  ],
+  "speaking": ["请问，这件衣服多少钱？", "我想买一条裤子。", "有别的颜色吗？"]
+}
