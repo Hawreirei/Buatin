@@ -77,3 +77,26 @@ test("speaking attempts never become 'weakest skill' advice (Latihan has no spea
   const q = [{ id: "a", skill: "reading", level: 3, stem: "x" }, { id: "b", skill: "listening", level: 3, stem: "y" }];
   assert.equal(buildWeakSet(q, events, { count: 1 }, () => 0.5)[0].skill, "reading");
 });
+
+import { startAttempt } from "../../app/js/speech.js";
+
+test("stopping before the microphone is granted never starts a recording", async () => {
+  const saved = { nav: Object.getOwnPropertyDescriptor(globalThis, "navigator"), mr: globalThis.MediaRecorder };
+  let grant, trackStopped = 0, recorders = 0;
+  const stream = { getTracks: () => [{ stop: () => trackStopped++ }] };
+  Object.defineProperty(globalThis, "navigator", { configurable: true, value: { mediaDevices: { getUserMedia: () => new Promise((r) => (grant = () => r(stream))) } } });
+  globalThis.MediaRecorder = class { constructor() { recorders++; } start() {} };
+  try {
+    const a = startAttempt({ recognize: false, record: true });
+    a.stop();                                   // the user taps "Selesai" (or the time limit hits) while the permission prompt is open
+    grant();                                    // ... and only now allows the microphone
+    const r = await a.result;
+    assert.equal(recorders, 0);
+    assert.equal(trackStopped, 1);              // the microphone is released
+    assert.equal(r.error, "aborted");
+    assert.equal(r.audioUrl, null);
+  } finally {
+    if (saved.nav) Object.defineProperty(globalThis, "navigator", saved.nav); else delete globalThis.navigator;
+    globalThis.MediaRecorder = saved.mr;
+  }
+});

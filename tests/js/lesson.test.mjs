@@ -136,3 +136,11 @@ test("every key sentence of every lesson yields one tone per hanzi (so tone scor
     assert.ok(sy.every((x) => x.expected >= 1 && x.expected <= 5));
   }
 });
+
+test("ordering items accept the listed alternative order, nothing else", () => {
+  const q = stepQuestions(lessons.find((l) => l.id === "restoran"), "writing").find((x) => x.alt?.length);
+  assert.ok(q);
+  assert.equal(check(q, q.tokens).correct, true);
+  assert.equal(check(q, ["请", "给", "我", "菜单", "，", "服务员", "。"]).correct, true);     // the alternative, pieces rearranged
+  assert.equal(check(q, ["服务员", "请", "给", "我", "菜单", "，", "。"]).correct, false);
+});

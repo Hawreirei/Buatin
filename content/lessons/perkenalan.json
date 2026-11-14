@@ -6,7 +6,7 @@
   "summary": "Menyapa, menyebut nama, umur, dan keluarga.",
   "names": ["小明"],
   "keySentences": [
-    {"zh": "你好，我叫小明。", "id": "Halo, namaku Xiaoming.", "tokens": ["你好", "，", "我", "叫", "小明", "。"]},
+    {"zh": "你好，我叫小明。", "id": "Halo, namaku Xiaoming.", "tokens": ["你好", "，", "我", "叫", "小明", "。"], "alt": ["我叫小明，你好。"]},
     {"zh": "你叫什么名字？", "id": "Siapa namamu?", "tokens": ["你", "叫", "什么", "名字", "？"]},
     {"zh": "很高兴认识你。", "id": "Senang berkenalan denganmu.", "tokens": ["很", "高兴", "认识", "你", "。"]},
     {"zh": "我是学生。", "id": "Aku seorang siswa.", "tokens": ["我", "是", "学生", "。"], "order": false},

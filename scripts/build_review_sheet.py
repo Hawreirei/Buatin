@@ -2,7 +2,7 @@
 """Build an Excel review sheet for a teacher / native speaker (laoshi).
 
 Every piece of original content (meanings, example sentences, translations, listening/reading
-questions, picture scenes, cloze/write items) with empty reviewer columns and a status dropdown.
+questions, picture scenes, cloze/write items, themed lessons) with empty reviewer columns and a status dropdown.
 
 Usage: python3 scripts/build_review_sheet.py [--out review/Learning-Chinese-review-laoshi.xlsx]
 """
@@ -158,6 +158,30 @@ def main():
             rows.append([q["id"], q["level"], "写汉字 tulis hanzi", q["stem"], f'pinyin: {q["hint_pinyin"]}', q["answer"], q["explain"]["zh"], q["explain"]["id"]])
     sheet(wb, "填空 Isi kata", ["ID", "Level", "Jenis", "题目 Soal", "选项/提示 Pilihan/petunjuk", "答案 Jawaban", "完整句子 Kalimat lengkap", "翻译 Terjemahan"],
           rows, [8, 7, 18, 32, 34, 10, 34, 40], ["状态 Status (ambigu?)", "建议 Usulan", "备注 Catatan"])
+
+    # 6. themed lessons (key sentences, key words, listening and reading questions; ordering items come from the key sentences)
+    rows = []
+    for l in load("lessons.json"):
+        name = f'{l["id"]} {l["zh"]}'
+        for sen in l["keySentences"]:
+            rows.append([name, l["level"], "关键句 kalimat kunci", sen["zh"], sen["pinyin"], "", "", sen["id"]])
+        for k in l["keyWords"]:
+            rows.append([name, l["level"], "关键词 kata kunci" + ("（非大纲 di luar silabus）" if k.get("extra") else ""), k["word"], k["pinyin"], "", "", k["arti"]])
+        for step in ("listening", "reading"):
+            for q in l["steps"][step]:
+                wrong = " / ".join(o.get("zh") or o.get("word") for o in q["options"] if (o.get("zh") or o.get("word")) != q["answer"])
+                e = q["explain"]
+                if q["type"] == "cloze_wordbank":
+                    rows.append([name, l["level"], "选词填空 isi kata", q["stem"], "", q["answer"], wrong, f'{e["zh"]}\n{e["id"]}'])
+                elif q["type"] == "audio_question_pick_answer":
+                    rows.append([name, l["level"], "听力 tanya-jawab", q["audio"], "", q["answer"], wrong, f'{e["question_id"]} → {e["answer_id"]}'])
+                elif q["type"] == "audio_dialog_question_mcq":
+                    text = "\n".join(f'{t["who"]}：{t["zh"]}' for t in q["turns"])
+                    rows.append([name, l["level"], "听力 dialog", text, q["question"], q["answer"], wrong, f'{e["text_id"]}\n问：{e["question_id"]}\n答：{e["answer_id"]}'])
+                else:
+                    rows.append([name, l["level"], "阅读 teks pendek", q["text"], q["question"], q["answer"], wrong, f'{e["text_id"]}\n问：{e["question_id"]}\n答：{e["answer_id"]}'])
+    sheet(wb, "课文 Pelajaran", ["Pelajaran", "Level", "Jenis", "汉语 Teks", "拼音 / 问题 Pinyin / pertanyaan", "正确答案 Jawaban benar", "错误选项 Pilihan salah", "翻译 Terjemahan"],
+          rows, [20, 7, 24, 40, 40, 20, 28, 50], ["状态 Status", "建议 Usulan", "备注 Catatan"])
 
     wb.save(out)
     for s in wb.sheetnames[1:]:

@@ -3,6 +3,7 @@
 import { h, btn, speak, speakSequence, stopSpeaking, listeningParts } from "../ui.js";
 import { LEVEL_LABEL } from "../deck.js";
 import { withTiles, check } from "../practice.js";
+import { shuffle } from "../deck.js";
 import { STEPS, QUESTION_STEPS, stepQuestions, isStepDone, doneCount, isComplete, nextStep, questionPosition, stepPercent, lessonWordIds } from "../lesson.js";
 import { recognitionSupported, recorderSupported, startAttempt, scoreAttempt, errorMessage, cleanZh, PASS_PCT } from "../speech.js";
 import { analyzeTones, decodeBlob, syllableTones, expectedTones, TEMPLATES, TONE_ERRORS } from "../tone.js";
@@ -30,6 +31,16 @@ const open = (app, patch) => {
   state = { ...state, ...patch };
   viewLessons(app);
 };
+/** Called by the tab router when another tab opens: free the microphone and recordings, silence the voice, and make
+ *  late results of a running attempt land nowhere (the step screen is replaced by the lesson page). */
+export function leaveLessons() {
+  stopSpeaking();
+  state.live?.ctl.stop();
+  state.live = null;
+  releaseAudio();
+  if (state.screen === "speaking") state = { ...state, screen: "lesson", step: null };
+}
+
 /** Open one lesson from elsewhere (home, progress). */
 export function openLesson(app, id) {
   state.live?.ctl.stop();
@@ -110,7 +121,7 @@ function page(app, lesson) {
 /* ---------- steps ---------- */
 function startStep(app, lesson, step) {
   if (QUESTION_STEPS.includes(step)) {
-    const all = stepQuestions(lesson, step).map((q) => withTiles(q, [], Math.random));
+    const all = stepQuestions(lesson, step).map((q) => withTiles(q.options ? { ...q, options: shuffle(q.options) } : q, [], Math.random));   // new option order each run
     return open(app, { screen: "question", id: lesson.id, step, items: all, i: 0, results: [], answered: null, textShown: false, pinyinShown: false, shownAt: Date.now(), autoplayed: {} });
   }
   open(app, { screen: step, id: lesson.id, step, attempts: new Map(), live: null, added: null });
@@ -293,7 +304,7 @@ function speaking(app, lesson) {
   const done = isStepDone(app.store.lessonProgress(lesson.id), "speaking");
   const finishStep = () => {
     const scored = [...state.attempts.values()].filter((a) => a.best != null);
-    app.store.saveLessonStep(lesson.id, "speaking", { ok: scored.filter((a) => a.best >= PASS_PCT).length, n: scored.length });
+    if (scored.length || !done) app.store.saveLessonStep(lesson.id, "speaking", { ok: scored.filter((a) => a.best >= PASS_PCT).length, n: scored.length });   // revisiting without new attempts keeps the old score
     startStep(app, lesson, "vocab");
   };
   const mode = toning(app) ? h("span", { class: "chip" }, scoring(app) ? "pengucapan + nada (eksperimental)" : "nada dinilai (eksperimental)")

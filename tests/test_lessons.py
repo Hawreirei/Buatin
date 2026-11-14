@@ -66,6 +66,22 @@ class LessonTests(unittest.TestCase):
         keys = [(l["level"], l["id"]) for l in L]
         self.assertEqual(keys, sorted(keys))
 
+    def test_committed_data_is_current(self):
+        """lessons.json must be what the content files build to (run `npm run build` after editing content/lessons)."""
+        built, problems = bl.build_all()
+        self.assertEqual(problems, [])
+        self.assertEqual((ROOT / "data/hsk3/lessons.json").read_text(encoding="utf-8"), bl.dump(built))
+
+    def test_accepted_alternative_orders(self):
+        n = 0
+        for l in L:
+            for q in l["steps"]["writing"]:
+                for a in q.get("alt", []):
+                    n += 1
+                    self.assertEqual(sorted(a), sorted(q["answer"]))
+                    self.assertNotEqual(a, q["answer"])
+        self.assertGreaterEqual(n, 2)                    # 请给我菜单，服务员。 and 我叫小明，你好。
+
     def test_ids_unique_and_files_match(self):
         self.assertEqual(len({l["id"] for l in L}), len(L))
         self.assertEqual({p.stem for p in (ROOT / "content/lessons").glob("*.json")}, {l["id"] for l in L})

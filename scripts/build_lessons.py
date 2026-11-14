@@ -60,7 +60,11 @@ def build(lesson, vocab, ent, allowed, problems):
             continue
         it = iter(x for x in syl if x not in PUNCT)
         tp = ["" if t in PUNCT else "".join(next(it) for _ in t) for t in s["tokens"]]
-        sentences.append({"zh": s["zh"], "id": s["id"], "pinyin": py(s["zh"]), "tokens": s["tokens"], "tokenPinyin": tp, "order": s.get("order", True)})
+        alts = s.get("alt", [])                      # other orders that are just as correct (accepted by the ordering item)
+        for a in alts:
+            if sorted(a) != sorted(s["zh"]) or a == s["zh"]:
+                problems.append(f"{loc}: {where} alt {a!r} must be a different order of the same characters")
+        sentences.append({"zh": s["zh"], "id": s["id"], "pinyin": py(s["zh"]), "tokens": s["tokens"], "tokenPinyin": tp, "order": s.get("order", True), "alt": alts})
     by_zh = {s["zh"]: s for s in sentences}
 
     # ---- key words
@@ -143,7 +147,7 @@ def build(lesson, vocab, ent, allowed, problems):
     for n, s in enumerate([s for s in sentences if s["order"]], 1):
         steps["writing"].append({
             "id": rid("writing", n), "type": "order_sentence", "skill": "writing", "level": level, "lesson": lid,
-            "stem": s["id"], "tokens": s["tokens"], "answer": s["zh"],
+            "stem": s["id"], "tokens": s["tokens"], "answer": s["zh"], **({"alt": s["alt"]} if s["alt"] else {}),
             "explain": {"zh": s["zh"], "pinyin": s["pinyin"], "id": s["id"]}})
 
     # ---- speaking: sentences to say (scoring comes in a later stage)
@@ -158,7 +162,8 @@ def build(lesson, vocab, ent, allowed, problems):
             "keySentences": sentences, "keyWords": key_words, "steps": steps, "speaking": speaking}
 
 
-def main():
+def build_all():
+    """(lessons, problems) built from content/lessons/*.json."""
     vocab = {w["id"]: w for w in bid.load("vocab.json")}
     ent = {int(k): v for k, v in bid.load("vocab_id.json").items()}
     allowed = bid.allowed_chars(vocab)
@@ -170,11 +175,19 @@ def main():
         seen.add(lesson["id"])
         out.append(build(lesson, vocab, ent, allowed, problems))
     out.sort(key=lambda l: (l["level"], l["id"]))             # easiest first
+    return out, problems
+
+
+def dump(lessons):
+    return json.dumps(lessons, ensure_ascii=False, separators=(",", ":"))
+
+
+def main():
+    out, problems = build_all()
     if problems:
         print("\n".join(problems))
         sys.exit(1)
-    path = ROOT / "data" / "hsk3" / "lessons.json"
-    path.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    (ROOT / "data" / "hsk3" / "lessons.json").write_text(dump(out), encoding="utf-8")
     for l in out:
         print(l["id"], {k: len(v) for k, v in l["steps"].items()}, len(l["keyWords"]), "key words")
 

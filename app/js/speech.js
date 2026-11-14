@@ -105,7 +105,8 @@ export function startAttempt({ recognize = true, record = true, raw = false, lan
   const Rec = recognize ? RecognitionCtor() : null;
   const wantRecord = record && recorderSupported();
   let stopFns = [];
-  const stop = () => { const f = stopFns; stopFns = []; f.forEach((fn) => { try { fn(); } catch { /* already stopped */ } }); };
+  let stopped = false;                                          // stop() may arrive while the permission prompt is still open
+  const stop = () => { stopped = true; const f = stopFns; stopFns = []; f.forEach((fn) => { try { fn(); } catch { /* already stopped */ } }); };
 
   const result = new Promise((resolve) => {
     let alternatives = [], error = null, audioUrl = null, audioBlob = null, pending = 0, finished = false;
@@ -118,6 +119,11 @@ export function startAttempt({ recognize = true, record = true, raw = false, lan
       if (wantRecord) {
         try { stream = await navigator.mediaDevices.getUserMedia({ audio: raw ? { echoCancellation: false, noiseSuppression: false, autoGainControl: false } : true }); }
         catch (e) { if (/NotAllowed|Security/.test(e?.name)) { error = "denied"; return finish(); } }   // other errors: carry on without a recording
+      }
+      if (stopped) {                                            // stopped (button or time limit) before the microphone was granted: do not start recording
+        stream?.getTracks().forEach((t) => t.stop());
+        error = error ?? "aborted";
+        return finish();
       }
       if (stream) {
         track((done) => {

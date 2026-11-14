@@ -5,7 +5,7 @@
   "title": "Di restoran",
   "summary": "Memanggil pelayan, memesan makanan, dan membayar.",
   "keySentences": [
-    {"zh": "服务员，请给我菜单。", "id": "Pelayan, tolong berikan saya menu.", "tokens": ["服务员", "，", "请", "给", "我", "菜单", "。"]},
+    {"zh": "服务员，请给我菜单。", "id": "Pelayan, tolong berikan saya menu.", "tokens": ["服务员", "，", "请", "给", "我", "菜单", "。"], "alt": ["请给我菜单，服务员。"]},
     {"zh": "你想吃什么？", "id": "Kamu ingin makan apa?", "tokens": ["你", "想", "吃", "什么", "？"]},
     {"zh": "我要一碗米饭。", "id": "Aku mau semangkuk nasi.", "tokens": ["我", "要", "一", "碗", "米饭", "。"]},
     {"zh": "这个菜很好吃。", "id": "Masakan ini enak sekali.", "tokens": ["这个", "菜", "很", "好吃", "。"]},

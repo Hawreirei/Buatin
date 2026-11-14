@@ -4,7 +4,7 @@ import { setLookalikes } from "./practice.js";
 import { Store } from "./store.js";
 import { viewHome } from "./views/home.js";
 import { viewStudy, resetStudy, studyKey } from "./views/study.js";
-import { viewLessons } from "./views/lessons.js";
+import { viewLessons, leaveLessons } from "./views/lessons.js";
 import { viewPractice } from "./views/practice.js";
 import { viewExam, examRunning, abortExam } from "./views/exam.js";
 import { viewQuiz } from "./views/quiz.js";
@@ -35,6 +35,7 @@ function go(t) {
     if (!confirm("Ujian sedang berlangsung. Keluar sekarang akan membatalkan ujian (tidak disimpan). Keluar?")) return;
     abortExam();
   }
+  if (tab === "lessons" && t !== "lessons") leaveLessons();
   tab = t;
   view.dataset.view = t;
   for (const b of document.querySelectorAll("#tabs button")) b.setAttribute("aria-selected", String(b.dataset.tab === t));
