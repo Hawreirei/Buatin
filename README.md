@@ -17,7 +17,7 @@ Aplikasi web gratis dan sumber terbuka untuk berlatih **HSK 3.0 (silabus 2025)**
 | Tab | Fungsi |
 |---|---|
 | **Hafalan** | Flashcard dengan pengulangan berjarak (SM-2 + langkah belajar), arti Indonesia, kalimat contoh + pinyin + terjemahan, suara; pintasan Spasi dan 1–4 |
-| **Latihan** | 1.918 soal: isi kata, tulis hanzi, tanya-jawab, dialog dan teks mendengar, soal bergambar, teks pendek dan paragraf bacaan; umpan balik dan penjelasan langsung |
+| **Latihan** | 2.746 soal: isi kata, tulis hanzi, susun kalimat, tanya-jawab, dialog dan teks mendengar, soal bergambar, teks pendek dan paragraf bacaan; umpan balik dan penjelasan langsung |
 | **Ujian** | Simulasi bertimer HSK 1–3: jumlah soal, bagian, dan waktu mengikuti tabel resmi CTI; bagian terkunci setelah selesai |
 | **Kuis**, **Daftar** | Kuis arti kata; pencarian kosakata |
 | **Kemajuan** | Tren akurasi, riwayat simulasi, kelemahan per keterampilan/jenis soal/level/jenis kata, kata yang sering salah, kata sulit di hafalan, tombol "Latihan kelemahan" |

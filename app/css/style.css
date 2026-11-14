@@ -110,6 +110,14 @@ td.zh { font: 600 20px/1.3 var(--font-zh); color: var(--accent); white-space: no
 .blankbox { display: inline-flex; flex-direction: column; align-items: center; vertical-align: bottom; margin: 0 4px; }
 .blankbox .hint-py { font-size: 14px; color: var(--accent); font-family: var(--font-ui); }
 .blankbox input { border: 0; border-bottom: 2px solid var(--text); background: transparent; color: var(--text); font-family: inherit; }
+.order-stem { font-family: var(--font-ui, inherit); font-size: clamp(16px, 4vw, 20px); color: var(--muted); line-height: 1.5; margin-bottom: 14px; }
+.orderarea, .orderbank { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.orderarea { min-height: 64px; padding: 10px; border: 2px dashed var(--line-strong); border-radius: var(--r-md); text-align: left; }
+.orderbank { margin: 14px 0; }
+button.btn.piece { padding: 8px 14px; border-radius: var(--r-md); font-size: clamp(20px, 5.5vw, 26px); font-family: var(--font-zh); }
+button.btn.piece.used { opacity: .35; }
+button.btn.piece.right { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 14%, var(--surface)); opacity: 1; }
+button.btn.piece.wrong { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); opacity: 1; }
 .ok { color: var(--ok); font-weight: 600; } .bad { color: var(--accent); font-weight: 600; }
 
 /* ---- exam ---- */

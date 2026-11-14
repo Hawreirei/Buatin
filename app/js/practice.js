@@ -1,10 +1,12 @@
 // Practice-question logic (pure, no DOM). Questions come from data/hsk3/questions.json.
 import { shuffle } from "./deck.js";
+import { shuffledBank, checkOrder } from "./order.js";
 
 export const SKILLS = { reading: "Membaca", writing: "Menulis", listening: "Mendengar" };
 export const TYPE_HELP = {
   cloze_wordbank: "Pilih kata yang tepat untuk mengisi bagian kosong.",
   write_hanzi_from_pinyin: "Pilih hanzi yang hilang (pinyin ditunjukkan di atas kotak).",
+  order_sentence: "Susun kepingan menjadi kalimat yang benar (kata dan tanda baca).",
   audio_question_pick_answer: "Dengarkan pertanyaan, lalu pilih jawaban yang tepat.",
   audio_dialog_question_mcq: "Dengarkan dialog dan pertanyaan, lalu pilih jawaban yang tepat.",
   audio_passage_question_mcq: "Dengarkan teks dan pertanyaan, lalu pilih jawaban yang tepat.",
@@ -59,6 +61,7 @@ export const setLookalikes = (map) => { LOOKALIKES = map || {}; };
  *  Distractors are look-alike characters first, then other write answers of the same level, so nobody needs
  *  a Chinese keyboard. Other question types are returned unchanged. */
 export function withTiles(q, questions, rand = Math.random, size = 6) {
+  if (q.type === "order_sentence") return { ...q, bank: shuffledBank(q.tokens, rand) };   // the shuffled pieces to arrange
   if (q.type !== "write_hanzi_from_pinyin") return q;
   const similar = shuffle((LOOKALIKES[q.answer] || []).slice(0, 6), rand);
   const writes = questions.filter((x) => x.type === q.type && x.answer !== q.answer);
@@ -69,6 +72,7 @@ export function withTiles(q, questions, rand = Math.random, size = 6) {
 }
 
 export function check(q, response) {
+  if (q.type === "order_sentence") return checkOrder(q, response);
   if (q.type === "write_hanzi_from_pinyin") {
     const ch = [...String(response ?? "").normalize("NFC")].find((c) => HAN.test(c));
     return { correct: ch === q.answer, expected: q.answer };

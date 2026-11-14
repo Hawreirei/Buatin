@@ -1,11 +1,12 @@
 // Progress & weakness analytics over the local event log. Pure functions, no DOM.
 import { todayKey } from "./store.js";
 import { shuffle } from "./deck.js";
+import { withTiles } from "./practice.js";
 
 const DAY = 86_400_000;
 
 export function wordIdOfQuestion(q) {
-  const m = /^[cw](\d+)$/.exec(q.id ?? "");
+  const m = /^[cwo](\d+)$/.exec(q.id ?? "");
   return m ? Number(m[1]) : null;
 }
 
@@ -130,7 +131,7 @@ export function buildWeakSet(questions, events, { count = 10, levels = null } = 
     for (const q of shuffle(questions.filter((q) => ok(q) && (!skill || q.skill === skill)), rand)) take(q);
   }
   if (picked.length < count) for (const q of shuffle(questions.filter(ok), rand)) take(q);
-  return picked.map((q) => (q.options ? { ...q, options: shuffle(q.options, rand) } : q));
+  return picked.map((q) => withTiles(q.options ? { ...q, options: shuffle(q.options, rand) } : q, questions, rand));   // tiles/pieces for write and order items
 }
 
 /** Plain-language findings with an optional action the UI can turn into a button. */

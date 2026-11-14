@@ -13,6 +13,7 @@
 //   }
 import { h, btn, hasChineseVoice } from "../ui.js";
 import { TYPE_HELP } from "../practice.js";
+import { shuffledBank, checkOrder } from "../order.js";
 
 const BLANK = "（　）";
 const LETTERS = "ABCDEF";
@@ -123,12 +124,48 @@ function writeBlock(q, m) {
   return [card, tiles, buttons];
 }
 
+/** "Susun kalimat": tap pieces to build the sentence, tap a placed piece to take it back. No drag and drop, so it
+ *  works on touch screens and with a keyboard. Practice answers with the full arrangement (array of pieces). */
+function orderBlock(q, m) {
+  const bank = q.bank?.length ? q.bank : shuffledBank(q.tokens);
+  const locked = !!m.reveal;
+  const placed = [];                                              // indices into `bank`, in the learner's order
+  const used = new Set();
+  for (const t of Array.isArray(m.response) ? m.response : []) {
+    const i = bank.findIndex((b, k) => b === t && !used.has(k));
+    if (i >= 0) { used.add(i); placed.push(i); }
+  }
+  const allRight = locked && checkOrder(q, placed.map((i) => bank[i])).correct;
+  const area = h("div", { class: "orderarea", role: "group", "aria-label": "Susunan kalimat" });
+  const pool = h("div", { class: "orderbank", role: "group", "aria-label": "Kepingan yang tersedia" });
+  let checkBtn = null;
+  const piece = (t, cls, onclick, extra) => btn(h("span", { class: "zh", lang: "zh-Hans" }, t), onclick, `btn piece${cls}`, extra);
+  const draw = (focus) => {
+    area.replaceChildren(...(placed.length ? placed.map((bi, pos) =>
+      piece(bank[bi], locked ? (allRight || bank[bi] === q.tokens[pos] ? " right" : " wrong") : "", () => { placed.splice(pos, 1); draw({ bank: bi }); }, { disabled: locked, "aria-label": `Lepas ${bank[bi]}` }))
+      : [h("span", { class: "hint" }, "Ketuk kepingan di bawah untuk menyusun kalimat.")]));
+    pool.replaceChildren(...bank.map((t, bi) => piece(t, placed.includes(bi) ? " used" : "", () => { placed.push(bi); draw({ area: placed.length - 1 }); }, { disabled: locked || placed.includes(bi), "data-bi": bi })));
+    if (checkBtn) checkBtn.disabled = placed.length !== bank.length;
+    if (m.kind === "exam" && !locked && m.onWrite) m.onWrite(placed.map((i) => bank[i]));
+    if (focus) (focus.area != null ? area.children[focus.area] : pool.querySelector(`[data-bi="${focus.bank}"]`))?.focus();   // the tapped button was replaced: keep keyboard focus
+  };
+  const buttons = m.kind === "practice" && !locked
+    ? h("div", { class: "row" },
+      (checkBtn = btn("Periksa", () => m.onAnswer(placed.map((i) => bank[i])), "btn primary", { id: "check" })),
+      btn("Ulangi", () => { placed.length = 0; draw(); }, "btn", { id: "clear" }),
+      btn("Tidak tahu", () => m.onAnswer([]), "btn", { id: "skip" }))
+    : null;
+  draw();
+  return [h("div", { class: "card" }, h("div", { class: "stem order-stem", lang: "id" }, q.stem), area), pool, buttons];
+}
+
 /* ---------- the question body ---------- */
 /** Nodes for one question (instruction line included). */
 export function questionBody(q, m) {
   const help = h("p", { class: "hint" }, TYPE_HELP[q.type]);
   if (q.type === "cloze_wordbank") return [help, h("div", { class: "card" }, h("div", { class: "stem", lang: "zh-Hans" }, q.stem)), wordOptions(q, m)];
   if (q.type === "write_hanzi_from_pinyin") return [help, ...writeBlock(q, m)];
+  if (q.type === "order_sentence") return [help, ...orderBlock(q, m)];
   if (PICTURE_LISTENING.has(q.type)) return [help, listeningCard(q, m), pictureGrid(q, m)];
   if (isListening(q)) return [help, listeningCard(q, m), textOptions(q, m)];
   if (q.type === "sentence_match_picture") return [help, textCard(q, true), pictureGrid(q, m)];

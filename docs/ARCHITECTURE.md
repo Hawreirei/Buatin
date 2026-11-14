@@ -26,6 +26,7 @@ Logika murni (tanpa DOM, diuji di `tests/js/`):
 | `store.js` | penyimpanan lokal: kartu, pengaturan, log jawaban (5.000 terakhir), riwayat ujian; ekspor/impor |
 | `practice.js` | menyusun set latihan, memeriksa jawaban, ringkasan |
 | `exam.js` | membangun ujian dari blueprint resmi, penilaian per bagian |
+| `order.js` | soal susun kalimat: acak kepingan (tidak pernah langsung benar), periksa urutan (`alt` = urutan lain yang sah) |
 | `analytics.js` | tren, kelemahan, kata sulit, rekomendasi, set latihan kelemahan |
 
 Tampilan (`app/js/views/`), semuanya menerima satu objek `app` dari `main.js` (`store`, `vocab`, `idData`, `questions`, `blueprints`, `render`, `go`):
@@ -65,6 +66,7 @@ Nama sama dengan `part.type` di `blueprints/hsk3.0/*.yaml`. Dibangun oleh `scrip
 | Membaca | `short_text_mcq` (HSK 1–2) | 30 | `content/id/reading-level-1/2.psv` |
 | Membaca | `passage_mcq` (paragraf 58–84 hanzi, HSK 3) | 28 | `content/id/reading-level-3.psv` |
 | Menulis | `write_hanzi_from_pinyin` | 601 | kalimat contoh; hanya hanzi yang bacaannya unik di level itu |
+| Menulis | `order_sentence` (susun kalimat; hanya Latihan, belum ada di blueprint resmi) | 828 | kalimat contoh dipecah per kata silabus (maximum matching) + tanda baca; dibuang bila ada kata yang bisa pindah tempat (waktu, 和, dst.), dua klausa penuh, atau deretan angka |
 | Mendengar | `audio_phrase_pick_picture` (HSK 1) | 45 | dibangkitkan: 9 benda × jumlah 1–5 |
 | Mendengar | `audio_sentence_pick_picture` (HSK 2) | 53 | `scenes.json` |
 | Mendengar | `audio_dialog_match_picture` | 42 | `content/pic/dialogs.psv` |

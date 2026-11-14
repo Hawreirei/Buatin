@@ -8,7 +8,7 @@ import { startPracticeWith, presetPractice } from "./practice.js";
 
 const NS = "http://www.w3.org/2000/svg";
 const TYPE_LABEL = {
-  cloze_wordbank: "Isi kata", write_hanzi_from_pinyin: "Tulis hanzi dari pinyin", sentence_match_picture: "Cocokkan kalimat dan gambar",
+  cloze_wordbank: "Isi kata", write_hanzi_from_pinyin: "Tulis hanzi dari pinyin", order_sentence: "Susun kalimat", sentence_match_picture: "Cocokkan kalimat dan gambar",
   short_text_mcq: "Teks pendek", passage_mcq: "Paragraf bacaan", audio_question_pick_answer: "Dengar tanya-jawab",
   audio_dialog_question_mcq: "Dengar dialog", audio_passage_question_mcq: "Dengar teks", audio_dialog_match_picture: "Dengar dialog, pilih gambar",
   audio_phrase_pick_picture: "Dengar frasa, pilih gambar", audio_sentence_pick_picture: "Dengar kalimat, pilih gambar",
