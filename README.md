@@ -16,6 +16,7 @@ Aplikasi web gratis dan sumber terbuka untuk berlatih **HSK 3.0 (silabus 2025)**
 
 | Tab | Fungsi |
 |---|---|
+| **Pelajaran** | Skenario bertema dengan lima langkah (dengar, baca, tulis, bicara, kosakata): kalimat kunci berpinyin per kata, soal per langkah, kata kunci bisa ditambahkan ke Hafalan. Saat ini: "在餐厅 Di restoran" (HSK 3). Langkah bicara masih dengar-ulang tanpa penilaian |
 | **Hafalan** | Flashcard dengan pengulangan berjarak (SM-2 + langkah belajar), arti Indonesia, kalimat contoh + pinyin + terjemahan, suara; pintasan Spasi dan 1–4 |
 | **Latihan** | 2.746 soal: isi kata, tulis hanzi, susun kalimat, tanya-jawab, dialog dan teks mendengar, soal bergambar, teks pendek dan paragraf bacaan; umpan balik dan penjelasan langsung |
 | **Ujian** | Simulasi bertimer HSK 1–3: jumlah soal, bagian, dan waktu mengikuti tabel resmi CTI; bagian terkunci setelah selesai |

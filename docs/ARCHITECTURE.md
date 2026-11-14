@@ -4,11 +4,12 @@ Aplikasi web **statis** (tanpa server, tanpa akun, tanpa build untuk aplikasinya
 
 ```
 content/*.psv, content/pic/*      sumber tulisan sendiri (diedit manusia)
+content/lessons/*.json            pelajaran bertema (kalimat kunci, kata kunci, soal per langkah)
 blueprints/hsk3.0/*.yaml          struktur ujian resmi (angka dari dokumen CTI)
 data/hsk3/vocab.json, handwriting.json   daftar kata/hanzi tulis resmi (input)
-        │  scripts/build_id.py  build_questions.py  build_blueprints_json.py
+        │  scripts/build_id.py  build_questions.py  build_blueprints_json.py  build_lessons.py
         ▼
-data/hsk3/vocab_id.json  questions.json  blueprints.json       (hasil build, di-commit)
+data/hsk3/vocab_id.json  questions.json  blueprints.json  lessons.json   (hasil build, di-commit)
         │  scripts/build_site.py → _site/
         ▼
 app/  (modul ES, fetch ../data/hsk3/*.json)  ──►  localStorage (progres)
@@ -26,6 +27,7 @@ Logika murni (tanpa DOM, diuji di `tests/js/`):
 | `store.js` | penyimpanan lokal: kartu, pengaturan, log jawaban (5.000 terakhir), riwayat ujian; ekspor/impor |
 | `practice.js` | menyusun set latihan, memeriksa jawaban, ringkasan |
 | `exam.js` | membangun ujian dari blueprint resmi, penilaian per bagian |
+| `lesson.js` | pelajaran bertema: lima langkah, progres, nomor soal, id kata kunci |
 | `order.js` | soal susun kalimat: acak kepingan (tidak pernah langsung benar), periksa urutan (`alt` = urutan lain yang sah) |
 | `analytics.js` | tren, kelemahan, kata sulit, rekomendasi, set latihan kelemahan |
 
@@ -35,6 +37,7 @@ Tampilan (`app/js/views/`), semuanya menerima satu objek `app` dari `main.js` (`
 |---|---|
 | `study.js`, `quiz.js`, `browse.js`, `settings.js` | Hafalan, Kuis, Daftar, Pengaturan |
 | `practice.js`, `exam.js` | Latihan, Ujian |
+| `lessons.js` | Pelajaran: daftar, halaman pelajaran, stepper, langkah Listening/Reading/Writing/Speaking/Vocab |
 | `progress.js` | Kemajuan (analisis + ringkasan hafalan) |
 | `question.js` | **satu-satunya tempat** yang menggambar soal; dipakai Latihan dan Ujian lewat "adaptor mode" (`kind`, `response`, `reveal`, `onAnswer`, …). Soal baru = ubah di sini saja |
 
@@ -88,3 +91,13 @@ Belum ada: `match_question_to_answer`, `audio_statement_question_mcq`, `choose_m
 
 - **Level baru:** tulis `content/id/level-N.psv` (dan dialog/teks/adegan bila perlu), jalankan `npm run build`, perbarui tes jumlah di `tests/`.
 - **Jenis soal baru:** tambahkan generator di `build_questions.py`, nama jenis di `blueprints`, cabang tampilan di `views/question.js` (`questionBody` dan `explanation`), lalu tes di `tests/test_questions.py` dan `tests/js/`.
+
+## Pelajaran bertema
+
+Satu berkas `content/lessons/<id>.json` per pelajaran; `build_lessons.py` memeriksa dan membangunnya ke `data/hsk3/lessons.json`. Soal pelajaran **disimpan di dalam pelajaran** (bukan di `questions.json`), memakai bentuk soal yang sama sehingga `views/question.js` menggambarnya tanpa perubahan.
+
+- Hanzi isi pelajaran dikunci ke silabus sampai `level` pelajaran; **judul** (`zh`) dikecualikan karena hanya penanda (mis. 餐厅 adalah kata HSK 4, judul "在餐厅" tetap dipakai).
+- `keySentences[].tokens` harus tersambung menjadi kalimat; pinyin per kata diturunkan dari alur pinyin aplikasi (bukan diketik). `"order": false` mengeluarkan kalimat dari soal susun.
+- `keyWords`: teks = kata silabus (≤ level, punya arti Indonesia); objek `{zh, pinyin, id}` = kata tambahan di luar silabus (mis. 服务员), tidak masuk Hafalan.
+- Progres di `store.data.lessons[id].steps[langkah] = {ok, n, t}`; kata yang ditambahkan dari langkah Vocab ada di `store.data.pinned` dan diambil lebih dulu oleh `buildQueue`, tanpa mengikuti pengaturan level atau batas harian.
+- Langkah Speaking saat ini dengar-ulang dengan tanda manual; penilaian pengucapan/nada belum ada (tahap 3).

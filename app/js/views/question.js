@@ -205,5 +205,5 @@ export function explanation(q) {
   if (q.type === "audio_question_pick_answer") {
     return h("div", { class: "example" }, zh(q.audio), h("div", { class: "py" }, q.audio_pinyin), h("div", { class: "tr" }, e.question_id), zh(q.answer, "margin-top:8px"), h("div", { class: "tr" }, e.answer_id));
   }
-  return h("div", { class: "example" }, zh(e.zh), h("div", { class: "py" }, e.pinyin), h("div", { class: "tr" }, e.id), h("div", { class: "hint" }, `Kata: ${e.word} (${e.word_pinyin}) — ${e.arti}`));
+  return h("div", { class: "example" }, zh(e.zh), h("div", { class: "py" }, e.pinyin), h("div", { class: "tr" }, e.id), e.word ? h("div", { class: "hint" }, `Kata: ${e.word} (${e.word_pinyin}) — ${e.arti}`) : null);
 }

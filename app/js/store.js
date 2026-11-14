@@ -94,6 +94,26 @@ export class Store {
     this.save();
   }
 
+  /** Lesson progress: { steps: { <step>: { ok, n, t } }, t } (speaking/vocab have ok = n = 0). */
+  lessonProgress(id) { return this.data.lessons?.[id] ?? null; }
+  saveLessonStep(id, step, { ok = 0, n = 0 } = {}, now = Date.now()) {
+    const l = ((this.data.lessons ||= {})[id] ||= { steps: {}, t: now });
+    l.steps[step] = { ok, n, t: now };
+    l.t = now;
+    this.save();
+  }
+  resetLesson(id) { if (this.data.lessons) delete this.data.lessons[id]; this.save(); }
+
+  /** Words the learner asked to study next ("Tambah ke hafalan" in a lesson); the study queue takes them first. */
+  get pinned() { return this.data.pinned ?? []; }
+  pin(ids) {
+    const have = new Set(this.pinned);
+    const add = ids.filter((id) => !have.has(id));
+    if (add.length) (this.data.pinned = [...this.pinned, ...add]);
+    this.save();
+    return add.length;
+  }
+
   recordReview(now = Date.now()) {
     const k = todayKey(now);
     this.data.log[k] = (this.data.log[k] || 0) + 1;
