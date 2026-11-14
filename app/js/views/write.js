@@ -90,6 +90,13 @@ function guide(size) {
   return s;
 }
 
+/** Jump to the Tulis tab on one character (used by the Hafalan card); filters are cleared so it is always visible. */
+export function openWrite(app, ch) {
+  Object.assign(st, { ch, query: "", todo: false });
+  st.levels.clear();
+  app.go("write");
+}
+
 function stop() {
   if (!live) return;
   window.removeEventListener("resize", live.onResize);
