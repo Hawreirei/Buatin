@@ -126,3 +126,13 @@ test("every lesson question can be answered correctly (all lessons)", () => {
     assert.equal(check(q, right).correct, true, q.id);
   }
 });
+
+import { syllableTones, expectedTones } from "../../app/js/tone.js";
+test("every key sentence of every lesson yields one tone per hanzi (so tone scoring has a target)", () => {
+  for (const l of lessons) for (const s of l.keySentences) {
+    const hanzi = [...s.zh].filter((c) => /[一-鿿]/.test(c)).length;
+    const sy = expectedTones(syllableTones(s.pinyin));
+    assert.equal(sy.length, hanzi, `${l.id}: ${s.zh}`);
+    assert.ok(sy.every((x) => x.expected >= 1 && x.expected <= 5));
+  }
+});

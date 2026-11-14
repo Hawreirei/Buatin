@@ -98,23 +98,25 @@ export function errorMessage(code) {
 }
 
 /** Start listening. Returns { stop(), result: Promise<{ alternatives, audioUrl, error }> }.
- *  `recognize` and `record` choose the tiers; with both off nothing is started. The promise never rejects. */
-export function startAttempt({ recognize = true, record = true, lang = "zh-CN", maxMs = 15000 } = {}) {
+ *  `recognize` and `record` choose the tiers; with both off nothing is started. `raw` asks the browser for unprocessed audio
+ *  (no echo cancellation / noise suppression / auto gain), which pitch tracking prefers. Result: { alternatives, audioUrl, audioBlob, error }.
+ *  The promise never rejects. */
+export function startAttempt({ recognize = true, record = true, raw = false, lang = "zh-CN", maxMs = 15000 } = {}) {
   const Rec = recognize ? RecognitionCtor() : null;
   const wantRecord = record && recorderSupported();
   let stopFns = [];
   const stop = () => { const f = stopFns; stopFns = []; f.forEach((fn) => { try { fn(); } catch { /* already stopped */ } }); };
 
   const result = new Promise((resolve) => {
-    let alternatives = [], error = null, audioUrl = null, pending = 0, finished = false;
-    const finish = () => { if (!finished && pending === 0) { finished = true; clearTimeout(timer); resolve({ alternatives, audioUrl, error }); } };
+    let alternatives = [], error = null, audioUrl = null, audioBlob = null, pending = 0, finished = false;
+    const finish = () => { if (!finished && pending === 0) { finished = true; clearTimeout(timer); resolve({ alternatives, audioUrl, audioBlob, error }); } };
     const timer = setTimeout(stop, maxMs);
     const track = (setup) => { pending++; setup(() => { pending--; finish(); }); };
 
     (async () => {
       let stream = null;
       if (wantRecord) {
-        try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+        try { stream = await navigator.mediaDevices.getUserMedia({ audio: raw ? { echoCancellation: false, noiseSuppression: false, autoGainControl: false } : true }); }
         catch (e) { if (/NotAllowed|Security/.test(e?.name)) { error = "denied"; return finish(); } }   // other errors: carry on without a recording
       }
       if (stream) {
@@ -122,7 +124,7 @@ export function startAttempt({ recognize = true, record = true, lang = "zh-CN", 
           const chunks = [];
           const rec = new MediaRecorder(stream);
           rec.ondataavailable = (e) => e.data?.size && chunks.push(e.data);
-          rec.onstop = () => { stream.getTracks().forEach((t) => t.stop()); if (chunks.length) audioUrl = URL.createObjectURL(new Blob(chunks, { type: rec.mimeType || "audio/webm" })); done(); };
+          rec.onstop = () => { stream.getTracks().forEach((t) => t.stop()); if (chunks.length) { audioBlob = new Blob(chunks, { type: rec.mimeType || "audio/webm" }); audioUrl = URL.createObjectURL(audioBlob); } done(); };
           rec.onerror = () => { stream.getTracks().forEach((t) => t.stop()); done(); };
           rec.start();
           stopFns.push(() => rec.state !== "inactive" && rec.stop());

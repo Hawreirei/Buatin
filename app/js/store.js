@@ -4,7 +4,7 @@ import { newCard } from "./srs.js";
 const KEY = "learning-chinese.vocab.v1";
 const LEGACY_KEY = "buatin.vocab.v1";   // name used before the rename; read once so saved progress survives
 export const MAX_EVENTS = 5000;
-export const DEFAULT_SETTINGS = { levels: [1], newPerDay: 10, speak: true, writeMode: "choice", scoreSpeech: true };
+export const DEFAULT_SETTINGS = { levels: [1], newPerDay: 10, speak: true, writeMode: "choice", scoreSpeech: true, toneContour: false };
 
 export function todayKey(now = Date.now()) {
   const d = new Date(now);

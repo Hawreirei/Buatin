@@ -20,6 +20,7 @@ export function viewSettings(app) {
   } });
   const speakBox = h("input", { type: "checkbox", checked: s.speak, onchange: (e) => store.setSettings({ speak: e.target.checked }) });
   const scoreBox = h("input", { type: "checkbox", checked: s.scoreSpeech, onchange: (e) => store.setSettings({ scoreSpeech: e.target.checked }) });
+  const toneBox = h("input", { type: "checkbox", checked: s.toneContour, onchange: (e) => store.setSettings({ toneContour: e.target.checked }) });
   const modeRadio = (val, label) => h("label", {}, h("input", { type: "radio", name: "writemode", value: val, checked: s.writeMode === val, onchange: () => store.setSettings({ writeMode: val }) }), " ", label);
   const fileIn = h("input", { type: "file", accept: "application/json", "aria-label": "Impor progres", onchange: async (e) => {
     try { store.import(await e.target.files[0].text()); alert("Progres berhasil diimpor."); viewSettings(app); } catch (err) { alert(err.message); }
@@ -39,7 +40,9 @@ export function viewSettings(app) {
       panel("Suara", h("label", {}, speakBox, " Ucapkan kata saat jawaban ditampilkan"),
         h("p", { class: "hint" }, "Memakai suara bawaan perangkat (zh-CN). Jika tidak ada suara Mandarin terpasang, tombol suara tidak akan berbunyi.")),
       panel("Latihan bicara", h("label", {}, scoreBox, " Nilai ucapan dengan pengenalan ucapan browser"),
-        h("p", { class: "hint" }, "Rekaman suara tidak disimpan dan tidak dikirim oleh aplikasi ini. Di Chrome dan Edge, pengenalan ucapan memakai layanan penyedia browser lewat internet; matikan opsi ini bila tidak mau audio diproses di sana (rekam-dan-bandingkan tetap bisa dipakai).")),
+        h("p", { class: "hint" }, "Rekaman suara tidak disimpan dan tidak dikirim oleh aplikasi ini. Di Chrome dan Edge, pengenalan ucapan memakai layanan penyedia browser lewat internet; matikan opsi ini bila tidak mau audio diproses di sana (rekam-dan-bandingkan tetap bisa dipakai)."),
+        h("label", { style: "display:block;margin-top:14px" }, toneBox, " Penilaian nada (eksperimental)"),
+        h("p", { class: "hint" }, "Mengukur tinggi-rendah suara dari rekaman dan membandingkannya dengan nada tiap suku kata. Dihitung di perangkat ini, tanpa dikirim ke mana pun. Hasilnya perkiraan dan bergantung pada mikrofon, kebisingan ruangan, dan tempo bicara; anggap sebagai petunjuk, bukan nilai.")),
       panel("Data", h("div", { class: "row", style: "justify-content:flex-start" },
         btn("Ekspor progres", exportFile), fileIn,
         btn("Reset progres", () => { if (confirm("Hapus semua progres (hafalan, latihan, dan ujian)?")) { store.reset(); viewSettings(app); } })))),

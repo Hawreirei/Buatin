@@ -5,6 +5,7 @@ import { LEVEL_LABEL } from "../deck.js";
 import { withTiles, check } from "../practice.js";
 import { STEPS, QUESTION_STEPS, stepQuestions, isStepDone, doneCount, isComplete, nextStep, questionPosition, stepPercent, lessonWordIds } from "../lesson.js";
 import { recognitionSupported, recorderSupported, startAttempt, scoreAttempt, errorMessage, cleanZh, PASS_PCT } from "../speech.js";
+import { analyzeTones, decodeBlob, syllableTones, expectedTones, TEMPLATES, TONE_ERRORS } from "../tone.js";
 import { questionBody, isListening, explanation, answerLabel } from "./question.js";
 
 const fresh = () => ({ screen: "list", id: null, step: null, items: [], i: 0, results: [], answered: null, textShown: false, pinyinShown: false, shownAt: 0, autoplayed: {}, attempts: new Map(), live: null, added: null });
@@ -173,13 +174,14 @@ function stepDone(app, lesson) {
 
 /* ---------- speaking: record yourself (tier 1) and have the browser's recognizer score it (tier 2) ---------- */
 const scoring = (app) => recognitionSupported() && app.store.settings.scoreSpeech;
+const toning = (app) => app.store.settings.toneContour && recorderSupported();
 /** Done = scored, ticked by hand, or (when nothing is scoring) recorded: a recording alone proves nothing while scoring is on. */
 const attemptDone = (app, a) => !!a && (a.best != null || a.manual || (!scoring(app) && !!a.audioUrl));
 
 async function begin(app, lesson, s, idx) {
   if (state.live) return;
   const useScore = scoring(app);
-  const ctl = startAttempt({ recognize: useScore, record: true });
+  const ctl = startAttempt({ recognize: useScore, record: true, raw: toning(app) });
   state.live = { zh: s.zh, ctl };
   const t0 = Date.now();
   viewLessons(app);
@@ -190,13 +192,74 @@ async function begin(app, lesson, s, idx) {
   if (prev?.audioUrl) URL.revokeObjectURL(prev.audioUrl);
   const score = useScore && r.alternatives.length ? scoreAttempt(s, r.alternatives) : null;
   const heardNothing = useScore && !r.alternatives.length && !r.error ? "no-speech" : null;
-  state.attempts.set(s.zh, {
-    score, audioUrl: r.audioUrl, manual: !!prev?.manual,
+  const entry = {
+    score, audioUrl: r.audioUrl, manual: !!prev?.manual, tone: null,
     best: score ? Math.max(prev?.best ?? 0, score.pct) : prev?.best ?? null,
     error: score || (r.audioUrl && !useScore) ? null : (r.error ?? heardNothing),
-  });
+  };
+  state.attempts.set(s.zh, entry);
   if (score) app.store.recordAnswer("speaking", score.pct >= PASS_PCT, { k: "practice", l: lesson.level, ty: "speak_sentence", id: `ls-${lesson.id}-s${idx + 1}`, ms: Date.now() - t0 });
+  if (toning(app) && r.audioBlob) {
+    if (score && score.pct < PASS_PCT) entry.tone = { skipped: true };       // the words were not right: tones of other words say nothing
+    else {
+      entry.tone = { pending: true };
+      measureTones(app, lesson, s, entry, r.audioBlob);
+    }
+  }
   viewLessons(app);
+}
+
+/** Tone contour (experimental): decode the recording and compare each syllable's pitch shape with the pinyin. */
+async function measureTones(app, lesson, s, entry, blob) {
+  let result;
+  try {
+    const { samples, sampleRate } = await decodeBlob(blob);
+    result = analyzeTones(samples, sampleRate, expectedTones(syllableTones(s.pinyin)));
+  } catch { result = { ok: false, reason: "decode" }; }
+  entry.tone = result;
+  if (state.screen === "speaking" && state.id === lesson.id && state.attempts.get(s.zh) === entry) viewLessons(app);
+}
+
+const SVGNS = "http://www.w3.org/2000/svg";
+function svg(tag, attrs = {}, ...kids) {
+  const el = document.createElementNS(SVGNS, tag);
+  for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+  for (const kid of kids) if (kid) el.append(kid);
+  return el;
+}
+
+/** Pitch plot: per syllable the expected shape (dashed) and what was measured (solid; green = matches, orange = not). */
+function tonePlot(t) {
+  const W = 320, H = 108, top = 8, bottom = 22, n = t.syllables.length, col = W / n;
+  const y = (c) => top + ((5.5 - c) / 5) * (H - top - bottom);
+  const x = (k, i) => k * col + 6 + (i / 4) * (col - 12);
+  const kids = [1, 2, 3, 4, 5].map((c) => svg("line", { x1: 0, x2: W, y1: y(c), y2: y(c), class: "grid" }));
+  t.syllables.forEach((sy, k) => {
+    if (k) kids.push(svg("line", { x1: k * col, x2: k * col, y1: top, y2: H - bottom, class: "sep" }));
+    if (sy.expected !== 5) {
+      const tpl = TEMPLATES[sy.expected][sy.expected === 3 && sy.half ? 1 : 0];
+      kids.push(svg("polyline", { class: "want", points: tpl.map((c, i) => `${x(k, i).toFixed(1)},${y(c).toFixed(1)}`).join(" ") }));
+    }
+    if (sy.contour) kids.push(svg("polyline", { class: `got ${sy.ok ? "ok" : "miss"}`, points: sy.contour.map((c, i) => `${x(k, i).toFixed(1)},${y(c).toFixed(1)}`).join(" ") }));
+    const label = svg("text", { x: k * col + col / 2, y: H - 6, "text-anchor": "middle", class: "lab" });
+    label.textContent = sy.syl;
+    kids.push(label);
+  });
+  return svg("svg", { viewBox: `0 0 ${W} ${H}`, class: "toneplot", role: "img", "aria-label": "Grafik kontur nada: garis putus-putus nada yang diminta, garis tebal nada yang terdengar" }, ...kids);
+}
+
+function toneBlock(t) {
+  if (!t) return null;
+  if (t.pending) return h("p", { class: "hint", role: "status" }, "Menganalisis nada…");
+  if (t.skipped) return h("p", { class: "hint" }, "Ucapkan kalimatnya dengan benar dulu (≥70%) supaya nada bisa dinilai.");
+  if (!t.ok) return h("p", { class: "notice", role: "status" }, TONE_ERRORS[t.reason] ?? TONE_ERRORS.decode);
+  return h("div", { class: "tonebox" },
+    h("strong", {}, `Nada (perkiraan): ${t.right}/${t.scored} suku kata sesuai`),
+    tonePlot(t),
+    h("ul", { class: "tonelist" }, ...t.syllables.map((sy) =>
+      h("li", { class: sy.ok === null ? "skip" : sy.ok ? "ok" : "miss" },
+        sy.syl, sy.ok === null ? (sy.expected === 5 ? " – netral" : " – tidak terdeteksi") : sy.ok ? ` ✓ nada ${sy.expected}` : ` ✗ nada ${sy.expected}, terdengar mirip nada ${sy.heard}`))),
+    h("p", { class: "hint" }, "Eksperimental: garis putus-putus = bentuk nada yang diminta, garis tebal = yang terukur dari rekamanmu. Dinilai relatif terhadap rentang suaramu sendiri."));
 }
 
 function playRecording(url) {
@@ -216,6 +279,7 @@ function speakCard(app, lesson, s, idx) {
     sc ? h("div", { class: `verdict ${sc.key}`, role: "status" }, h("strong", {}, `${sc.label} · ${sc.pct}%`),
       sc.pct < 100 ? h("span", { class: "hint" }, ` Terdengar: ${cleanZh(sc.heard) || "—"}. Kata merah belum terdengar.`) : null) : null,
     !live && a?.error ? h("p", { class: "notice", role: "status" }, errorMessage(a.error)) : null,
+    !live ? toneBlock(a?.tone) : null,
     a?.audioUrl && !live ? h("p", { class: "hint" }, "Bandingkan rekamanmu dengan suara model: ", btn("▶ Rekamanku", () => playRecording(a.audioUrl), "btn mini-text")) : null,
     h("div", { class: "row" },
       btn("🔊 Model", () => speak(s.zh), "btn"), btn("🐢 Pelan", () => speak(s.zh, 0.55), "btn"),
@@ -232,12 +296,15 @@ function speaking(app, lesson) {
     app.store.saveLessonStep(lesson.id, "speaking", { ok: scored.filter((a) => a.best >= PASS_PCT).length, n: scored.length });
     startStep(app, lesson, "vocab");
   };
-  const mode = scoring(app) ? h("span", { class: "chip" }, "pengucapan dinilai")
+  const mode = toning(app) ? h("span", { class: "chip" }, scoring(app) ? "pengucapan + nada (eksperimental)" : "nada dinilai (eksperimental)")
+    : scoring(app) ? h("span", { class: "chip" }, "pengucapan dinilai")
     : recorderSupported() ? h("span", { class: "chip off" }, "rekam & bandingkan") : h("span", { class: "chip off" }, "tanda manual");
   app.render(
     stepper(app, lesson, "speaking"),
     h("div", { class: "qhead" }, h("strong", {}, `${lesson.zh} · Speaking `, mode), h("span", { class: "hint" }, `${lesson.speaking.filter((s) => attemptDone(app, state.attempts.get(s.zh))).length} / ${lesson.speaking.length}`)),
-    h("p", { class: "hint" }, scoring(app)
+    h("p", { class: "hint" }, toning(app)
+      ? "Dengarkan model, tekan Ucapkan, lalu ucapkan seluruh kalimat dengan tempo wajar di tempat yang tenang. Nada diukur dari rekamanmu di perangkat ini (perkiraan)."
+      : scoring(app)
       ? "Dengarkan model, tekan Ucapkan, lalu ucapkan kalimatnya. Browser mencocokkan kata yang terdengar dengan kalimat; nada belum dinilai. Rekaman tidak disimpan."
       : recorderSupported()
         ? "Dengarkan model, rekam suaramu, lalu bandingkan. Penilaian otomatis tidak tersedia (browser belum mendukung atau dimatikan di Pengaturan)."
