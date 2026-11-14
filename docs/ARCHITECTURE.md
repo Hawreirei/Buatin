@@ -27,6 +27,7 @@ Logika murni (tanpa DOM, diuji di `tests/js/`):
 | `store.js` | penyimpanan lokal: kartu, pengaturan, log jawaban (5.000 terakhir), riwayat ujian; ekspor/impor |
 | `practice.js` | menyusun set latihan, memeriksa jawaban, ringkasan |
 | `exam.js` | membangun ujian dari blueprint resmi, penilaian per bagian |
+| `speech.js` | latihan bicara: penilaian kemiripan (LCS per hanzi, angka → hanzi), pembungkus rekam (MediaRecorder) dan pengenalan ucapan (Web Speech API, zh-CN) |
 | `lesson.js` | pelajaran bertema: lima langkah, progres, nomor soal, id kata kunci |
 | `order.js` | soal susun kalimat: acak kepingan (tidak pernah langsung benar), periksa urutan (`alt` = urutan lain yang sah) |
 | `analytics.js` | tren, kelemahan, kata sulit, rekomendasi, set latihan kelemahan |
@@ -100,4 +101,6 @@ Satu berkas `content/lessons/<id>.json` per pelajaran; `build_lessons.py` memeri
 - `keySentences[].tokens` harus tersambung menjadi kalimat; pinyin per kata diturunkan dari alur pinyin aplikasi (bukan diketik). `"order": false` mengeluarkan kalimat dari soal susun.
 - `keyWords`: teks = kata silabus (≤ level, punya arti Indonesia); objek `{zh, pinyin, id}` = kata tambahan di luar silabus (mis. 服务员), tidak masuk Hafalan.
 - Progres di `store.data.lessons[id].steps[langkah] = {ok, n, t}`; kata yang ditambahkan dari langkah Vocab ada di `store.data.pinned` dan diambil lebih dulu oleh `buildQueue`, tanpa mengikuti pengaturan level atau batas harian.
-- Langkah Speaking saat ini dengar-ulang dengan tanda manual; penilaian pengucapan/nada belum ada (tahap 3).
+- **Speaking** (tahap 3, tingkat 1 + 2): tombol Ucapkan merekam suara (tingkat 1: putar "Rekamanku" berdampingan dengan suara model) dan, bila browser mendukung, `SpeechRecognition` zh-CN menghasilkan transkrip yang dicocokkan dengan kalimat (tingkat 2). Skor = persentase hanzi yang terdengar (LCS, jadi satu salah tidak menggeser sisanya; hanzi yang belum terdengar ditandai merah per kata). **Nada tidak dinilai**: pengenal hanya tahu kata yang dipahami. Ambang lulus 70%. Tanpa pengenal ucapan (Firefox, dimatikan di Pengaturan, offline) langkah tetap bisa diselesaikan lewat rekam-bandingkan atau tanda manual.
+- Hasil tiap kalimat yang dinilai masuk log sebagai kejadian `s: "speaking"`, `ty: "speak_sentence"`; langkah menyimpan `{ok, n}` = kalimat lulus / kalimat dinilai. Keterampilan `speaking` tidak dipakai untuk saran "keterampilan terlemah" karena Latihan belum punya soal bicara.
+- Privasi: rekaman hanya ada di memori halaman (URL blob dicabut saat meninggalkan langkah), tidak disimpan dan tidak dikirim oleh aplikasi. Di Chrome/Edge pengenalan ucapan diproses penyedia browser lewat internet; opsi "Nilai ucapan dengan pengenalan ucapan browser" di Pengaturan mematikannya.

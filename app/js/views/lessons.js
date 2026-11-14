@@ -4,9 +4,10 @@ import { h, btn, speak, speakSequence, stopSpeaking, listeningParts } from "../u
 import { LEVEL_LABEL } from "../deck.js";
 import { withTiles, check } from "../practice.js";
 import { STEPS, QUESTION_STEPS, stepQuestions, isStepDone, doneCount, isComplete, nextStep, questionPosition, stepPercent, lessonWordIds } from "../lesson.js";
+import { recognitionSupported, recorderSupported, startAttempt, scoreAttempt, errorMessage, cleanZh, PASS_PCT } from "../speech.js";
 import { questionBody, isListening, explanation, answerLabel } from "./question.js";
 
-const fresh = () => ({ screen: "list", id: null, step: null, items: [], i: 0, results: [], answered: null, textShown: false, pinyinShown: false, shownAt: 0, autoplayed: {}, said: new Set(), added: null });
+const fresh = () => ({ screen: "list", id: null, step: null, items: [], i: 0, results: [], answered: null, textShown: false, pinyinShown: false, shownAt: 0, autoplayed: {}, attempts: new Map(), live: null, added: null });
 let state = fresh();
 
 export function viewLessons(app) {
@@ -20,15 +21,22 @@ export function viewLessons(app) {
   return vocab(app, lesson);
 }
 
-const open = (app, patch) => { stopSpeaking(); state = { ...state, ...patch }; viewLessons(app); };
+let playing = null;
+const releaseAudio = () => { playing?.pause(); playing = null; for (const a of state.attempts.values()) if (a.audioUrl) URL.revokeObjectURL(a.audioUrl); state.attempts = new Map(); };
+const open = (app, patch) => {
+  stopSpeaking();
+  if (state.screen === "speaking" && (patch.screen !== "speaking" || patch.attempts)) { state.live?.ctl.stop(); state.live = null; releaseAudio(); }   // leaving: free the microphone and the recordings
+  state = { ...state, ...patch };
+  viewLessons(app);
+};
 const backToList = (app) => open(app, { screen: "list", id: null });
 const toLesson = (app, id = state.id) => open(app, { screen: "lesson", id, step: null });
 
 /* ---------- pieces ---------- */
 /** A sentence with the pinyin of each word above it. */
-function ruby(s, cls = "rubyline") {
+function ruby(s, cls = "rubyline", marks = null) {
   return h("div", { class: cls, lang: "zh-Hans" }, ...s.tokens.map((t, i) => s.tokenPinyin[i]
-    ? h("ruby", {}, t, h("rt", {}, s.tokenPinyin[i]))
+    ? h("ruby", { class: marks?.[i]?.ok === true ? "heard" : marks?.[i]?.ok === false ? "missed" : "" }, t, h("rt", {}, s.tokenPinyin[i]))
     : h("span", { class: "punct" }, t)));
 }
 
@@ -97,7 +105,7 @@ function startStep(app, lesson, step) {
     const all = stepQuestions(lesson, step).map((q) => withTiles(q, [], Math.random));
     return open(app, { screen: "question", id: lesson.id, step, items: all, i: 0, results: [], answered: null, textShown: false, pinyinShown: false, shownAt: Date.now(), autoplayed: {} });
   }
-  open(app, { screen: step, id: lesson.id, step, said: new Set(), added: null });
+  open(app, { screen: step, id: lesson.id, step, attempts: new Map(), live: null, added: null });
 }
 
 function finish(app, lesson, q, response) {
@@ -156,19 +164,79 @@ function stepDone(app, lesson) {
       btn("Ulangi langkah ini", () => startStep(app, lesson, state.step), "btn")));
 }
 
-/* ---------- speaking (listen and repeat; scoring arrives in a later stage) ---------- */
+/* ---------- speaking: record yourself (tier 1) and have the browser's recognizer score it (tier 2) ---------- */
+const scoring = (app) => recognitionSupported() && app.store.settings.scoreSpeech;
+/** Done = scored, ticked by hand, or (when nothing is scoring) recorded: a recording alone proves nothing while scoring is on. */
+const attemptDone = (app, a) => !!a && (a.best != null || a.manual || (!scoring(app) && !!a.audioUrl));
+
+async function begin(app, lesson, s, idx) {
+  if (state.live) return;
+  const useScore = scoring(app);
+  const ctl = startAttempt({ recognize: useScore, record: true });
+  state.live = { zh: s.zh, ctl };
+  const t0 = Date.now();
+  viewLessons(app);
+  const r = await ctl.result;
+  state.live = null;
+  if (state.screen !== "speaking" || state.id !== lesson.id) { if (r.audioUrl) URL.revokeObjectURL(r.audioUrl); return; }   // left the step meanwhile
+  const prev = state.attempts.get(s.zh);
+  if (prev?.audioUrl) URL.revokeObjectURL(prev.audioUrl);
+  const score = useScore && r.alternatives.length ? scoreAttempt(s, r.alternatives) : null;
+  const heardNothing = useScore && !r.alternatives.length && !r.error ? "no-speech" : null;
+  state.attempts.set(s.zh, {
+    score, audioUrl: r.audioUrl, manual: !!prev?.manual,
+    best: score ? Math.max(prev?.best ?? 0, score.pct) : prev?.best ?? null,
+    error: score || (r.audioUrl && !useScore) ? null : (r.error ?? heardNothing),
+  });
+  if (score) app.store.recordAnswer("speaking", score.pct >= PASS_PCT, { k: "practice", l: lesson.level, ty: "speak_sentence", id: `ls-${lesson.id}-s${idx + 1}`, ms: Date.now() - t0 });
+  viewLessons(app);
+}
+
+function playRecording(url) {
+  playing?.pause();
+  playing = new Audio(url);
+  playing.play().catch(() => {});
+}
+
+function speakCard(app, lesson, s, idx) {
+  const a = state.attempts.get(s.zh);
+  const live = state.live?.zh === s.zh;
+  const canTry = scoring(app) || recorderSupported();
+  const sc = a?.score;
+  return h("div", { class: `card speakcard${attemptDone(app, a) ? " said" : ""}` },
+    ruby(s, "rubyline big", sc?.tokens), h("p", { class: "hint" }, s.id),
+    live ? h("p", { class: "listening", role: "status" }, "🎙 Mendengarkan… ucapkan kalimatnya, lalu diam sebentar atau ketuk Selesai.") : null,
+    sc ? h("div", { class: `verdict ${sc.key}`, role: "status" }, h("strong", {}, `${sc.label} · ${sc.pct}%`),
+      sc.pct < 100 ? h("span", { class: "hint" }, ` Terdengar: ${cleanZh(sc.heard) || "—"}. Kata merah belum terdengar.`) : null) : null,
+    !live && a?.error ? h("p", { class: "notice", role: "status" }, errorMessage(a.error)) : null,
+    a?.audioUrl && !live ? h("p", { class: "hint" }, "Bandingkan rekamanmu dengan suara model: ", btn("▶ Rekamanku", () => playRecording(a.audioUrl), "btn mini-text")) : null,
+    h("div", { class: "row" },
+      btn("🔊 Model", () => speak(s.zh), "btn"), btn("🐢 Pelan", () => speak(s.zh, 0.55), "btn"),
+      canTry ? (live ? btn("⏹ Selesai", () => state.live.ctl.stop(), "btn primary", { id: `stop-${idx}` })
+        : btn(a?.score || a?.audioUrl ? "🎤 Ulangi" : "🎤 Ucapkan", () => begin(app, lesson, s, idx), "btn primary", { id: `rec-${idx}`, disabled: !!state.live })) : null,
+      !attemptDone(app, a) && !live ? btn("Tandai sudah diucapkan", () => { state.attempts.set(s.zh, { ...(a ?? {}), manual: true }); viewLessons(app); }, "btn", { id: `mark-${idx}` }) : null));
+}
+
 function speaking(app, lesson) {
-  const all = state.said.size >= lesson.speaking.length;
+  const all = lesson.speaking.every((s) => attemptDone(app, state.attempts.get(s.zh)));
   const done = isStepDone(app.store.lessonProgress(lesson.id), "speaking");
+  const finishStep = () => {
+    const scored = [...state.attempts.values()].filter((a) => a.best != null);
+    app.store.saveLessonStep(lesson.id, "speaking", { ok: scored.filter((a) => a.best >= PASS_PCT).length, n: scored.length });
+    startStep(app, lesson, "vocab");
+  };
+  const mode = scoring(app) ? h("span", { class: "chip" }, "pengucapan dinilai")
+    : recorderSupported() ? h("span", { class: "chip off" }, "rekam & bandingkan") : h("span", { class: "chip off" }, "tanda manual");
   app.render(
     stepper(app, lesson, "speaking"),
-    h("div", { class: "qhead" }, h("strong", {}, `${lesson.zh} · Speaking`), h("span", { class: "hint" }, `${state.said.size} / ${lesson.speaking.length}`)),
-    h("p", { class: "hint" }, "Dengarkan, lalu ucapkan keras-keras. Penilaian pengucapan dan nada belum tersedia; tandai sendiri bila sudah."),
-    ...lesson.speaking.map((s) => h("div", { class: `card speakcard${state.said.has(s.zh) ? " said" : ""}` },
-      ruby(s, "rubyline big"), h("p", { class: "hint" }, s.id),
-      h("div", { class: "row" }, btn("🔊 Dengar", () => speak(s.zh), "btn"), btn("🐢 Pelan", () => speak(s.zh, 0.55), "btn"),
-        btn(state.said.has(s.zh) ? "✓ Sudah diucapkan" : "Sudah saya ucapkan", () => { state.said.has(s.zh) ? state.said.delete(s.zh) : state.said.add(s.zh); viewLessons(app); }, "btn primary", { "aria-pressed": String(state.said.has(s.zh)) })))),
-    h("div", { class: "row" }, btn(done ? "Lanjut ke kosakata →" : "Selesaikan langkah →", () => { app.store.saveLessonStep(lesson.id, "speaking"); startStep(app, lesson, "vocab"); }, "btn primary", { disabled: !all && !done, id: "finish-speaking" })));
+    h("div", { class: "qhead" }, h("strong", {}, `${lesson.zh} · Speaking `, mode), h("span", { class: "hint" }, `${lesson.speaking.filter((s) => attemptDone(app, state.attempts.get(s.zh))).length} / ${lesson.speaking.length}`)),
+    h("p", { class: "hint" }, scoring(app)
+      ? "Dengarkan model, tekan Ucapkan, lalu ucapkan kalimatnya. Browser mencocokkan kata yang terdengar dengan kalimat; nada belum dinilai. Rekaman tidak disimpan."
+      : recorderSupported()
+        ? "Dengarkan model, rekam suaramu, lalu bandingkan. Penilaian otomatis tidak tersedia (browser belum mendukung atau dimatikan di Pengaturan)."
+        : "Perangkat ini tidak bisa merekam. Dengarkan model, ucapkan keras-keras, lalu tandai sendiri."),
+    ...lesson.speaking.map((s, i) => speakCard(app, lesson, s, i)),
+    h("div", { class: "row" }, btn(done ? "Lanjut ke kosakata →" : "Selesaikan langkah →", finishStep, "btn primary", { disabled: !all && !done || !!state.live, id: "finish-speaking" })));
 }
 
 /* ---------- vocab ---------- */

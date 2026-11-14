@@ -6,7 +6,7 @@ import { shuffle } from "./deck.js";
 import { questionKey, withTiles } from "./practice.js";
 
 export const SKILL_ORDER = ["listening", "reading", "writing"];
-export const SKILL_LABEL = { listening: "Mendengar", reading: "Membaca", writing: "Menulis" };
+export const SKILL_LABEL = { listening: "Mendengar", reading: "Membaca", writing: "Menulis", speaking: "Berbicara" };
 export const MAX_AUDIO_PLAYS = 2; // assumption: the official audio-play rule is not stated in the CTI document
 
 /** Which of our question types stands in for an official section. */

@@ -52,6 +52,9 @@ export function activeDayKeys(events, reviewLog = {}) {
   return [...new Set([...events.map((e) => todayKey(e.t)), ...Object.keys(reviewLog).filter((k) => reviewLog[k] > 0)])];
 }
 
+/** Skills that Latihan has questions for (speaking is practised only inside lessons). */
+const practiceable = (events) => events.filter((e) => e.s !== "speaking");
+
 /** Types/skills ordered weakest first, only with enough answers to mean something. */
 export function weakest(events, keyFn, minN = 5) {
   return Object.entries(groupAccuracy(events, keyFn))
@@ -126,7 +129,7 @@ export function buildWeakSet(questions, events, { count = 10, levels = null } = 
   const perWord = new Set();
   for (const q of onWeakWords) { const w = wordIdOfQuestion(q); if (!perWord.has(w)) { perWord.add(w); take(q); } }
   if (picked.length < count) {
-    const skills = weakest(events, (e) => e.s, 3);
+    const skills = weakest(practiceable(events), (e) => e.s, 3);
     const skill = skills[0]?.key;
     for (const q of shuffle(questions.filter((q) => ok(q) && (!skill || q.skill === skill)), rand)) take(q);
   }
@@ -141,7 +144,7 @@ export function recommendations({ events, exams, cards, vocabById }) {
     recs.push({ kind: "start", text: "Data belum cukup. Kerjakan beberapa latihan soal (minimal 10 soal) agar kelemahan bisa dianalisis." });
     return recs;
   }
-  const skills = weakest(events, (e) => e.s, 5);
+  const skills = weakest(practiceable(events), (e) => e.s, 5);
   const label = { reading: "Membaca", writing: "Menulis", listening: "Mendengar" };
   if (skills.length) {
     const w = skills[0];
