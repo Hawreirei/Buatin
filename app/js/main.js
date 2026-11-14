@@ -3,6 +3,7 @@ import { h } from "./ui.js";
 import { setLookalikes } from "./practice.js";
 import { Store } from "./store.js";
 import { viewHome } from "./views/home.js";
+import { viewWrite, leaveWrite } from "./views/write.js";
 import { viewStudy, resetStudy, studyKey } from "./views/study.js";
 import { viewLessons, leaveLessons } from "./views/lessons.js";
 import { viewPractice } from "./views/practice.js";
@@ -19,6 +20,7 @@ const app = {
   store: new Store(),
   vocab: [],                // data/hsk3/vocab.json
   handwriting: new Set(),   // characters of the official handwriting list
+  handwritingList: [],      // handwriting.json: [{id, level, char}]
   idData: {},               // vocab_id.json: id -> {arti, contoh:{zh,pinyin,id}}
   questions: [],            // questions.json
   blueprints: {},           // blueprints.json (official exam structure per level)
@@ -27,7 +29,7 @@ const app = {
   go,
 };
 
-const views = { home: viewHome, lessons: viewLessons, study: viewStudy, practice: viewPractice, exam: viewExam, quiz: viewQuiz, browse: viewBrowse, progress: viewProgress, settings: viewSettings };
+const views = { home: viewHome, lessons: viewLessons, write: viewWrite, study: viewStudy, practice: viewPractice, exam: viewExam, quiz: viewQuiz, browse: viewBrowse, progress: viewProgress, settings: viewSettings };
 let tab = "home";
 
 function go(t) {
@@ -36,6 +38,7 @@ function go(t) {
     abortExam();
   }
   if (tab === "lessons" && t !== "lessons") leaveLessons();
+  if (tab === "write" && t !== "write") leaveWrite();
   tab = t;
   view.dataset.view = t;
   for (const b of document.querySelectorAll("#tabs button")) b.setAttribute("aria-selected", String(b.dataset.tab === t));
@@ -70,7 +73,7 @@ async function boot() {
       getJson("vocab_id.json", {}), getJson("questions.json", []), getJson("blueprints.json", {}), getJson("lookalikes.json", {}), getJson("lessons.json", []),
     ]);
     setLookalikes(lookalikes);
-    Object.assign(app, { vocab, handwriting: new Set(handwriting.map((x) => x.char)), idData, questions, blueprints, lessons });
+    Object.assign(app, { vocab, handwriting: new Set(handwriting.map((x) => x.char)), handwritingList: handwriting, idData, questions, blueprints, lessons });
     go("home");
   } catch (err) {
     app.render(h("p", { class: "notice" }, `Gagal memuat data: ${err.message}. Jalankan server dari akar repo: python3 -m http.server 8080, lalu buka /app/.`));

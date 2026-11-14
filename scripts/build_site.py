@@ -34,6 +34,7 @@ def main():
     (out / "data" / "hsk3").mkdir(parents=True)
     for name in APP_DATA:
         shutil.copy2(ROOT / "data" / "hsk3" / name, out / "data" / "hsk3" / name)
+    shutil.copytree(ROOT / "data" / "hsk3" / "strokes", out / "data" / "hsk3" / "strokes")
     for name in DOCS:
         shutil.copy2(ROOT / name, out / name)
     (out / "index.html").write_text(INDEX, encoding="utf-8")

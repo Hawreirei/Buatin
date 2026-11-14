@@ -323,3 +323,41 @@ button.btn.mini-text { padding: 4px 12px; font-size: 14px; }
 .toneplot .lab { fill: var(--text); font: 11px var(--font-ui); }
 .tonelist { list-style: none; margin: 6px 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 13px; }
 .tonelist .ok { color: var(--ok); } .tonelist .miss { color: var(--accent); } .tonelist .skip { color: var(--muted); }
+
+/* ---- Tulis (latihan menulis hanzi) ---- */
+.write { align-items: start; }
+.wmain { display: grid; gap: 12px; justify-items: center; min-width: 0; }
+.wtop { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 16px; }
+.wpad { position: relative; flex: 0 0 auto; background: var(--surface); border-radius: var(--r-md); box-shadow: 0 0 0 1px var(--line-strong); overflow: hidden; }
+.wpad .wguide, .wpad .wlayer, .wpad .wover { position: absolute; inset: 0; width: 100%; height: 100%; }
+.wguide .frame { fill: none; stroke: var(--line-strong); stroke-width: .8; }
+.wguide .ln { fill: none; stroke: var(--line-strong); stroke-width: .5; stroke-dasharray: 2 2.5; }
+.wlayer svg { display: block; touch-action: none; user-select: none; -webkit-user-select: none; }
+.wover { touch-action: none; cursor: crosshair; }
+.wover.passive { pointer-events: none; }
+.wover .ink { fill: none; stroke: var(--brand); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+.wover .nums circle { fill: var(--accent); }
+.wover .nums text { fill: var(--accent-ink); font: 600 10px var(--font-ui); text-anchor: middle; dominant-baseline: central; }
+.wlayer.reveal { pointer-events: none; }
+.wctl { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; }
+.wstatus { min-height: 1.5em; margin: 0; text-align: center; }
+.winfo { width: 100%; max-width: 460px; display: grid; gap: 6px; text-align: left; border-top: 1px dashed var(--line); padding-top: 12px; }
+.winfo p { margin: 0; }
+.winfo-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.wbig { font: 600 34px/1 var(--font-zh); }
+label.inline { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; margin: 0; }
+.wctl input[type="range"] { width: 120px; accent-color: var(--brand); }
+.wpick { display: grid; gap: 10px; align-content: start; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip-btn { font: inherit; font-size: 13px; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--text); cursor: pointer; }
+.chip-btn[aria-pressed="true"] { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
+.hzgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(46px, 1fr)); gap: 6px; max-height: 420px; overflow-y: auto; padding: 2px; }
+.hz { font: 600 24px/1 var(--font-zh); height: 46px; border-radius: var(--r-sm); border: 1px solid var(--line); background: var(--surface); color: var(--text); cursor: pointer; position: relative; padding: 0; }
+.hz:hover { border-color: var(--brand); }
+.hz.tried { background: var(--surface-2); }
+.hz.done { background: var(--brand-soft); border-color: var(--ok); }
+.hz.done::after { content: "✓"; position: absolute; top: 1px; right: 4px; font: 700 10px var(--font-ui); color: var(--ok); }
+.hz.on { outline: 2px solid var(--accent); outline-offset: 1px; }
+.hz:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+@media (max-width: 480px) { .hzgrid { max-height: 300px; } }
+@media (prefers-reduced-motion: reduce) { .wlayer svg * { transition: none; } }

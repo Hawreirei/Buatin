@@ -22,3 +22,10 @@ Arti Indonesia, kalimat contoh, terjemahan, tanya-jawab, dialog, teks bacaan, da
 
 ## Tanpa jaminan / No warranty
 Disediakan "apa adanya". Jangan menganggap hasil latihan sebagai prediksi skor ujian resmi.
+
+## Data goresan hanzi dan pustaka Hanzi Writer
+
+| Sumber | Dipakai untuk | Lisensi |
+|---|---|---|
+| **hanzi-writer-data** 2.0.1 (<https://github.com/chanind/hanzi-writer-data>), berasal dari **Make Me a Hanzi** (<https://github.com/skishore/makemeahanzi>) dan font Arphic | `data/hsk3/strokes/*.json`: bentuk dan urutan goresan 1.200 hanzi tulis, dibangun lewat `scripts/build_strokes.py` | **Arphic Public License**; salinan lisensi ada di `data/hsk3/strokes/ARPHICPL.TXT` dan harus tetap menyertai data ini |
+| **Hanzi Writer** 3.7.3 (<https://github.com/chanind/hanzi-writer>) | `app/js/vendor/hanzi-writer.min.js`: animasi goresan dan pemeriksaan goresan di tab Tulis | MIT (`app/js/vendor/hanzi-writer.LICENSE`) |
