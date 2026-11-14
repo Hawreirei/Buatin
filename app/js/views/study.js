@@ -3,6 +3,7 @@ import { LEVEL_LABEL, glossText, posLabel } from "../deck.js";
 import { buildQueue, nextItem, answer, stats } from "../session.js";
 import { todayKey } from "../store.js";
 import { h, btn, speak } from "../ui.js";
+import { openWrite } from "./write.js";
 
 const state = { revealed: false };
 export const resetStudy = () => { state.revealed = false; };
@@ -14,6 +15,14 @@ function levelBadges(app, w) {
     [...w.word].every((c) => app.handwriting.has(c)) ? h("span", { class: "badge hand", title: "Semua hanzi masuk daftar hanzi tulis" }, "✍ tulis") : null);
 }
 
+/** "Latih menulis" buttons for the characters of the word that are on the handwriting list (max 4). */
+function writeLinks(app, w) {
+  const chars = [...new Set([...w.word])].filter((c) => app.handwriting.has(c)).slice(0, 4);
+  if (!chars.length) return null;
+  return h("div", { class: "row", style: "margin:8px 0" },
+    ...chars.map((c) => btn(`✍ Latih menulis ${c}`, () => openWrite(app, c), "btn mini-text", { "aria-label": `Latih menulis hanzi ${c}`, lang: "zh-Hans" })));
+}
+
 function answerBlock(app, w) {
   const d = app.idData[w.id];
   const en = glossText(w, 5);
@@ -23,6 +32,7 @@ function answerBlock(app, w) {
     h("div", { class: "gloss" }, main),
     d ? null : (en ? h("div", { class: "hint" }, "Arti Inggris (CC-CEDICT); terjemahan Indonesia untuk level ini belum tersedia.") : null),
     h("div", { class: "meta" }, posLabel(w.pos) || "—", " · ", levelBadges(app, w)),
+    writeLinks(app, w),
     d ? h("div", { class: "example" },
       h("div", { class: "zh", lang: "zh-Hans" }, d.contoh.zh, " ", btn("🔊", () => speak(d.contoh.zh), "btn", { "aria-label": "Dengar kalimat contoh" })),
       h("div", { class: "py" }, d.contoh.pinyin),
